@@ -18,6 +18,12 @@ Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
 
+## Field guide update — 1.3.1
+
+Regiments, Defenses and the battlefield Army menu now show complete stats next to the animated model. Soldiers list per-soldier health, damage per hit, armor, attack interval, direct DPS, reach, movement, squad size and Command cost. Abilities explain exact healing, repair, aura, penetration and control effects, including rank gates and cooldowns. Army → Inspect stats scrolls directly to the selected regiment's details and shows its surviving soldiers' combined health.
+
+Rank previews compare against the owned rank; viewing the current rank shows the next upgrade. Defense numbers include the selected firing doctrine. The gate shows maximum and current battle health. Weapon/support emplacements are labeled **Protected**, because enemies attack the gate and beacon rather than destroying individual emplacements. Healing defenses clearly label healing output instead of damage.
+
 ## Armor update — 1.3
 
 **Armory → Armor** opens a dedicated armor slot and filtered inventory. Six new patterns drop from hidden treasure and victory rewards: Bastion harness, Wayfarer leathers, Starwoven vestments, Cinderforged mail, Dawnkeeper mantle and Marchwarden cuirass. Each supports a different build, with real combat benefits and its own animated outfit. The first victory at Hearthwatch guarantees an Uncommon-or-better pattern when inventory has room.

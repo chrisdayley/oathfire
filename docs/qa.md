@@ -1,5 +1,14 @@
 # Oathfire release QA
 
+## Field guide update — 1.3.1 (October 1, 2026)
+
+- `npm test`: 27 passing tests, including every unit/defense rank, exact health and attack intervals, squad cost semantics, rank-scaled healing and slows, doctrine calculations and the gate/protected-emplacement distinction.
+- `inspection-qa.mjs`: 20 passing browser checks. All 150 soldier-rank and 80 defense-rank detail renders have valid values. Actual menu controls change the selected model, reveal ability details, distinguish active and future abilities, compare owned/preview ranks, and never spend resources while inspecting. The Army Inspect button scrolls to the requested regiment's statistics.
+- Doctrine changes were tested in both menus and the real projectile loop: rank-V Suppression showed/fired 19 damage every 1.12 s with 22.1 m range; Pinning showed/fired 90.95 damage every 4 s. Longwatch displayed 31.2 m range and a 1.68 s cycle. Gate inspection showed a fixture's actual 987 remaining health and 610/650 beacon health. Squad inspection showed the three live Shieldward's combined 360/360 health.
+- Visual QA inspected desktop rank-V Shieldward and 844×390 defense/army panels. Stat columns fit without horizontal overflow; the model remains visible beside the scrolling details. Existing equipment, doctrine, ranks and a suspended mission survived reload. No browser runtime errors were recorded.
+
+These are Chromium/Metal and touch-viewport checks, not physical-device performance measurements. Local evidence is in `work/qa-inspection/`.
+
 ## Armor update — 1.3 (October 1, 2026)
 
 - `npm test`: 22 passing tests. Armor coverage checks independent equipment slots, inactive carried gear, all six patterns, exact modifiers, rarity/forge/awakening, defensive sockets, randomized loot distribution, first-victory armor, inventory-full conversion, invalid patterns, and preservation of legacy item IDs, modifiers, upgrades and resources.

@@ -1,7 +1,7 @@
 import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-1.3.0-armory';
+export const BUILD='oathfire-1.3.1-field-guide';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',subtitle:'Iron, resolve, a line that holds.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -60,9 +60,15 @@ export const AFFIXES={sunder:{name:'Sundering',desc:'Heavy hits strip 20% armor 
 export const SERVICES=[{id:'forge',name:'Torren · Forge',x:-19,z:8,icon:'hammer',tab:'equipment',line:'Good steel deserves a second life.'},{id:'market',name:'Iona · Quartermaster',x:20,z:8,icon:'bag',tab:'shop',line:'A kingdom begins with someone coming home.'},{id:'troops',name:'Captain Rowan · Barracks',x:-18,z:-4,icon:'banner',tab:'troops',line:'Give them ground worth holding.'},{id:'defenses',name:'Nell · Engineer',x:19,z:-5,icon:'tower',tab:'defenses',line:'A good wall is a promise made of stone.'},{id:'campaign',name:'Sera · War table',x:0,z:17,icon:'map',tab:'campaign',line:'There is always another way around.'},{id:'hero',name:'Oath shrine',x:-10,z:23,icon:'sun',tab:'hero',line:'Choose what you will carry into the dark.'}];
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export function seeded(seed){let n=seed>>>0;return()=>{n+=0x6D2B79F5;let t=n;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
-export function unitStats(id,level){const u=UNITS[id],i=level-1;return {hp:u.spec?.hp[i]||Math.round(u.hp*(1+i*.13+i*i*.007)),damage:u.spec?.damage[i]||Math.round(u.damage*(1+i*.10)),speed:u.speed,reach:u.reach,cost:u.cost+Math.floor(i/3)*4};}
+export function unitStats(id,level){const u=UNITS[id],i=level-1;return {hp:u.spec?.hp[i]||Math.round(u.hp*(1+i*.13+i*i*.007)),damage:u.spec?.damage[i]||Math.round(u.damage*(1+i*.10)),speed:u.speed,reach:u.reach,cost:u.cost+Math.floor(i/3)*4,armor:id==='shield'?10+level*2:id==='dawn'?24+level*2:4,attackInterval:['bow','crossbow','staff'].includes(u.weapon)?({marksman:2.8,pyre:2.7,frost:2.2}[id]||1.5):WEAPONS[u.weapon].speed};}
 export function unitCost(id,level){return UNITS[id].spec?.costs[level-1]||Math.round([80,110,150,210,280,370,490,640,840][level-1]*(UNITS[id].cost/35)**.4);}
 export function defenseStats(id,level){const u=DEFENSES[id];return id==='gate'?{hp:1100+level*130+level*level*15,damage:0,range:0}:{hp:u.hp[level-1],damage:u.damage[level-1],range:u.third[level-1]};}
+// Both the battlefield and inspection screens use these doctrine-adjusted values.
+export function defenseFiringStats(id,level,doctrine){const st=defenseStats(id,level);let interval=DEFENSES[id].interval||0;
+ if(level>=5&&id==='tower'){st.range*=doctrine==='longwatch'?1.2:.85;interval*=doctrine==='longwatch'?1.2:.8;}
+ if(level>=5&&id==='ballista'&&doctrine==='pinning')st.damage*=.85;
+ return {...st,interval};
+}
 // The playable build's tooltips are a contract with the combat code. The original
 // concept book also describes future formation behaviors, which are not tooltips.
 const liveEffects={

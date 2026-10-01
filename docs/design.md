@@ -1,4 +1,4 @@
-# Oathfire — playable design, version 1.3
+# Oathfire — playable design, version 1.3.1
 
 ## The promise
 
@@ -77,6 +77,10 @@ Eight designs have ten construction ranks: gate, archer tower, ballista, Ember c
 At rank V choose tower range versus suppression cadence, or ballista penetration versus pinning. Rank VIII towers mark or slow. Rank X towers replace a normal shot with a three-arrow volley every 18 seconds. Rank X ballistae wind up a solid, burning Sunlance bolt every 22 seconds. The live crew and mechanisms animate when firing.
 
 ## Menus and persistence
+
+Soldier and defense inspections expose actual combat values next to the animated model. Unit health, damage, armor, attack interval, direct DPS, range, movement, squad size and Command cost are explicitly per soldier or per deployment. Special-effect descriptions list magnitudes, durations, radii, cooldowns, targeting conditions and rank gates. The Army menu shares this detail panel and reports the surviving selected regiment's combined health. Inspect stats selects the matching model and scrolls to the panel.
+
+Selecting a rank compares its values with the owned rank. The current rank instead compares with the next upgrade. Neither action trains units or spends resources. Defense doctrine changes update effective range, attack interval and damage using the same calculation the battlefield uses. Direct DPS excludes temporary buffs, armor and extra ability damage; healing output is labeled separately. Only the gate has damageable fortification health in the current combat rules: individual emplacements remain protected. Their inspection states this explicitly rather than presenting unused blueprint durability as working health.
 
 Character and equipment screens show the equipped hero; regiment and defense screens show the selected object. Future ranks are inspectable without spending. Shops, inventory comparison, equip, forge, runes, temper, salvage, training, defense construction, campaign travel, journal, settings, save export/import and pause/resume are functional.
 
