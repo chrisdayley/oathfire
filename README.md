@@ -18,11 +18,17 @@ Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
 
+## Steel & Sorcery — 1.8
+
+Footsteps now follow the left and right foot plants in the walking/running animations. Boots sound different on stone, dirt, grass, water, timber and snow; quieter plate, leather or cloth movement follows the equipped armor. Standing still, pushing against a wall, jumping and opening menus no longer generate repeated steps. Landing gets one heavier contact. **Settings → Footsteps & armor** adjusts both movement layers without changing weapon or spell volume.
+
+Five weapon types have different swings and confirmed-hit sounds, with separate armor, body, stone and wood responses. Quick and charged attacks follow their animation windup. Arrows and bolts sound on collision. All 23 hero techniques have individual elemental sound designs; higher ranks add resonance and depth. Distant army sounds are quieter and positioned across the stereo field. The 87 cues / 191 variations use 2.3 MB of local audio and work with the offline cache. See [sound design and provenance](docs/sound-effects.md).
+
 ## The Royal Orchestra — 1.7
 
 [Listen to all seven themes](https://chrisdayley.github.io/oathfire/soundtrack.html), including bosses you have not reached. **Banners in the Morning** is a happy royal castle suite: 72 bars, nine sections and 2:40 before repeating. Each act has a military march that gains tempo, moving strings, brass and percussion with each wave. Battle and boss scores keep developing without wrapping a track, so they last through any length of fight. Melodic motifs return in varied arrangements.
 
-The Bell Knight, Ash Castellan and Marshal Veyr each have their own intense score. Separate victory and defeat cues follow the result. All music uses real recorded strings, brass, woodwinds, harp and percussion from VSCO 2 CE (CC0), assembled into original Oathfire compositions. Audio downloads total 2.6 MB. Music and sound effects have separate volume controls. Battle menus pause musical position; saved battles restore the current measure and beat. See [composition, architecture and credits](docs/music.md).
+The Bell Knight, Ash Castellan and Marshal Veyr each have their own intense score. Separate victory and defeat cues follow the result. All music uses real recorded strings, brass, woodwinds, harp and percussion from VSCO 2 CE (CC0), assembled into original Oathfire compositions. Music downloads total 2.6 MB. Music and sound effects have separate volume controls. Battle menus pause musical position; saved battles restore the current measure and beat. See [composition, architecture and credits](docs/music.md).
 
 ## Spoils & Strategy — 1.6
 

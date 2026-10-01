@@ -9,7 +9,7 @@ page.on('pageerror',e=>errors.push(e.message));const check=(name,ok=true)=>{asse
 const wait=ms=>page.waitForTimeout(ms),debug=()=>page.evaluate(()=>window.__oathfire.audio.music.debug());
 try{
  await page.goto(base);await page.waitForFunction(()=>window.__oathfire?.ready);
- check('Royal Orchestra release loaded',await page.evaluate(()=>window.__oathfire.debug().build==='oathfire-1.7.0-royal-orchestra'));
+ check('Royal Orchestra release loaded',await page.evaluate(()=>window.__oathfire.debug().build==='oathfire-1.8.0-steel-and-sorcery'));
  await page.locator('#new-game').tap();await page.locator('#begin-oath').tap();await page.locator('#story-skip').tap();
  await page.waitForFunction(()=>window.__oathfire.audio.music?.state==='ready');await wait(1200);
  let d=await debug();report.bank=d;check('All 22 recorded instrument banks decode within 60 MB',d.loaded===22&&d.decodedMB<60);check('Castle score schedules real sample voices',d.id==='castle'&&d.notes>8&&d.voices>0);check('New campaigns use separate effects and music settings',await page.evaluate(()=>{const s=window.__oathfire.store.data.settings;return s.volume===.55&&s.music===.5;}));

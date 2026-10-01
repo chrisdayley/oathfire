@@ -1,0 +1,1368 @@
+{
+  "version": 1,
+  "sampleRate": 32000,
+  "license": "CC0-1.0",
+  "banks": {
+    "steps": {
+      "file": "steps.m4a",
+      "bytes": 151566,
+      "seconds": 13.7444375,
+      "sha256": "4db5c524d829ada6f0e56bbe4f1181f9d5b6f413e828562e579e293a672f4a21"
+    },
+    "gear": {
+      "file": "gear.m4a",
+      "bytes": 55272,
+      "seconds": 4.4350625,
+      "sha256": "7d8e7e6d86334a7aac0ba288ef254e05f6b611da5c82fe84952983da59e0d3fe"
+    },
+    "weapons": {
+      "file": "weapons.m4a",
+      "bytes": 148982,
+      "seconds": 12.75,
+      "sha256": "19428d2a44cad9d0d3608a62d0179d194bd8bbe5c3410f8e02856f9b5195c760"
+    },
+    "impacts": {
+      "file": "impacts.m4a",
+      "bytes": 412164,
+      "seconds": 45.93,
+      "sha256": "3d89345233304541a1c349dac5d78af7341b9553d2ba59af56a96260fa15cc7b"
+    },
+    "magic": {
+      "file": "magic.m4a",
+      "bytes": 1479254,
+      "seconds": 128.99,
+      "sha256": "a92b7aea46c2a8457be6f74a65f60546cefea0f3631d6eef10367de88f6f7a16"
+    }
+  },
+  "clips": {
+    "step-stone": {
+      "bank": "steps",
+      "variants": [
+        {
+          "offset": 0.12,
+          "duration": 0.105938
+        },
+        {
+          "offset": 0.345938,
+          "duration": 0.107656
+        },
+        {
+          "offset": 0.573594,
+          "duration": 0.112812
+        },
+        {
+          "offset": 0.806406,
+          "duration": 0.1105
+        },
+        {
+          "offset": 1.036906,
+          "duration": 0.114375
+        }
+      ]
+    },
+    "step-grass": {
+      "bank": "steps",
+      "variants": [
+        {
+          "offset": 1.271281,
+          "duration": 0.42
+        },
+        {
+          "offset": 1.811281,
+          "duration": 0.42
+        },
+        {
+          "offset": 2.351281,
+          "duration": 0.42
+        },
+        {
+          "offset": 2.891281,
+          "duration": 0.42
+        },
+        {
+          "offset": 3.431281,
+          "duration": 0.42
+        }
+      ]
+    },
+    "step-wood": {
+      "bank": "steps",
+      "variants": [
+        {
+          "offset": 3.971281,
+          "duration": 0.249594
+        },
+        {
+          "offset": 4.340875,
+          "duration": 0.251594
+        },
+        {
+          "offset": 4.712469,
+          "duration": 0.251406
+        },
+        {
+          "offset": 5.083875,
+          "duration": 0.251531
+        },
+        {
+          "offset": 5.455406,
+          "duration": 0.247938
+        }
+      ]
+    },
+    "step-snow": {
+      "bank": "steps",
+      "variants": [
+        {
+          "offset": 5.823344,
+          "duration": 0.374219
+        },
+        {
+          "offset": 6.317563,
+          "duration": 0.374219
+        },
+        {
+          "offset": 6.811781,
+          "duration": 0.374219
+        },
+        {
+          "offset": 7.306,
+          "duration": 0.374219
+        },
+        {
+          "offset": 7.800219,
+          "duration": 0.374219
+        }
+      ]
+    },
+    "step-dirt": {
+      "bank": "steps",
+      "variants": [
+        {
+          "offset": 8.294438,
+          "duration": 0.36
+        },
+        {
+          "offset": 8.774438,
+          "duration": 0.36
+        },
+        {
+          "offset": 9.254438,
+          "duration": 0.36
+        },
+        {
+          "offset": 9.734438,
+          "duration": 0.36
+        },
+        {
+          "offset": 10.214438,
+          "duration": 0.36
+        }
+      ]
+    },
+    "step-water": {
+      "bank": "steps",
+      "variants": [
+        {
+          "offset": 10.694438,
+          "duration": 0.49
+        },
+        {
+          "offset": 11.304438,
+          "duration": 0.49
+        },
+        {
+          "offset": 11.914438,
+          "duration": 0.49
+        },
+        {
+          "offset": 12.524438,
+          "duration": 0.49
+        },
+        {
+          "offset": 13.134438,
+          "duration": 0.49
+        }
+      ]
+    },
+    "gear-plate": {
+      "bank": "gear",
+      "variants": [
+        {
+          "offset": 0.12,
+          "duration": 0.25
+        },
+        {
+          "offset": 0.49,
+          "duration": 0.25
+        },
+        {
+          "offset": 0.86,
+          "duration": 0.25
+        },
+        {
+          "offset": 1.23,
+          "duration": 0.25
+        }
+      ]
+    },
+    "gear-leather": {
+      "bank": "gear",
+      "variants": [
+        {
+          "offset": 1.6,
+          "duration": 0.25
+        },
+        {
+          "offset": 1.97,
+          "duration": 0.187531
+        },
+        {
+          "offset": 2.277531,
+          "duration": 0.25
+        },
+        {
+          "offset": 2.647531,
+          "duration": 0.25
+        }
+      ]
+    },
+    "gear-cloth": {
+      "bank": "gear",
+      "variants": [
+        {
+          "offset": 3.017531,
+          "duration": 0.25
+        },
+        {
+          "offset": 3.387531,
+          "duration": 0.25
+        },
+        {
+          "offset": 3.757531,
+          "duration": 0.25
+        },
+        {
+          "offset": 4.127531,
+          "duration": 0.187531
+        }
+      ]
+    },
+    "swing-sword": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 0.12,
+          "duration": 0.23
+        },
+        {
+          "offset": 0.47,
+          "duration": 0.23
+        },
+        {
+          "offset": 0.82,
+          "duration": 0.23
+        }
+      ]
+    },
+    "swing-sword-heavy": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 1.17,
+          "duration": 0.4
+        },
+        {
+          "offset": 1.69,
+          "duration": 0.4
+        },
+        {
+          "offset": 2.21,
+          "duration": 0.4
+        }
+      ]
+    },
+    "swing-spear": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 2.73,
+          "duration": 0.23
+        },
+        {
+          "offset": 3.08,
+          "duration": 0.23
+        },
+        {
+          "offset": 3.43,
+          "duration": 0.23
+        }
+      ]
+    },
+    "swing-spear-heavy": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 3.78,
+          "duration": 0.4
+        },
+        {
+          "offset": 4.3,
+          "duration": 0.4
+        },
+        {
+          "offset": 4.82,
+          "duration": 0.4
+        }
+      ]
+    },
+    "swing-hammer": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 5.34,
+          "duration": 0.23
+        },
+        {
+          "offset": 5.69,
+          "duration": 0.23
+        },
+        {
+          "offset": 6.04,
+          "duration": 0.23
+        }
+      ]
+    },
+    "swing-hammer-heavy": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 6.39,
+          "duration": 0.4
+        },
+        {
+          "offset": 6.91,
+          "duration": 0.4
+        },
+        {
+          "offset": 7.43,
+          "duration": 0.4
+        }
+      ]
+    },
+    "swing-bow": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 7.95,
+          "duration": 0.28
+        },
+        {
+          "offset": 8.35,
+          "duration": 0.28
+        },
+        {
+          "offset": 8.75,
+          "duration": 0.28
+        }
+      ]
+    },
+    "swing-bow-heavy": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 9.15,
+          "duration": 0.28
+        },
+        {
+          "offset": 9.55,
+          "duration": 0.28
+        },
+        {
+          "offset": 9.95,
+          "duration": 0.28
+        }
+      ]
+    },
+    "swing-crossbow": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 10.35,
+          "duration": 0.28
+        },
+        {
+          "offset": 10.75,
+          "duration": 0.28
+        },
+        {
+          "offset": 11.15,
+          "duration": 0.28
+        }
+      ]
+    },
+    "swing-crossbow-heavy": {
+      "bank": "weapons",
+      "variants": [
+        {
+          "offset": 11.55,
+          "duration": 0.28
+        },
+        {
+          "offset": 11.95,
+          "duration": 0.28
+        },
+        {
+          "offset": 12.35,
+          "duration": 0.28
+        }
+      ]
+    },
+    "hit-sword-armor": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 0.12,
+          "duration": 0.6
+        },
+        {
+          "offset": 0.84,
+          "duration": 0.6
+        },
+        {
+          "offset": 1.56,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-sword-body": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 2.28,
+          "duration": 0.6
+        },
+        {
+          "offset": 3.0,
+          "duration": 0.6
+        },
+        {
+          "offset": 3.72,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-sword-stone": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 4.44,
+          "duration": 0.6
+        },
+        {
+          "offset": 5.16,
+          "duration": 0.6
+        },
+        {
+          "offset": 5.88,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-sword-wood": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 6.6,
+          "duration": 0.6
+        },
+        {
+          "offset": 7.32,
+          "duration": 0.6
+        },
+        {
+          "offset": 8.04,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-spear-armor": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 8.76,
+          "duration": 0.6
+        },
+        {
+          "offset": 9.48,
+          "duration": 0.6
+        },
+        {
+          "offset": 10.2,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-spear-body": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 10.92,
+          "duration": 0.6
+        },
+        {
+          "offset": 11.64,
+          "duration": 0.6
+        },
+        {
+          "offset": 12.36,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-spear-stone": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 13.08,
+          "duration": 0.6
+        },
+        {
+          "offset": 13.8,
+          "duration": 0.6
+        },
+        {
+          "offset": 14.52,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-spear-wood": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 15.24,
+          "duration": 0.6
+        },
+        {
+          "offset": 15.96,
+          "duration": 0.6
+        },
+        {
+          "offset": 16.68,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-hammer-armor": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 17.4,
+          "duration": 0.6
+        },
+        {
+          "offset": 18.12,
+          "duration": 0.6
+        },
+        {
+          "offset": 18.84,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-hammer-body": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 19.56,
+          "duration": 0.6
+        },
+        {
+          "offset": 20.28,
+          "duration": 0.6
+        },
+        {
+          "offset": 21.0,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-hammer-stone": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 21.72,
+          "duration": 0.6
+        },
+        {
+          "offset": 22.44,
+          "duration": 0.6
+        },
+        {
+          "offset": 23.16,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-hammer-wood": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 23.88,
+          "duration": 0.6
+        },
+        {
+          "offset": 24.6,
+          "duration": 0.6
+        },
+        {
+          "offset": 25.32,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-bow-armor": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 26.04,
+          "duration": 0.6
+        },
+        {
+          "offset": 26.76,
+          "duration": 0.6
+        },
+        {
+          "offset": 27.48,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-bow-body": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 28.2,
+          "duration": 0.6
+        },
+        {
+          "offset": 28.92,
+          "duration": 0.6
+        },
+        {
+          "offset": 29.64,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-bow-stone": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 30.36,
+          "duration": 0.6
+        },
+        {
+          "offset": 31.08,
+          "duration": 0.6
+        },
+        {
+          "offset": 31.8,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-bow-wood": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 32.52,
+          "duration": 0.6
+        },
+        {
+          "offset": 33.24,
+          "duration": 0.6
+        },
+        {
+          "offset": 33.96,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-crossbow-armor": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 34.68,
+          "duration": 0.6
+        },
+        {
+          "offset": 35.4,
+          "duration": 0.6
+        },
+        {
+          "offset": 36.12,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-crossbow-body": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 36.84,
+          "duration": 0.6
+        },
+        {
+          "offset": 37.56,
+          "duration": 0.6
+        },
+        {
+          "offset": 38.28,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-crossbow-stone": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 39.0,
+          "duration": 0.6
+        },
+        {
+          "offset": 39.72,
+          "duration": 0.6
+        },
+        {
+          "offset": 40.44,
+          "duration": 0.6
+        }
+      ]
+    },
+    "hit-crossbow-wood": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 41.16,
+          "duration": 0.6
+        },
+        {
+          "offset": 41.88,
+          "duration": 0.6
+        },
+        {
+          "offset": 42.6,
+          "duration": 0.6
+        }
+      ]
+    },
+    "parry": {
+      "bank": "impacts",
+      "variants": [
+        {
+          "offset": 43.32,
+          "duration": 0.75
+        },
+        {
+          "offset": 44.19,
+          "duration": 0.75
+        },
+        {
+          "offset": 45.06,
+          "duration": 0.75
+        }
+      ]
+    },
+    "cast-fireball": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 0.12,
+          "duration": 2.35
+        }
+      ],
+      "family": "fire"
+    },
+    "cast-inferno": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 2.59,
+          "duration": 3.5
+        }
+      ],
+      "family": "fire"
+    },
+    "cast-mine": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 6.21,
+          "duration": 1.9
+        }
+      ],
+      "family": "fire"
+    },
+    "cast-forgefall": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 8.23,
+          "duration": 3.25
+        }
+      ],
+      "family": "earth"
+    },
+    "cast-reversal": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 11.6,
+          "duration": 2.7
+        }
+      ],
+      "family": "holy"
+    },
+    "cast-quench": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 14.42,
+          "duration": 2.5
+        }
+      ],
+      "family": "water"
+    },
+    "cast-frost": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 17.04,
+          "duration": 2.5
+        }
+      ],
+      "family": "ice"
+    },
+    "cast-storm": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 19.66,
+          "duration": 2.5
+        }
+      ],
+      "family": "storm"
+    },
+    "cast-thorns": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 22.28,
+          "duration": 2.1
+        }
+      ],
+      "family": "nature"
+    },
+    "cast-seedward": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 24.5,
+          "duration": 2.7
+        }
+      ],
+      "family": "nature"
+    },
+    "cast-briarstorm": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 27.32,
+          "duration": 3.25
+        }
+      ],
+      "family": "nature"
+    },
+    "cast-grove": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 30.69,
+          "duration": 3.25
+        }
+      ],
+      "family": "nature"
+    },
+    "cast-verdant": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 34.06,
+          "duration": 3.35
+        }
+      ],
+      "family": "nature"
+    },
+    "cast-windstep": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 37.53,
+          "duration": 1.85
+        }
+      ],
+      "family": "wind"
+    },
+    "cast-rally": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 39.5,
+          "duration": 2.6
+        }
+      ],
+      "family": "command"
+    },
+    "cast-march": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 42.22,
+          "duration": 3.15
+        }
+      ],
+      "family": "command"
+    },
+    "cast-step": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 45.49,
+          "duration": 2.0
+        }
+      ],
+      "family": "holy"
+    },
+    "cast-bulwark": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 47.61,
+          "duration": 2.7
+        }
+      ],
+      "family": "earth"
+    },
+    "cast-sunwall": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 50.43,
+          "duration": 3.5
+        }
+      ],
+      "family": "holy"
+    },
+    "cast-tether": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 54.05,
+          "duration": 2.6
+        }
+      ],
+      "family": "holy"
+    },
+    "cast-sanctuary": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 56.77,
+          "duration": 3.45
+        }
+      ],
+      "family": "holy"
+    },
+    "cast-volley": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 60.34,
+          "duration": 1.9
+        }
+      ],
+      "family": "wind"
+    },
+    "cast-guide": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 62.36,
+          "duration": 2.3
+        }
+      ],
+      "family": "wind"
+    },
+    "cast-mark": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 64.78,
+          "duration": 2.1
+        }
+      ],
+      "family": "arcane"
+    },
+    "cast-overdrive": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 67.0,
+          "duration": 2.6
+        }
+      ],
+      "family": "arcane"
+    },
+    "cast-grave": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 69.72,
+          "duration": 2.75
+        }
+      ],
+      "family": "grave"
+    },
+    "cast-holy": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 72.59,
+          "duration": 2.15
+        }
+      ],
+      "family": "holy"
+    },
+    "rank-fire": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 74.86,
+          "duration": 2.15
+        }
+      ],
+      "family": "fire"
+    },
+    "rank-ice": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 77.13,
+          "duration": 2.15
+        }
+      ],
+      "family": "ice"
+    },
+    "rank-storm": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 79.4,
+          "duration": 2.15
+        }
+      ],
+      "family": "storm"
+    },
+    "rank-water": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 81.67,
+          "duration": 2.15
+        }
+      ],
+      "family": "water"
+    },
+    "rank-nature": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 83.94,
+          "duration": 2.15
+        }
+      ],
+      "family": "nature"
+    },
+    "rank-holy": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 86.21,
+          "duration": 2.15
+        }
+      ],
+      "family": "holy"
+    },
+    "rank-grave": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 88.48,
+          "duration": 2.15
+        }
+      ],
+      "family": "grave"
+    },
+    "rank-earth": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 90.75,
+          "duration": 2.15
+        }
+      ],
+      "family": "earth"
+    },
+    "rank-arcane": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 93.02,
+          "duration": 2.15
+        }
+      ],
+      "family": "arcane"
+    },
+    "rank-wind": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 95.29,
+          "duration": 2.15
+        }
+      ],
+      "family": "wind"
+    },
+    "rank-command": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 97.56,
+          "duration": 2.15
+        }
+      ],
+      "family": "command"
+    },
+    "impact-fire": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 99.83,
+          "duration": 1.5
+        },
+        {
+          "offset": 101.45,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-frost": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 103.07,
+          "duration": 1.5
+        },
+        {
+          "offset": 104.69,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-storm": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 106.31,
+          "duration": 1.5
+        },
+        {
+          "offset": 107.93,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-water": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 109.55,
+          "duration": 1.5
+        },
+        {
+          "offset": 111.17,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-nature": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 112.79,
+          "duration": 1.5
+        },
+        {
+          "offset": 114.41,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-holy": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 116.03,
+          "duration": 1.5
+        },
+        {
+          "offset": 117.65,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-grave": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 119.27,
+          "duration": 1.5
+        },
+        {
+          "offset": 120.89,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-stone": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 122.51,
+          "duration": 1.5
+        },
+        {
+          "offset": 124.13,
+          "duration": 1.5
+        }
+      ]
+    },
+    "impact-shell": {
+      "bank": "magic",
+      "variants": [
+        {
+          "offset": 125.75,
+          "duration": 1.5
+        },
+        {
+          "offset": 127.37,
+          "duration": 1.5
+        }
+      ]
+    }
+  },
+  "sources": {
+    "impact/Audio/footstep_concrete_000.ogg": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe",
+    "impact/Audio/footstep_concrete_001.ogg": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d",
+    "impact/Audio/footstep_concrete_002.ogg": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13",
+    "impact/Audio/footstep_concrete_003.ogg": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b",
+    "impact/Audio/footstep_concrete_004.ogg": "24dd8db2413e5b81ad181e1205c12a1c7801da5f85715d471b92a4b2f632e45e",
+    "impact/Audio/footstep_grass_000.ogg": "9d49497777405d78d7cf7f2888e28277f3a23192300cfd1d79d54876b20f479f",
+    "impact/Audio/footstep_grass_001.ogg": "fb28781bd22b2eefdc14077f1adf5c94d7fe9c3a130194633b55f3e0d39d9f04",
+    "impact/Audio/footstep_grass_002.ogg": "73a520139f5be716a403bfe9c80e0e94d1e61d8e9de04a354b336392164b53dc",
+    "impact/Audio/footstep_grass_003.ogg": "0546e1d8ab2def714425701a18bd34c5ee2794b12e858e5b595aabcf38a34137",
+    "impact/Audio/footstep_grass_004.ogg": "086fd4ab3546a507ea5f5c759a9a10e535c95ade13705c238bc0eeffd7d4e8ba",
+    "impact/Audio/footstep_wood_000.ogg": "5f1c252942a220d658121bd9417448cd19649ded9fff2ff15f6e50899373ce8e",
+    "impact/Audio/footstep_wood_001.ogg": "e4f68e1c9fd55b4dc8ca89ed2bbab6f200171bc54bdc18aa96b80d8e7336f462",
+    "impact/Audio/footstep_wood_002.ogg": "9ff095b05cee5eec40b081defe3f0eef7232bb16d4865ce03b9f6dbab875cfdd",
+    "impact/Audio/footstep_wood_003.ogg": "2a68a083daa9eda08fed0ea5da5280dfbe0de226196c576be02f95259dd139d9",
+    "impact/Audio/footstep_wood_004.ogg": "b33e0854e2b3f6b6492e25c25ef8f90447a332f7c6bb25dd02edced9581d3441",
+    "impact/Audio/footstep_snow_000.ogg": "c05fa4a9dc9a7aabc04996466fb589537e49af76de9998d8f9e6270ec92dcef7",
+    "impact/Audio/footstep_snow_001.ogg": "980fb9a1c9227aed7995067b0357f373053337f2416316db8ea0438418542fb4",
+    "impact/Audio/footstep_snow_002.ogg": "db52bafdc66304f3b999f2c29227826c65993916e630ac2ffbca17d07b263178",
+    "impact/Audio/footstep_snow_003.ogg": "68272e3f1cabcabd02d328fd344454d7c04cb58b5a86972fcdd858f845e3d007",
+    "impact/Audio/footstep_snow_004.ogg": "7fe9ce5f5732aaa0a50ef02bb1ac162c27f6bd85214e86aaea6e13e7a41dbc00",
+    "steps/gravel.ogg": "34e6057ec1581b5cb8802e4942952b00b1dac235bfcb0ed8cff0ceb15a3ebbbf",
+    "steps/mud02.ogg": "354682c2cb340cd787d892d31beb87c45dda94ca6e8363b16828ab2f1d129b82",
+    "splash1.wav": "e45d466f7e63e5d566f8a822a7a1a3f7d5131319d17ca0436dcc615b251e9277",
+    "splash2.wav": "ad9472b711666de2d43c3b102d155a5d1118b1fcd0ecd29cb63177256ab63f31",
+    "armor/footsteps/step_metal (2).ogg": "68afff8c71620628b0ebf894599de06bc3b80d87222d6cc85abec91fc3337b55",
+    "armor/footsteps/step_metal (3).ogg": "f4b5d7d4a129d83a1efa1963510c40262e577ad797a0007e53000d9cdfb35ffc",
+    "armor/footsteps/step_metal (4).ogg": "25db2a8e024ab51cd23dc66ef881b7f0c2d898c081e6feb105693e1dd5e2817f",
+    "armor/footsteps/step_metal.ogg": "74fb327096d53e30caf5954df38bc6666bb20679a62438ed014b1beeb67dd251",
+    "armor/footsteps/step_lth1.ogg": "8abf47391e53218a4826a1419e4861ae7dae14df55c51a322f2fa2d4fab2005f",
+    "armor/footsteps/step_lth2.ogg": "35214722297cda533de2158e3a4754c5639990760b213101fe097ab34bab1b86",
+    "armor/footsteps/step_lth33.ogg": "a9b08f5e1b9baad2dabaee57a0f33942cee42844805e2f8e5ce84449f0500bda",
+    "armor/footsteps/step_lth4.ogg": "cef53154dc37d57a4c1d2548f23daa25d5bbdecc5cd21f807ada5a1078e12513",
+    "armor/footsteps/step_cloth1.ogg": "ac461649be5e323da29227df7633d1076a905af983e0e587905216dbf85cdb91",
+    "armor/footsteps/step_cloth2.ogg": "32b40b43e45c7ac2eb68340f0ca39a40618aae82747ffd7457a23243a5c6d290",
+    "armor/footsteps/step_cloth3.ogg": "8dcc5540225edb7509d84b4ca4c5289e171dc55d6ad4d1e6b5948997fef88296",
+    "armor/footsteps/step_cloth4.ogg": "afefb124b4059a2324a921694b26ac0baefb83d157707766bd2fa5649b7c0a78",
+    "rpg/Audio/knifeSlice.ogg": "4cd96dc630bed9840c15f1dd2306da2cc56a4da26a5d3f1a03c5a7265ac5e54f",
+    "rpg/Audio/knifeSlice2.ogg": "6c2064d0ef988d1ec3d56868e823ea8823a5cac00f2742560052633529407def",
+    "rpg/Audio/creak1.ogg": "8a346186fd297254248cab8e8117060a52a5cf2a84f603153a762108550ea95e",
+    "rpg/Audio/creak2.ogg": "8a990afdc03aebb91d528f5385e2f95582dbfa8e2c12c71098ab01be9142294a",
+    "rpg/Audio/creak3.ogg": "f9638787f95004b9d2d06f8eff8e99d4e594c21b51947daf562856fbcec905d1",
+    "impact/Audio/impactMetal_medium_000.ogg": "a96f879fec0864a8938e0c745b6996a6c5679c16a234ce31a01cc995e8401003",
+    "impact/Audio/impactSoft_heavy_000.ogg": "49e7ca88743fca974bb8676ea138b751cfd8f9033b5e7af8736c2a215d6edbc1",
+    "impact/Audio/impactMetal_medium_001.ogg": "e8a9eaba7c4d27422e4eeb3e6c7100d5d7dc0f83e005efc98c960adcc5265337",
+    "impact/Audio/impactSoft_heavy_001.ogg": "4d0096364ba9e46119d2ff6df493fdc101bd2e1efae061da5e5f77a53b3fdcb6",
+    "impact/Audio/impactMetal_medium_002.ogg": "7e89ce2ca0dbda95ea2b78d4b50791cab35c10d20e9f5ccd45dd0b00e99ff548",
+    "impact/Audio/impactSoft_heavy_002.ogg": "d130ae541951243d3f6ed963d0057450a445ffe117fbf9a084d34eb1635cb563",
+    "impact/Audio/impactPunch_heavy_000.ogg": "b33a8f14068aec24ec69ba85e5e87fdc41228975f6a1a3e44a6e7d6fc3d9f8d8",
+    "impact/Audio/impactPunch_heavy_001.ogg": "f92f5cb6ba4ff2766497292ffd90865654317eeca976f5652e0708dbdcdc0dd9",
+    "impact/Audio/impactPunch_heavy_002.ogg": "7993dd4c156b9979ad69f17be5ebe31850b16039a3857f8477141be54dfee1b3",
+    "impact/Audio/impactMining_000.ogg": "36b4ea107222d073c67ca64dde26944975609202d5090b2f2021213c1a7e35cd",
+    "impact/Audio/impactMining_001.ogg": "61235a18de3f3d92118235398222dbf51d448f1be70b1c8bc962b10b86f2d9c6",
+    "impact/Audio/impactMining_002.ogg": "059558ec751115ca6b1441e00f0adc837c1a3eeb0a066b109e0fd879fc5d0b0c",
+    "impact/Audio/impactWood_medium_000.ogg": "1723a9fd25103ed41af06054814e84e65f4a772bac86ab2dc927da93d9592ff5",
+    "impact/Audio/impactWood_medium_001.ogg": "15271dbe8e2872dbb0ff1aeb7b12b2d2b92b7c1951c88532b9ab9158c36dfc73",
+    "impact/Audio/impactWood_medium_002.ogg": "3f3f1917428b828f733a963167833c707bf88296ff158e1559c57c5cb813d799",
+    "impact/Audio/impactWood_light_000.ogg": "eb45e35b4bed784d3f120de4afec4b0d6ac09d9e143cce8cfcb7d739e1b1f3c3",
+    "impact/Audio/impactWood_light_001.ogg": "4b76bf3ccc8e60d19188f3165b778a7817786faa6887c55d9049bcbeef3b425f",
+    "impact/Audio/impactWood_light_002.ogg": "b183cf7a5bd783817e0e4b82af34ac6658fa1927049089dadc8b15c2ecc771dc",
+    "impact/Audio/impactPlate_heavy_000.ogg": "112d4f93ddcc370b410630f971c0f5d991856102da9c76bc5c5540d388e75aaa",
+    "impact/Audio/impactPlate_heavy_001.ogg": "142fd6c77f13d25f318265901163f70f8dfe12f87829169a570025be43de7011",
+    "impact/Audio/impactPlate_heavy_002.ogg": "b0cab75d1befa32b4cf215d8ee7e1c400a39182e8b105963b8e310f825b198a1",
+    "impact/Audio/impactGlass_light_002.ogg": "710db7451bb7857b9140dfe6afe4621ea2188ad65eda3919c569d1bb285b933d",
+    "steps/leaves01.ogg": "93b3bbcd06380eec54335d1869924db6ff2cc6c1cb103502133d78484c5ca836"
+  },
+  "downloads": {
+    "impact.zip": {
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "sha256": "029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8"
+    },
+    "rpg.zip": {
+      "url": "https://kenney.nl/media/pages/assets/rpg-audio/8e99002d76-1677590336/kenney_rpg-audio.zip",
+      "sha256": "6dbeaf8544da958d8f2adcb4a4a4b76c1ade34a05f8ab9edccd327da7375f38b"
+    },
+    "armor.zip": {
+      "url": "https://opengameart.org/sites/default/files/footsteps.zip",
+      "sha256": "94b5155d119d9378315c2b4457c00098d78a36f2a2c436d5145687d1d3bad257"
+    },
+    "steps.zip": {
+      "url": "https://opengameart.org/sites/default/files/%5Bkdd%5DDifferentSteps_0.zip",
+      "sha256": "987d072b7deaa65177e005ddd8185f2351be7c9a76cd7575dea560549c39b33b"
+    },
+    "source/splash1.wav": {
+      "url": "https://opengameart.org/sites/default/files/splash1_0.wav",
+      "sha256": "e45d466f7e63e5d566f8a822a7a1a3f7d5131319d17ca0436dcc615b251e9277"
+    },
+    "source/splash2.wav": {
+      "url": "https://opengameart.org/sites/default/files/splash2_0.wav",
+      "sha256": "ad9472b711666de2d43c3b102d155a5d1118b1fcd0ecd29cb63177256ab63f31"
+    }
+  }
+}

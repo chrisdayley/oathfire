@@ -1,5 +1,20 @@
 # Oathfire release QA
 
+## Steel & Sorcery — 1.8 (October 1, 2026)
+
+Build `oathfire-1.8.0-steel-and-sorcery`. See `sound-effects.md` for contact timing, elemental direction and source provenance.
+
+- 66 Node tests pass. Eight new tests cover measured alternating contacts, animation pauses and jumps, terrain/support classification, gear materials, complete sound-bank coverage, distance/panning, and compatibility with saves lacking the new volume preference.
+- 33 production-browser sound checks pass. Actual movement produced nine running contacts in three seconds and six walking contacts in 3.5 seconds. Feet alternated; stone, dirt, grass and water selected their own samples. Idle, blocked movement and airborne motion did not trigger footsteps. Landing emitted one contact. First-person steps remained synchronized to the underlying animation.
+- Quick and charged swing timing, five weapon/material contact routes, block sounds, a real arrow collision, all 23 hero spell cues and four NPC elemental cues passed. All upgraded casts added their elemental resonance. Footstep/armor mute left spell audio audible. The new setting survived reload.
+- Both 667×375 and 844×390 settings viewports fit without horizontal overflow. Range controls have 44 CSS px touch height. Five banks plus the manifest were cached, and all effects decoded after reloading with the network disconnected. No runtime errors in the passing run.
+- All 191 decoded variations were finite, audible, in bounds and unclipped; maximum decoded peak was 0.814 or less. Four offline movement, weapon, magic and crowded-combat mixes rendered without clipping. Peaks were 0.100, 0.378, 0.258 and 0.352 or less. Movement RMS was 0.0061 versus 0.0309 for weapons and 0.0252 for magic. Each weapon/material combination had a distinct decoded waveform.
+- The effects banks total 2,247,238 compressed bytes and used 37.7 MB decoded at the test device rate. The interaction test peaked at nine simultaneous effects against a 40-voice limit, without dropping voices. This is not a measurement of every late-game crowd scenario.
+- All 46 existing production-browser music checks passed, including save restoration, independent volume controls, boss themes, background pause/resume, download retry and offline playback. An earlier concurrent browser run missed the tight pause/resume wall-clock test threshold; the isolated full rerun passed without changing music code.
+- A complete first-defense regression with normal combat rules, movement, attacks, troop purchases and timed research won in 62.48 seconds of accelerated simulated battle time, with all enemies defeated and the guaranteed armor reward. No runtime errors.
+
+Audio QA here verifies signals and game behavior. Human listening quality, physical phone speakers/headphones, Bluetooth latency and sustained mobile performance have not been verified. Saves retain schema 1 and the existing storage key; no reset or data replacement is required.
+
 ## Field guide update — 1.3.1 (October 1, 2026)
 
 - `npm test`: 27 passing tests, including every unit/defense rank, exact health and attack intervals, squad cost semantics, rank-scaled healing and slows, doctrine calculations and the gate/protected-emplacement distinction.

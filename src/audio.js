@@ -1,13 +1,14 @@
+import {Foley} from './foley.js';
 import {MusicDirector} from './music.js';
 // Original SFX synthesis and score, with a locally hosted CC0 sampled orchestra.
 export class Soundscape{
- constructor(){this.ctx=null;this.volume=.55;this.musicVolume=.5;this.history=[];this.lastFoot=0;this.music=null;}
+ constructor(){this.ctx=null;this.volume=.55;this.musicVolume=.5;this.history=[];this.footVolume=.65;this.foley=null;this.music=null;}
  async unlock(){if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=this.volume;this.compressor=this.ctx.createDynamicsCompressor();this.compressor.threshold.value=-15;this.compressor.ratio.value=5;this.master.connect(this.compressor);this.compressor.connect(this.ctx.destination);this.noise=this.ctx.createBuffer(1,this.ctx.sampleRate*2,this.ctx.sampleRate);const d=this.noise.getChannelData(0);let pink=0;for(let i=0;i<d.length;i++){pink=.96*pink+.04*(Math.random()*2-1);d[i]=pink*3;}}
- if(this.ctx?.state==='suspended')await this.ctx.resume();if(!this.music)this.music=new MusicDirector(this);else this.music.retry();}
- settings(s){this.volume=s.volume;this.musicVolume=s.music;if(this.master)this.master.gain.setTargetAtTime(this.volume,this.ctx.currentTime,.08);this.music?.settings(this.musicVolume);}
+ if(this.ctx?.state==='suspended')await this.ctx.resume();if(!this.music)this.music=new MusicDirector(this);else this.music.retry();if(!this.foley)this.foley=new Foley(this);else this.foley.retry();this.foley.footVolume=this.footVolume;}
+ settings(s){this.footVolume=s.footsteps??.65;if(this.foley)this.foley.footVolume=this.footVolume;this.volume=s.volume;this.musicVolume=s.music;if(this.master)this.master.gain.setTargetAtTime(this.volume,this.ctx.currentTime,.08);this.music?.settings(this.musicVolume);}
  tone(f,dur=.2,type='sine',gain=.12,delay=0,end=null){if(!this.ctx||this.ctx.state!=='running')return;let t=this.ctx.currentTime+delay,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(end)o.frequency.exponentialRampToValueAtTime(Math.max(15,end),t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,gain),t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+dur+.03);}
  hiss(dur=.25,gain=.25,filter='highpass',freq=1100,delay=0,end=350){if(!this.ctx||this.ctx.state!=='running')return;const t=this.ctx.currentTime+delay,b=this.ctx.createBufferSource(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain();b.buffer=this.noise;f.type=filter;f.frequency.setValueAtTime(freq,t);f.frequency.exponentialRampToValueAtTime(end,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,gain),t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+dur);b.connect(f);f.connect(g);g.connect(this.master);b.start(t,Math.random());b.stop(t+dur+.03);}
- play(name,power=1){if(!this.ctx)return;this.history.push({name,t:this.ctx.currentTime});if(this.history.length>80)this.history.shift();const p=Math.min(power,1.7);
+ play(name,power=1,options={}){if(!this.ctx||name==='foot')return;this.history.push({name,t:this.ctx.currentTime});if(this.history.length>80)this.history.shift();if(this.foley?.play(name,power,options))return;const p=Math.min(power,1.7);
  // Each technique has an authored pitch/rhythm signature in addition to its material sound.
  const signatures={fireball:[138,[0,.06,.19],'sawtooth'],inferno:[55,[0,.11,.22,.33,.44],'sawtooth'],quench:[720,[0,.05,.17],'sine'],thorns:[277,[0,.13,.20],'triangle'],seedward:[349,[0,.19,.38],'sine'],briarstorm:[466,[0,.045,.09,.135,.18],'triangle'],grove:[196,[0,.24,.48],'sine'],verdant:[622,[0,.08,.25,.4],'triangle'],windstep:[830,[0,.045],'sine'],rally:[146,[0,.12,.28],'sawtooth'],march:[220,[0,.2,.4,.6],'triangle'],step:[185,[0,.045],'triangle'],bulwark:[98,[0,.12,.24],'square'],sunwall:[392,[0,.08,.16,.32],'triangle'],tether:[523,[0,.18,.36],'sine'],sanctuary:[261,[0,.16,.32,.48],'sine'],volley:[1046,[0,.10],'sine'],guide:[784,[0,.06,.18],'triangle'],mark:[1396,[0,.21],'sine'],overdrive:[164,[0,.07,.14,.28],'sawtooth'],mine:[82,[0,.18,.24],'square'],forgefall:[65,[0,.28,.34],'sawtooth'],reversal:[988,[0,.09,.27],'triangle']};
  const sig=signatures[name];if(sig)sig[1].forEach((d,i)=>this.tone(sig[0]*(1+i*.25),.24,sig[2],.024*p,d,sig[0]*(1+(i+1)*.16)));
@@ -30,7 +31,7 @@ export class Soundscape{
   else if(name==='charge'){this.tone(110,.5,'triangle',.08,0,330);this.hiss(.45,.13,'bandpass',300,0,1600);}
   else if(name==='jump'){this.hiss(.15,.17,'highpass',900,0,250);}
   else if(name==='land'){this.hiss(.13,.28*p,'lowpass',700,0,150);this.tone(55,.10,'sine',.08*p);}
-  else if(name==='foot'){const t=this.ctx.currentTime;if(t-this.lastFoot<.14)return;this.lastFoot=t;this.hiss(.065,.17*p,'lowpass',Math.random()*800+500,0,160);}
+
   else if(name==='fireball'||name==='inferno'){this.hiss(.62,.65*p,'lowpass',450,0,2600);this.tone(110,.38,'sawtooth',.07*p,0,450);this.tone(620,.30,'triangle',.045*p,.17,160);}
   else if(name==='quench'){this.hiss(.55,.6*p,'bandpass',2300,0,600);[760,570,440].forEach((f,i)=>this.tone(f,.18,'sine',.065,.07*i,f*.7));}
   else if(name==='thorns'||name==='seedward'||name==='briarstorm'||name==='grove'||name==='verdant'){[310,430,590].forEach((f,i)=>{this.hiss(.12,.24,'bandpass',f*3,i*.085,f);this.tone(f,.23,'triangle',.075,i*.06,f*.8);});}
@@ -50,6 +51,9 @@ export class Soundscape{
   else if(name==='victory'){[196,247,294,392,494,587].forEach((f,i)=>this.tone(f,.8,'triangle',.06,i*.13));}
   else this.hiss(.2,.2,'bandpass',1400,0,500);
  }
- updateMusic(game){this.music?.update(game);}
- suspend(){this.music?.setPaused(true);if(this.ctx?.state==='running')this.ctx.suspend();}
+ footstep(contact){this.foley?.footstep(contact);}
+ impact(options){if(this.foley?.state==='ready')this.foley.impact(options);else this.play(options.element?'impact':options.target?.stats?.armor?'metal':'impact',options.hero?.65:.25);}
+ parry(position,perfect){if(this.foley?.state==='ready')this.foley.parry(position,perfect);else this.play('metal',.65);}
+ updateMusic(game){this.music?.update(game);if(this.foley&&game.hero)this.foley.listener={x:game.hero.pos.x,z:game.hero.pos.z,yaw:game.view?.yaw||0};const paused=!!(game.menu||game.ui?.modal||game.mode==='title');if(paused&&!this.effectsPaused)this.foley?.stop();this.effectsPaused=paused;}
+ suspend(){this.foley?.stop();this.music?.setPaused(true);if(this.ctx?.state==='running')this.ctx.suspend();}
 }
