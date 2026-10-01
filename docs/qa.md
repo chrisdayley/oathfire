@@ -1,5 +1,19 @@
 # Oathfire release QA
 
+## First Oath update — 1.2 (October 1, 2026)
+
+- `npm test`: 15 passing tests. New coverage preserves original save resources, ranks, equipment and hero progress; rejects corrupted migration data; enforces four-slot refitting, campaign locks and battle restrictions; prevents repeat victories from advancing unlock gates.
+- `journey-qa.mjs`: 26 passing browser checks. Normal controls complete the movement, look, quick/charged attack, cast and jump lessons. The actual menus teach inspection, briefing, deployment and orders. Story pauses the simulation. First-defense buttons stay visible at 844×390. All 150 troop-rank models and all 80 defense-rank models build; the seven new troops and five new defenses change geometry every rank. Refitting changes the live castle and colliders. Cannon preview geometry moves when Preview action is pressed.
+- Tactical fixtures confirm gate repair, non-stacking standard support, the Sun sworn's third-hit heal, armor penetration, cannon splash, ice slow, arcing stone impact, chain lightning, Sanctuary healing and friendly projectile safety. An ice shot initially clipped its own collider; its muzzle clearance was corrected before passing.
+- The actual save-import UI and automatic load path accept an original-format suspended campaign and retain 713 fixture Supplies, rank-IV Shieldward and the active mission. Tests use isolated browser profiles, never the player's live save.
+- `playtest.mjs --pwa` against the production build: 33 passing checks, including walking skeletons, physics, collisions, jumping, menu controls, attacks/projectiles, spells/audio, recruitment, saved battle restoration, phone-sized control bounds and offline reload.
+- `extended-qa.mjs`: 45 passing checks covering touch input, geometry, all fifteen mission spawns, all 23 spells, distinct non-clipping spell waveforms and the complete five-wave final siege. The separate first-mission bot also won with starting stats, normal Command and ordinary purchases. No browser runtime errors were recorded.
+
+Visual review checked the actual opening, mobile guide, mission briefing, cannon and storm previews, and rank-X standard bearer. It caught the initially hidden briefing actions; the action row now stays outside the scrollable story body. The first emplacement's numeric button ID was also corrected. These are desktop Chromium/Metal and emulated mobile checks, not a physical iPhone/Android certification.
+
+The historical evidence below describes earlier releases.
+
+
 This records executable checks, not a claim that every feature has been manually played on a physical phone.
 
 ## Permanent systems

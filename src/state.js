@@ -1,3 +1,4 @@
+import {NEW_UNITS,NEW_DEFENSES,DEFAULT_LAYOUT} from './roster.js';
 import {HEROES,UNITS,DEFENSES,WEAPONS,FORGE,RARITIES,AFFIXES,MISSIONS,clamp,unitCost} from './data.js';
 export const SAVE_KEY='oathfire.campaign.v1';
 const copy=o=>JSON.parse(JSON.stringify(o));
@@ -11,7 +12,7 @@ export function makeItem(type='sword',rarity=0,level=1,rand=Math.random){
 export function newSave(hero='warden'){
  const inventory=['sword','spear','bow','hammer','staff','armor','shield','relic'].map(type=>makeItem(type,0,1,()=>.4));
  const heroes=Object.fromEntries(Object.entries(HEROES).map(([id,h])=>[id,{level:1,xp:0,questPoints:0,skills:{},capstone:null,slots:[...h.starter],equipped:{weapon:inventory.find(i=>i.type===h.weapon).id,armor:inventory[5].id,shield:inventory[6].id,relic:inventory[7].id},form:'mobile'}]));
- return {version:1,created:Date.now(),updated:Date.now(),hero,heroes,supplies:360,salvage:35,potions:3,units:Object.fromEntries(Object.keys(UNITS).map(k=>[k,1])),defenses:{gate:1,tower:1,ballista:1},doctrines:{shield:'sentinel',tower:'longwatch',ballista:'piercing'},inventory,completed:[],treasures:[],deeds:[],visits:[],journal:['The ember survived. Hearthwatch is yours to defend.'],settings:{volume:.55,music:.28,quality:'auto',sensitivity:1,shake:.4,firstPerson:false,showHints:true,leftHanded:false},battle:null,position:{x:0,y:0,z:9},timePlayed:0,kills:0,bestCombo:0,ending:null};
+ return {version:1,rosterVersion:2,guide:{active:true,done:[],seen:[],distance:0},defenseLayout:[...DEFAULT_LAYOUT],created:Date.now(),updated:Date.now(),hero,heroes,supplies:360,salvage:35,potions:3,units:Object.fromEntries(Object.keys(UNITS).map(k=>[k,1])),defenses:Object.fromEntries(Object.keys(DEFENSES).map(k=>[k,1])),doctrines:{shield:'sentinel',tower:'longwatch',ballista:'piercing'},inventory,completed:[],treasures:[],deeds:[],visits:[],journal:['The ember survived. Hearthwatch is yours to defend.'],settings:{volume:.55,music:.28,quality:'auto',sensitivity:1,shake:.4,firstPerson:false,showHints:true,leftHanded:false},battle:null,position:{x:0,y:0,z:9},timePlayed:0,kills:0,bestCombo:0,ending:null};
 }
 export function heroData(s){return s.heroes[s.hero];}
 export function skillRank(s,id){return heroData(s).skills[id]||0;}
@@ -30,7 +31,9 @@ export function grantXP(s,amount){const h=heroData(s);h.xp+=Math.max(0,amount);l
 export function campaignCap(s){return s.completed.length>=10?10:s.completed.length>=5?7:5;}
 export function unitUnlocked(s,id){return s.completed.length>=UNITS[id].unlock;}
 export function upgradeUnit(s,id){if(!UNITS[id]||!unitUnlocked(s,id))throw Error('Complete '+UNITS[id]?.unlock+' campaign victories to unlock this regiment.');let r=s.units[id];if(r>=10)throw Error('This regiment is fully trained.');if(r>=campaignCap(s))throw Error('Reclaim the next act to unlock further training.');const cost=unitCost(id,r);if(s.supplies<cost)throw Error('Not enough Supplies.');s.supplies-=cost;s.units[id]++;return s.units[id];}
-export function upgradeDefense(s,id){if(!DEFENSES[id])throw Error('Unknown defense');let r=s.defenses[id];if(r>=10)throw Error('This defense is fully built.');if(r>=campaignCap(s))throw Error('Reclaim the next act to unlock further construction.');const cost=DEFENSES[id].costs[r-1];if(s.supplies<cost)throw Error('Not enough Supplies.');s.supplies-=cost;s.defenses[id]++;return s.defenses[id];}
+export function defenseUnlocked(s,id){return !!DEFENSES[id]&&s.completed.length>=(DEFENSES[id].unlock||0);}
+export function setEmplacement(s,slot,id){if(s.battle)throw Error('Refit defenses at Hearthwatch.');if(!Number.isInteger(slot)||slot<0||slot>3||id==='gate'||!defenseUnlocked(s,id))throw Error('That emplacement or defense is not available.');s.defenseLayout[slot]=id;}
+export function upgradeDefense(s,id){if(!DEFENSES[id])throw Error('Unknown defense');if(!defenseUnlocked(s,id))throw Error('Reclaim '+DEFENSES[id].unlock+' castles to recover these plans.');let r=s.defenses[id];if(r>=10)throw Error('This defense is fully built.');if(r>=campaignCap(s))throw Error('Reclaim the next act to unlock further construction.');const cost=DEFENSES[id].costs[r-1];if(s.supplies<cost)throw Error('Not enough Supplies.');s.supplies-=cost;s.defenses[id]++;return s.defenses[id];}
 export function trainSkill(s,id){const g=skillGate(s,id);if(g)throw Error(g);const h=heroData(s),n=HEROES[s.hero].skills.find(x=>x.id===id);h.skills[id]=(h.skills[id]||0)+1;if(n.capstone){h.capstone=id;h.slots=h.slots.map((k,i)=>HEROES[s.hero].skills.find(n=>n.id===k)?.capstone&&k!==id?HEROES[s.hero].starter[i]:k);}return h.skills[id];}
 export function forgeCost(item){return {supplies:35+item.plus*30+item.rarity*12,salvage:5+item.plus*3};}
 export function forgeItem(s,id){const i=s.inventory.find(x=>x.id===id);if(!i)throw Error('Item not found');if(i.plus>=10)throw Error('Fully forged');const c=forgeCost(i);if(s.supplies<c.supplies||s.salvage<c.salvage)throw Error('You need more Supplies or Salvage.');s.supplies-=c.supplies;s.salvage-=c.salvage;i.plus++;if(i.plus===10&&s.completed.length>=10)i.awakened=true;return i;}
@@ -41,11 +44,23 @@ export function salvageItem(s,id){const i=s.inventory.find(x=>x.id===id);if(!i)t
 export function lootRoll(s,quality=0,rand=Math.random){const n=rand(),rarity=clamp(n>.99?4:n>.91?3:n>.67?2:n>.28?1:0,quality,4);const types=['sword','spear','hammer','bow','staff','armor','shield','relic'];const i=makeItem(types[Math.floor(rand()*types.length)],rarity,heroData(s).level,rand);if(s.inventory.length>=160){s.salvage+=6+rarity*5;return null;}s.inventory.push(i);return i;}
 export function claimTreasure(s,id,quality=1){if(s.treasures.includes(id))throw Error('This treasure has already been collected.');s.treasures.push(id);s.supplies+=65+quality*20;s.salvage+=12+quality*5;const item=lootRoll(s,quality);const h=heroData(s);if(s.treasures.length%3===0&&h.questPoints<6)h.questPoints++;s.journal.push('Discovered '+id.replaceAll('-',' ')+'.');return item;}
 export function completeMission(s,id){const m=MISSIONS[id];if(!m)throw Error('Unknown expedition');const first=!s.completed.includes(id);if(first)s.completed.push(id);if(s.completed.length>=10)for(const i of s.inventory)if(i.plus===10)i.awakened=true;s.supplies+=first?m.reward:Math.round(m.reward*.55);s.salvage+=first?25+id*3:15;grantXP(s,m.xp);const item=lootRoll(s,m.boss?3:first?1:0);if(first&&m.boss){const h=heroData(s);h.questPoints=Math.min(6,h.questPoints+1);}if(first)s.journal.push(m.name+' reclaimed. '+m.story);s.battle=null;if(id===14)s.ending='The fallen are free. The ember belongs to the living.';return {first,item,reward:first?m.reward:Math.round(m.reward*.55)};}
+export function migrateSave(s){
+ // Only add the newly introduced fields. Invalid old ranks still fail validation.
+ if(s?.version===1&&s.rosterVersion===undefined){
+  if(s.units)for(const id of Object.keys(NEW_UNITS))if(s.units[id]===undefined)s.units[id]=1;
+  if(s.defenses)for(const id of Object.keys(NEW_DEFENSES))if(s.defenses[id]===undefined)s.defenses[id]=1;
+  s.defenseLayout=[...DEFAULT_LAYOUT];s.guide={active:!s.battle&&s.completed?.length===0,done:[],seen:[],distance:0};s.rosterVersion=2;
+ }
+ return s;
+}
 export function validateSave(s){
+ migrateSave(s);
  if(!s||s.version!==1||!HEROES[s.hero]||!Array.isArray(s.inventory)||s.inventory.length>160)throw Error('This is not a compatible Oathfire save.');
  for(const k of ['supplies','salvage','potions','kills','timePlayed'])if(!Number.isFinite(s[k])||s[k]<0||s[k]>1e8)throw Error('Invalid campaign resource.');
  for(const [k,u]of Object.entries(UNITS))if(!Number.isInteger(s.units?.[k])||s.units[k]<1||s.units[k]>10)throw Error('Invalid regiment rank.');
  for(const k of Object.keys(DEFENSES))if(!Number.isInteger(s.defenses?.[k])||s.defenses[k]<1||s.defenses[k]>10)throw Error('Invalid defense rank.');
+ if(s.rosterVersion!==2||!Array.isArray(s.defenseLayout)||s.defenseLayout.length!==4||s.defenseLayout.some(id=>id==='gate'||!defenseUnlocked(s,id)))throw Error('Invalid castle emplacements.');
+ const guide=s.guide;if(!guide||typeof guide.active!=='boolean'||!Array.isArray(guide.done)||!Array.isArray(guide.seen)||guide.done.length>32||guide.seen.length>100||[...guide.done,...guide.seen].some(x=>typeof x!=='string'||x.length>64)||!Number.isFinite(guide.distance)||guide.distance<0)throw Error('Invalid journey guide.');
  for(const id of Object.keys(HEROES)){const h=s.heroes?.[id];if(!h||!Number.isInteger(h.level)||h.level<1||h.level>30||!Number.isFinite(h.xp)||h.xp<0||!Number.isInteger(h.questPoints)||h.questPoints<0||h.questPoints>6)throw Error('Invalid hero progress.');for(const [key,r]of Object.entries(h.skills)){const n=HEROES[id].skills.find(n=>n.id===key);if(!n||!Number.isInteger(r)||r<0||r>n.max)throw Error('Invalid technique rank.');}const spend=HEROES[id].skills.reduce((sum,n)=>sum+(h.skills[n.id]||0)*(n.cost||1),0);if(spend>h.level-1+h.questPoints)throw Error('Invalid skill point budget.');}
  const ids=new Set();for(const i of s.inventory){if(!i||typeof i.id!=='string'||ids.has(i.id)||!['armor','shield','relic',...Object.keys(WEAPONS)].includes(i.type)||!Number.isInteger(i.rarity)||i.rarity<0||i.rarity>4||!Number.isInteger(i.plus)||i.plus<0||i.plus>10||!Number.isFinite(i.base)||i.base<0||i.base>10000)throw Error('Invalid inventory.');ids.add(i.id);i.name=String(i.name).slice(0,90);}
  for(const h of Object.values(s.heroes))for(const [slot,id]of Object.entries(h.equipped)){const i=s.inventory.find(i=>i.id===id);if(!i||!(slot==='weapon'?WEAPONS[i.type]:slot===i.type))throw Error('Invalid equipped item.');}

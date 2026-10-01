@@ -32,10 +32,11 @@ export function weapon(type='sword',level=1,color=0x62988f,temper=null,design=nu
    const cage=material('steel',0x4b514b,{roughness:.85}),soul=mat(0x97bea6,.6,0,{emissive:0x68a284,emissiveIntensity:1.4});const lamp=sphere(g,.083,[0,1.57,0],soul,16);lamp.scale.y=1.45;
    for(const y of [1.43,1.73]){const rim=mesh(new T.TorusGeometry(.125,.013,6,16),cage,g,0,y,0);rim.rotation.x=Math.PI/2;}for(let i=0;i<6;i++){const a=i*Math.PI/3;beam(g,[Math.sin(a)*.125,1.43,Math.cos(a)*.125],[Math.sin(a)*.125,1.73,Math.cos(a)*.125],.009,cage,6);}cyl(g,0,.155,.16,[0,1.81,0],cage,8);g.userData.crystal=lamp;
   }else{
-   const head=mesh(new T.OctahedronGeometry(.13+level*.004,1),mat(temper==='frost'?0x8fd4df:0xe4b95e,.25,.25,{emissive:temper==='frost'?0x338aa0:0xdf6925,emissiveIntensity:.7}),g,0,1.54,0);for(let i=0;i<4;i++){const a=i*Math.PI*.5;const curve=new T.CatmullRomCurve3([new T.Vector3(0,1.32,0),new T.Vector3(Math.sin(a)*.16,1.51,Math.cos(a)*.16),new T.Vector3(Math.sin(a)*.11,1.73,Math.cos(a)*.11)]);mesh(new T.TubeGeometry(curve,10,.014,6,false),gold,g);}g.userData.crystal=head;
+   const head=mesh(new T.OctahedronGeometry(.13+level*.004,1),mat(temper==='frost'||design==='frost'?0x8fd4df:0xe4b95e,.25,.25,{emissive:temper==='frost'||design==='frost'?0x338aa0:0xdf6925,emissiveIntensity:.7}),g,0,1.54,0);for(let i=0;i<4;i++){const a=i*Math.PI*.5;const curve=new T.CatmullRomCurve3([new T.Vector3(0,1.32,0),new T.Vector3(Math.sin(a)*.16,1.51,Math.cos(a)*.16),new T.Vector3(Math.sin(a)*.11,1.73,Math.cos(a)*.11)]);mesh(new T.TubeGeometry(curve,10,.014,6,false),gold,g);}g.userData.crystal=head;
   }
 
  }
+ if(design==='pyre'){for(const x of [-.13,.13])beam(g,[x,1.35,0],[x,1.76,0],.019,steel);sphere(g,.11,[0,1.64,0],ember,12);}if(design==='marksman'&&type==='crossbow'){cyl(g,.04,.04,.4,[.10,.42,.10],gold,12);for(let i=0;i<level;i++)box(g,[.035,.012,.15],[0,.02+i*.034,0],gold);}
  g.userData.type=type;return g;
 }
 export function shield(level=1,color=0x497d79,enemy=null){

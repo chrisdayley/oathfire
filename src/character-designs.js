@@ -36,12 +36,12 @@ export function adultPose(c){
 }
 
 export function buildAppearance(c){
- const role=c.design,rank=c.rank,undead=!!HOST_DESIGNS[role],bare=role==='hollow'||role==='archer',caster=role==='mage',brute=role==='brute',royal=['bell','castellan','veyr'].includes(role),hood=['ranger','bow','rider','archer','mage'].includes(role);
+ const role=c.design,rank=c.rank,undead=!!HOST_DESIGNS[role],bare=role==='hollow'||role==='archer',caster=role==='mage',brute=role==='brute',royal=['bell','castellan','veyr'].includes(role),hood=['ranger','bow','rider','archer','mage','marksman','assassin','frost','pyre','lantern'].includes(role);
  const charcoal=material('steel',undead?0x55594f:0x737e7c,{roughness:.72,metalness:.84});
  const steel=material('steel',role==='castellan'?0x504038:role==='veyr'?0x65716d:undead?0x444c47:0x949f9e,{roughness:.54,metalness:.88});
  const brass=material('steel',undead?0x9a7645:0xb59b60,{roughness:.52,metalness:.78});
  const leather=material('leather',undead?0x74634d:0x746858,{roughness:.92,metalness:0});
- const cloth=material('cloth',undead?(HOST_DESIGNS[role]?.color||0x3b4036):['ashwright','breaker'].includes(role)?0x6c4d31:0x102d34,{side:T.DoubleSide,roughness:1});
+ const cloth=material('cloth',undead?(HOST_DESIGNS[role]?.color||0x3b4036):['ashwright','breaker'].includes(role)?0x6c4d31:['banner','engineer','assassin','pyre','marksman','frost','dawn','lantern'].includes(role)?c.color:0x102d34,{side:T.DoubleSide,roughness:1});
  const boneMat=material('stone',0xa19a80,{normalScale:new T.Vector2(.13,.13),roughness:1});
  const black=new T.MeshStandardMaterial({color:0x090e10,roughness:.94});
  const glow=new T.MeshStandardMaterial({color:role==='brute'||role==='castellan'?0xff8535:0x85c9b1,emissive:role==='brute'||role==='castellan'?0xed4a10:0x519f80,emissiveIntensity:1.6,roughness:.6});
@@ -125,12 +125,12 @@ export function buildAppearance(c){
   const pauldron=part('upperarm.l');loft(pauldron,[[-.04,.12,.115],[.08,.10,.09]],charcoal,10);
   for(let i=0;i<3;i++)loft(spine,[[.025+i*.055,.17,.12],[.05+i*.055,.17,.12]],cloth,12);
  }
- if(role==='archer'||['ranger','bow','rider'].includes(role)){
+ if(role==='archer'||['ranger','bow','rider','marksman'].includes(role)){
   const quiver=cyl(chest,.065,.055,.52,[.19,-.03,-.19],leather,12);quiver.rotation.z=-.20;
   for(let i=0;i<6;i++){beam(chest,[.16+i*.012,-.04,-.19],[.12+i*.02,.48+(i%3)*.025,-.20],.007,charcoal,6);const f=box(chest,[.036,.09,.007],[.12+i*.02,.42+(i%3)*.025,-.20],boneMat);f.rotation.z=-.1;}
   strip(chest,[[-.22,.17,.08],[0,.02,.166],[.18,-.15,.11]],.021,leather);
  }
- if(role==='ashwright'||role==='breaker'||role==='giant'){
+ if(role==='ashwright'||role==='breaker'||role==='giant'||role==='engineer'){
   for(const side of [-1,1])strip(chest,[[side*.16,.18,.08],[side*.13,-.13,.14]],.025,leather);
   const apron=box(hips,[.31,.34,.025],[0,-.16,.17],leather);apron.rotation.x=-.08;
   for(let i=0;i<3;i++)box(head,[.018,.065,.018],[(i-1)*.044,.058,.161],brass);
@@ -164,6 +164,25 @@ export function buildAppearance(c){
   if(rank>=9){for(const side of [-1,1]){const wing=mesh(new T.ConeGeometry(.035,.17,5),brass,head,side*.13,.24,-.02);wing.rotation.z=-side*.30;}}
   if(rank>=10){for(let i=0;i<10;i++){const blade=mesh(new T.ConeGeometry(.021,.14,5),cloth,head,0,.31,-.10+i*.022);blade.rotation.x=-.3;}}
  }
+ // Regiment silhouettes: visible equipment explains each specialist's role.
+ if(role==='banner'){
+  beam(chest,[-.18,-.2,-.2],[-.18,1.2,-.2],.022,brass);beam(chest,[-.48,1.04,-.2],[.22,1.04,-.2],.019,brass);const flag=mesh(new T.PlaneGeometry(.62,.72,4,5),cloth,chest,-.13,.63,-.22);const badge=sunBadge(chest,.15,brass);badge.position.set(-.13,.66,-.198);for(let i=0;i<rank;i++)box(chest,[.035,.055,.012],[-.39+i*.057,.26,-.2],brass);
+ }
+ if(role==='engineer'){
+  box(chest,[.38,.42,.20],[0,-.01,-.29],leather);for(const x of [-.14,.14])box(chest,[.035,.46,.24],[x,0,-.28],brass);beam(chest,[-.28,.28,-.31],[.23,-.22,-.31],.025,charcoal);box(chest,[.22,.08,.09],[-.25,.26,-.31],steel);for(let i=0;i<3;i++)cyl(hips,.035,.035,.19,[.20,-.01-i*.035,.05+i*.06],brass,8);const visor=box(head,[.25,.055,.025],[0,.19,.146],brass);for(const x of [-.065,.065])ellipsoid(head,[.042,.032,.012],[x,.19,.169],black);
+ }
+ if(role==='assassin'){
+  for(const x of [-.18,.18]){beam(chest,[x,.16,.10],[-x,-.16,.13],.022,leather);box(hips,[.045,.30,.04],[x,-.14,.1],charcoal);}for(const side of [-1,1]){const a=part('lowerarm.'+(side<0?'r':'l'));mesh(new T.ConeGeometry(.025,.29,4),steel,a,0,.13,-.075);}box(head,[.15,.08,.025],[0,.05,.14],cloth);
+ }
+ if(role==='marksman'){
+  cyl(chest,.05,.05,.44,[-.20,.04,-.22],brass,12);const lens=ellipsoid(head,[.045,.025,.014],[-.048,.145,.143],black);ring(head,.17,.17,.18,.014,leather);for(let i=0;i<5;i++)box(chest,[.012,.12,.018],[-.08+i*.04,-.08,.164],brass);
+ }
+ if(role==='frost'||role==='pyre'||role==='lantern'){
+  const elemental=new T.MeshStandardMaterial({color:role==='frost'?0xa3dae7:role==='pyre'?0xe0a473:0xe1d0a0,emissive:role==='frost'?0x2e718e:role==='pyre'?0xa5411d:0x897240,emissiveIntensity:.75});c.materials.push(elemental);for(const x of [-.12,.12]){const shard=mesh(new T.OctahedronGeometry(.039,0),elemental,head,x,.23,.065);shard.scale.y=2;}for(let i=0;i<3;i++)cyl(hips,.028,.028,.17,[.20+i*.017,-.1,.045+i*.055],role==='frost'?elemental:brass,8);loft(chest,[[.11,.245,.16],[.23,.14,.10]],cloth,18);const book=box(hips,[.16,.22,.065],[-.21,-.08,.12],leather);box(hips,[.12,.017,.07],[-.21,-.08,.13],brass);
+ }
+ if(role==='dawn'){
+  const halo=mesh(new T.TorusGeometry(.22,.012,6,32),brass,head,0,.18,-.12);for(const side of [-1,1])for(let i=0;i<3;i++){const wing=mesh(new T.ConeGeometry(.033,.20-i*.035,5),brass,chest,side*(.24+i*.042),.22-i*.018,0);wing.rotation.z=-side*.55;}const badge=sunBadge(chest,.09,brass);badge.position.set(0,.05,.19);
+ }
  // Bake rigid armor and anatomical pieces into a few genuinely skinned draw calls.
  c.visual.updateMatrixWorld(true);const skeleton=new T.Skeleton(Object.values(c.sockets).filter(b=>b.isBone));skeleton.calculateInverses();
  const bins=new Map(),inverse=c.visual.matrixWorld.clone().invert();
@@ -172,7 +191,7 @@ export function buildAppearance(c){
  // Cloth silhouette is a tailored mantle, with a ragged hem for the Hollow Host.
  if(!bare&&!brute){const height=caster?1.26:royal?1.36:rank>=7?1.23:1.02,width=royal?.62:.54,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*38)*.014+drop*.07));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cape=mesh(geo,cloth,bone(c,'chest'),0,-height*.5+.19,-.15);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
  c.held=compactRigid(weapon(c.weaponType,rank,c.color,c.temper,c.design));c.held.rotation.y=Math.PI;c.heldRest=c.held.quaternion.clone();bone(c,'handslot.r').add(c.held);c.gear.push(c.held);
- if(['sword','spear'].includes(c.weaponType)&&!caster&&!brute&&role!=='bell'){
+ if(['sword','spear'].includes(c.weaponType)&&!caster&&!brute&&role!=='bell'&&role!=='assassin'){
   c.heldShield=compactRigid(shield(c.design==='warden'?Math.max(4,rank):rank,undead?0x343c38:0x234b4d,undead?role:null));c.heldShield.rotation.y=Math.PI;c.heldShield.rotation.z=-Math.PI/2;c.heldShield.position.set(0,-.02,.05);bone(c,'handslot.l').add(c.heldShield);c.gear.push(c.heldShield);
  }else c.heldShield=null;
  c.visual.userData.design=role;c.visual.userData.bodySource='original-oathfire-skinned-geometry';

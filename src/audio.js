@@ -11,7 +11,12 @@ export class Soundscape{
  const signatures={fireball:[138,[0,.06,.19],'sawtooth'],inferno:[55,[0,.11,.22,.33,.44],'sawtooth'],quench:[720,[0,.05,.17],'sine'],thorns:[277,[0,.13,.20],'triangle'],seedward:[349,[0,.19,.38],'sine'],briarstorm:[466,[0,.045,.09,.135,.18],'triangle'],grove:[196,[0,.24,.48],'sine'],verdant:[622,[0,.08,.25,.4],'triangle'],windstep:[830,[0,.045],'sine'],rally:[146,[0,.12,.28],'sawtooth'],march:[220,[0,.2,.4,.6],'triangle'],step:[185,[0,.045],'triangle'],bulwark:[98,[0,.12,.24],'square'],sunwall:[392,[0,.08,.16,.32],'triangle'],tether:[523,[0,.18,.36],'sine'],sanctuary:[261,[0,.16,.32,.48],'sine'],volley:[1046,[0,.10],'sine'],guide:[784,[0,.06,.18],'triangle'],mark:[1396,[0,.21],'sine'],overdrive:[164,[0,.07,.14,.28],'sawtooth'],mine:[82,[0,.18,.24],'square'],forgefall:[65,[0,.28,.34],'sawtooth'],reversal:[988,[0,.09,.27],'triangle']};
  const sig=signatures[name];if(sig)sig[1].forEach((d,i)=>this.tone(sig[0]*(1+i*.25),.24,sig[2],.024*p,d,sig[0]*(1+(i+1)*.16)));
 
-  if(name==='sword'){this.hiss(.18,.55*p,'bandpass',2800,0,650);this.tone(800,.10,'triangle',.025*p,0,280);}
+  if(name==='frost'){this.tone(1480,.35,'sine',.08*p,0,620);this.hiss(.4,.3*p,'highpass',6500,0,2200);this.tone(1960,.22,'triangle',.035*p,.1,1100);}
+  else if(name==='storm'){this.hiss(.16,.65*p,'highpass',5300,0,400);this.tone(73,.42,'sawtooth',.09*p,0,31);this.hiss(.28,.34*p,'bandpass',2100,.10,200);}
+  else if(name==='shell'){this.tone(58,.45,'sine',.22*p,0,25);this.hiss(.48,.9*p,'lowpass',2500,0,90);}
+  else if(name==='stone'){this.tone(115,.28,'triangle',.14*p,0,34);this.hiss(.35,.50*p,'bandpass',950,0,150);}
+  else if(name==='repair'){[920,1380].forEach((f,i)=>this.tone(f,.12,'triangle',.06*p,i*.12));}
+  else if(name==='sword'){this.hiss(.18,.55*p,'bandpass',2800,0,650);this.tone(800,.10,'triangle',.025*p,0,280);}
   else if(name==='spear'){this.hiss(.13,.4*p,'highpass',4200,0,1100);this.tone(190,.09,'triangle',.04*p);}
   else if(name==='hammer'){this.hiss(.30,.50*p,'lowpass',1500,0,250);this.tone(85,.18,'sine',.10*p,0,42);}
   else if(name==='metal'){for(const [f,v]of [[1230,.09],[1820,.065],[2710,.04]])this.tone(f,.30,'triangle',v*p,0,f*.92);this.hiss(.075,.34*p,'highpass',5000,0,1900);this.tone(105,.10,'sine',.10*p);}

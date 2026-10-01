@@ -1,4 +1,4 @@
-# Oathfire — playable design, version 1.1
+# Oathfire — playable design, version 1.2
 
 ## The promise
 
@@ -46,11 +46,11 @@ Forging preserves identity and reaches +10. +3 unlocks an ember/frost/vital rune
 
 ## Regiments and castle
 
-Shieldward, Longbows, Pikeguard, Lanternkeepers, Ashbreakers, Siege Crew, Stormriders and an Oathbound Giant. All have ten permanent ranks. Rank II adds reinforcement, III shoulder armor, IV bracers, V heraldry, VI greaves, VII a larger mantle, VIII a pennant, IX winged trim and X a full crest. Weapons and shields also evolve. Unlocks are tied to territory victories; training gates open ranks I–V, then VI–VII after Act I, then VIII–X after Act II.
+Fifteen regiments: Shieldward, Longbows, Pikeguard, Lanternkeepers, Ashbreakers, Siege Crew, Stormriders, an Oathbound Giant, Dawn standard, Field engineers, Veil blades, Cinder adepts, Ironwatch marksmen, Rime scholars and Sun sworn. All have ten permanent ranks. Rank II adds reinforcement, III shoulder armor, IV bracers, V heraldry, VI greaves, VII a larger mantle, VIII a pennant, IX winged trim and X a full crest. Weapons and shields also evolve. Unlocks are tied to territory victories; training gates open ranks I–V, then VI–VII after Act I, then VIII–X after Act II.
 
 Command regenerates during a battle and pays for units without consuming permanent Supplies. Deploy at most 24 allied soldiers. Hold, follow and assault commands can change the front. Lanternkeepers heal nearby injured units. Later Shieldward reduce projectile damage when adjacent and holding; mounts and giants change speed and scale.
 
-Gate, archer towers and ballistae each have ten construction ranks. The live world and preview share their geometry builders. Towers gain roof, masonry, shutters, buttresses, a stair turret and standards. Ballistae gain feet, crank, ratchet, shield, ammunition rack, torsion drums, counterweights and a Sunlance mechanism. Gate upgrades reinforce the frame, bracing, upper towers and heraldry.
+Eight designs have ten construction ranks: gate, archer tower, ballista, Ember cannon, Rime obelisk, Stone lobber, Sanctuary brazier and Storm spire. The gate is permanent; the other seven designs compete for four emplacements. Refit unlocked designs freely between battles, keeping each design’s purchased ranks. The live world and preview share their geometry builders. Towers gain roof, masonry, shutters, buttresses, a stair turret and standards. Ballistae gain feet, crank, ratchet, shield, ammunition rack, torsion drums, counterweights and a Sunlance mechanism. Gate upgrades reinforce the frame, bracing, upper towers and heraldry.
 
 At rank V choose tower range versus suppression cadence, or ballista penetration versus pinning. Rank VIII towers mark or slow. Rank X towers replace a normal shot with a three-arrow volley every 18 seconds. Rank X ballistae wind up a solid, burning Sunlance bolt every 22 seconds. The live crew and mechanisms animate when firing.
 
@@ -71,7 +71,7 @@ This release focuses on a complete playable campaign loop. It does not include m
 
 The visible KayKit bodies have been retired. Original geometry supplies adult proportions, fitted breastplates, layered shoulder armor, articulated gauntlets and boots, split tabards, moving cloth and rank-specific equipment. These parts are bound to the licensed animation skeleton as skinned meshes. The animation clips still supply full-body walking, running, weapon attacks, casting, hit reactions and death; additive pose adjustments retarget the longer limbs and provide a relaxed weapon-carry position. The first-person equipment uses the same material family.
 
-The Warden wears dark teal cloth under worn steel with restrained brass trim. The Briar Ranger has a fitted hood, harness and quiver. The Ashwright uses a leather forge apron and reinforced gauntlets. All eight regiments retain ten geometric upgrade stages. Stormriders have a newly sculpted, articulated horse with reins, saddle, stirrups and progressively plated barding.
+The Warden wears dark teal cloth under worn steel with restrained brass trim. The Briar Ranger has a fitted hood, harness and quiver. The Ashwright uses a leather forge apron and reinforced gauntlets. The original eight regiments retain ten geometric upgrade stages; the First Oath update adds seven more with distinct silhouettes and the same ten-rank construction. Stormriders have a newly sculpted, articulated horse with reins, saddle, stirrups and progressively plated barding.
 
 The Hollow Host has eight authored designs. The Unburied expose bone beneath burial linen and a broken iron cap; Duskbone Stalkers wear a narrow hood and carry a quiver; Ossuary Knights use blackened plate, a crested helm and coffin shield; Grave Callers wear mourning cloth and carry a caged soul lantern. Kiln Brutes carry a furnace inside broad, angular siege armor. The Bell Knight has a bronze bell helm and chained relics; the Ash Castellan has basalt shoulders and burning seams; Marshal Veyr wears a nine-tine crown, broken sun halo and ruined royal mantle. The three bosses use the correct design when a suspended battle is restored. Their combat weapon matches the displayed spear, hammer or sword.
 
@@ -80,3 +80,7 @@ The Hollow Host menu is an animated enemy compendium. Its models are the same co
 The environment uses self-hosted CC0 scans for masonry, cobbles, soil, grass, natural rock, timber, leather, metal and cloth, plus an HDR sky. Stone color, roughness and normal detail use world-scale triplanar mapping. The courtyard gains recessed arrow slits, window arches, gate voussoirs, quoins, tower cornices and timber braces. A noise-animated brazier replaces the beacon crystal. Branches and individually instanced leaves replace solid foliage crowns; continuous ridges replace isolated cone mountains. Collision routes and the broad battlefield dimensions are retained.
 
 This is an implemented real-time art pass, not a substitute concept painting. The original studies remain the quality target; hand-sculpted faces, bespoke high-detail creatures and further biome-specific architectural assets remain beyond this pass. The shipped models and screenshots must be judged as the actual result, not described as photorealistic concept-art matches.
+
+## First Oath implementation — 1.2
+
+See [First Oath research and design](first-oath.md) for the expanded roster, unlock schedule, narrative structure, guided teaching and migration rules. Original body proportions, material scans, enemy designs and battlefield dimensions from 1.1 are retained.
