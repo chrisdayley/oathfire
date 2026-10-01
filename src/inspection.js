@@ -28,14 +28,14 @@ export function defenseInspection(id,rank,doctrine){
  const s=defenseFiringStats(id,rank,doctrine),abilities=[],protectedEmplacement=id!=='gate';
  if(id==='gate')abilities.push(ability('Hold the breach','The gate absorbs siege attacks before enemies can reach the beacon. At 0 health it opens the breach; the beacon has 650 health. The gate does not attack.'),ability('Repairable fortification','Field engineers within 9 m repair a damaged gate every 3 s. Once the gate falls, it cannot be rebuilt until you leave the battle.'));
  if(id==='tower'){
-  abilities.push(ability('Watchfire','Fire one physical arrow at the nearest enemy in range. Damage and range above include any active firing doctrine.'));
+  abilities.push(ability('Watchfire','Fire one physical arrow at the nearest enemy in range. The Stats tab includes any active firing doctrine.'));
   abilities.push(ability('Firing doctrine',(doctrine==='longwatch'?'Longwatch: +20% range and a 20% longer attack cycle.':'Suppression: −15% range and 25% faster firing.')+' Choose your doctrine at Hearthwatch.',5));
   abilities.push(ability(doctrine==='longwatch'?'Mark the approach':'Suppress the approach',doctrine==='longwatch'?'Hits mark enemies for '+(rank>=9?3:2)+' s. Marked enemies take 20% more hero damage and 15% more allied damage.':'Hits slow movement by 35% for '+(rank>=9?1:.7)+' s. Repeated hits refresh the slow.',8));
   abilities.push(ability('Coordinated volley','When ready, replace a normal shot with three arrows, each at 50% damage'+(rank>=10?' ('+n(s.damage*.5)+' each)':'')+'. 150% total damage if all hit; 18 s cooldown.',10));
  }
  if(id==='ballista'){
   abilities.push(ability('Heavy bolt','Prioritize the enemy with the highest maximum health in range. Bolts are physical projectiles and can be stopped by cover.'));
-  abilities.push(ability('Bolt doctrine',doctrine==='pinning'?'Pinning: deal 15% less damage'+(rank>=5?' (already included above)':'')+' and slow movement by 35% for 2 s.':'Piercing: hit a second aligned enemy within 12 m of the first for 50% damage'+(rank>=5?' ('+n(s.damage*.5)+')':'')+'. A bolt cannot chain again.',5));
+  abilities.push(ability('Bolt doctrine',doctrine==='pinning'?'Pinning: deal 15% less damage'+(rank>=5?' (included in Stats)':'')+' and slow movement by 35% for 2 s.':'Piercing: hit a second aligned enemy within 12 m of the first for 50% damage'+(rank>=5?' ('+n(s.damage*.5)+')':'')+'. A bolt cannot chain again.',5));
   abilities.push(ability('Sunlance charge','A 0.65 s winding charge replaces one normal shot when ready. Deal 180% damage to siege brutes and captains'+(rank>=10?' ('+n(s.damage*1.8)+')':'')+', or 120% to other enemies'+(rank>=10?' ('+n(s.damage*1.2)+')':'')+'. 22 s cooldown.',10));
  }
  if(id==='cannon')abilities.push(ability('Explosive iron shot','Prioritize the most armored enemy. Direct hits ignore 50% of armor and create a 3 m fire blast for '+n(s.damage*.45)+' additional damage. The original target can take both the hit and blast.'));

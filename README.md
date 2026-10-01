@@ -10,19 +10,23 @@ Version 1.1 replaces the original visible character bodies with original adult-p
 
 ## Play
 
-Mobile: left stick to move; drag the open screen to look; tap Attack for a quick strike, or hold and release for a charged attack. Guard just before a hit to counter. Jump over low obstacles. Army opens a paused command menu.
+Mobile: left stick to move; drag the open screen to look; tap Attack for a quick strike, or hold and release for a charged attack. Guard just before a hit to counter. Jump over low obstacles. Command opens the paused battlefield menu; Keep opens castle preparation.
 
-Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard; Space jump; Q/E equipped techniques; R potion; F interact; V first/third person; Escape pause; Tab army.
+Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard; Space jump; Q/E equipped techniques; R potion; F interact; V first/third person; Escape pause; Tab command / keep.
 
-**Start your first mission:** finish or skip the opening story, then tap **Start first defense** in the world. Read Sera’s briefing and tap **Begin defense**. You can also walk to Sera at the war table beside the beacon. The gold training card teaches movement, camera control, quick/charged attacks, magic, jumping, regiments, defenses, deployment and orders. Replay it from **Journal → Restart guided training**. Explore the keep and the broad field between battles. Permanent upgrades use Supplies and Salvage. Battlefield units use regenerating Command. Skills use points earned from levels and discoveries.
+**Start your first mission:** finish or skip the opening story, then tap **Start first defense** in the world. Read Sera’s briefing and tap **Begin defense**. You can also walk to Sera at the war table beside the beacon. The gold training card teaches movement, camera control, quick/charged attacks, magic, jumping, regiments, defenses, deployment and orders. Replay it from **Keep → Market, chronicle & settings → Chronicle → Restart guided training**. Explore the keep and the broad field between battles. Permanent upgrades use Supplies and Salvage. Battlefield units use regenerating Command. Skills use points earned from levels and discoveries.
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
 
-## Field guide update — 1.3.1
+## Command & Keep update — 1.4
 
-Regiments, Defenses and the battlefield Army menu now show complete stats next to the animated model. Soldiers list per-soldier health, damage per hit, armor, attack interval, direct DPS, reach, movement, squad size and Command cost. Abilities explain exact healing, repair, aura, penetration and control effects, including rank gates and cooldowns. Army → Inspect stats scrolls directly to the selected regiment's details and shows its surviving soldiers' combined health.
+Newly deployed soldiers automatically seek enemies across the battlefield, close to actual attack range, and reacquire targets when an enemy falls. Explicit Hold and Follow orders apply to soldiers already on the field; engineers remain gate repair specialists. Individual orders and hold positions survive a suspended battle.
 
-Rank previews compare against the owned rank; viewing the current rank shows the next upgrade. Defense numbers include the selected firing doctrine. The gate shows maximum and current battle health. Weapon/support emplacements are labeled **Protected**, because enemies attack the gate and beacon rather than destroying individual emplacements. Healing defenses clearly label healing output instead of damage.
+**During battle:** Command → Troops / Defenses / Orders. The paused battlefield stays visible beside a compact roster with an explicit Command cost for every entry. Deploy directly from a row, or tap its name for the animated model, health, damage, detailed stats and abilities. Seven emplacement types can be refitted for this battle using Command; the eighth entry repairs a standing gate. Replacing a defense preserves the other emplacements' cooldowns. Permanent training and the castle's home arrangement are preserved.
+
+**At the castle:** Keep → Character / Armory / Regiments / Castle, with a prominent mission destination. Equipment follows slot → inventory → item, then Benefits / Compare / Forge. Regiments and defenses follow roster → object → Overview / Stats / Abilities / Upgrade. Full numerical information and all ten visual ranks remain available without appearing together on a deployment screen. Market, Chronicle, Bestiary and Settings sit one level deeper. Back restores the previous list and scroll position.
+
+The interface uses warmer brass, leather and ivory colors, heraldic headings, larger body type and touch targets of at least 44 CSS pixels for menu buttons. See [research and navigation decisions](docs/mobile-menus.md).
 
 ## Armor update — 1.3
 

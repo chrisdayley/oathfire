@@ -32,10 +32,10 @@ export const TRAINING=[
  {id:'cast',title:'Remember your oath',text:'Tap either named ability beside ATTACK, or press Q / E. Abilities spend focus or stamina and need time to recover.',action:'Practice an ability'},
  {id:'jump',title:'Get above the ground',text:'Tap JUMP or press Space. You can climb low rocks, use the rampart stairs, and explore between battles.',action:'Practice jumping'},
  {id:'troops',title:'Meet your warband',text:'Visit Rowan at the barracks or open Regiments below. Supplies buy permanent ranks; Command buys squads during a battle. Inspect a troop to continue.',target:[-18,-4],tab:'troops',action:'Open Regiments'},
- {id:'defenses',title:'Prepare the keep',text:'Visit Nell or open Defenses. The gate stays built; four emplacements hold your chosen weapons. Inspect a defense and its ten ranks.',target:[19,-5],tab:'defenses',action:'Open Defenses'},
+ {id:'defenses',title:'Prepare the keep',text:'Visit Nell or open Defenses. The gate stays built; four emplacements hold your chosen weapons. Choose a defense, then Upgrade to preview its ten ranks.',target:[19,-5],tab:'defenses',action:'Open Defenses'},
  {id:'mission',title:'Your first defense',text:'Sera is at the war table beside the beacon. Read her briefing and select Begin defense. You can start directly with the button below.',target:[0,17],action:'Read the first briefing'},
- {id:'recruit',title:'You lead an army',text:'Tap ARMY, then Deploy beneath Longbows. Menus pause the battle. Three Shieldward already hold the center; give them ranged support.',tab:'army',action:'Deploy your first squad'},
- {id:'order',title:'Give an order',text:'In ARMY, choose Follow me to reposition, Hold here to defend your location, or Assault to advance. Orders affect all surviving troops.',tab:'army',action:'Open army orders'},
+ {id:'recruit',title:'You lead an army',text:'Open COMMAND → Troops, then deploy Longbows. Menus pause the battle. Your soldiers seek enemies automatically; give them ranged support.',tab:'army',action:'Deploy your first squad'},
+ {id:'order',title:'Give an order',text:'Open COMMAND → Orders. Follow me regroups your current troops; Hold here defends your position; Seek & attack hunts across the field. New recruits always advance.',tab:'army',action:'Open army orders'},
  {id:'victory',title:'Keep the ember alive',text:'Survive all three waves. If the gate breaks, defend the beacon behind it. Watch both flanks, replenish fallen squads, and use your abilities.',action:'Review battle tactics'}
 ];
 export function unlocksAt(count){return [...Object.entries(UNITS).filter(([,u])=>u.unlock===count).map(([,u])=>u.name),...Object.entries(DEFENSES).filter(([,d])=>d.unlock===count).map(([,d])=>d.name)];}
