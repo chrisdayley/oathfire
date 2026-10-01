@@ -1,0 +1,58 @@
+[
+  {
+    "file": "Barbarian.glb",
+    "originalBytes": 3613268,
+    "bytes": 334400,
+    "animations": 0,
+    "sha256": "3ffc80b63187fdf75cf956021dcbadffbcab33a151e88c68356c0e8d8eeffe2b"
+  },
+  {
+    "file": "Knight.glb",
+    "originalBytes": 3659532,
+    "bytes": 2269196,
+    "animations": 43,
+    "sha256": "e8d1b5f9a89694e94d890027d7da4da4deb4147e96d154e01cb59af58c0d714e"
+  },
+  {
+    "file": "Mage.glb",
+    "originalBytes": 3589240,
+    "bytes": 310848,
+    "animations": 0,
+    "sha256": "9dc05e8ee702df46ec7c2ab0b9df7b1bb321563d89bf44ab4805d9aa46a54ccf"
+  },
+  {
+    "file": "Rogue_Hooded.glb",
+    "originalBytes": 3597652,
+    "bytes": 318976,
+    "animations": 0,
+    "sha256": "82ce4a61c7ea7cc673dbd37b041c1bbdd9679c8157a1b18f7aca04405a64e46f"
+  },
+  {
+    "file": "Skeleton_Mage.glb",
+    "originalBytes": 4761048,
+    "bytes": 270856,
+    "animations": 0,
+    "sha256": "4d61019f5d9a97e5439ff00021b93d22005e067d56c4636ba5882240c5616554"
+  },
+  {
+    "file": "Skeleton_Minion.glb",
+    "originalBytes": 4814296,
+    "bytes": 323700,
+    "animations": 0,
+    "sha256": "67665a0bde3977c46586a64332f11b503b37af52a5d21208b76d1e4eb48511ee"
+  },
+  {
+    "file": "Skeleton_Rogue.glb",
+    "originalBytes": 4827024,
+    "bytes": 336356,
+    "animations": 0,
+    "sha256": "29d8e1d18181d94fa741a6d20056f7841dc31e7a609accd4156fca8e876a7f22"
+  },
+  {
+    "file": "Skeleton_Warrior.glb",
+    "originalBytes": 4863620,
+    "bytes": 372664,
+    "animations": 0,
+    "sha256": "121fbb8a44b8e656420a26018efae3f68203cd68749ce5088fa1a00d10932331"
+  }
+]

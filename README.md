@@ -1,2 +1,41 @@
-# oathfire
-Oathfire: The Hollow March — a mobile 3D hero, army and castle browser adventure.
+# Oathfire: The Hollow March
+
+A landscape mobile browser game combining direct 3D hero combat, battlefield army commands, castle defense and permanent RPG progression.
+
+**Play:** https://chrisdayley.github.io/oathfire/
+
+Three playable heroes; five weapon styles; quick and charged attacks; physical arrows, bolts and elemental magic; eight regiment types with ten ranks each; three castle defenses with ten ranks; fifteen battles across six landscapes; a free-roam castle, vendors, hidden chests and a crypt puzzle.
+
+This is a playable first release with stylized real-time 3D artwork. The original painted concept studies are art direction references, not screenshots of the shipped renderer. See [design and implementation](docs/design.md) and [QA evidence](docs/qa.md).
+
+## Play
+
+Mobile: left stick to move; drag the open screen to look; tap Attack for a quick strike, or hold and release for a charged attack. Guard just before a hit to counter. Jump over low obstacles. Army opens a paused command menu.
+
+Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard; Space jump; Q/E equipped techniques; R potion; F interact; V first/third person; Escape pause; Tab army.
+
+Visit Sera at the war table or open Campaign to begin. Explore the keep and the broad field between battles. Permanent upgrades use Supplies and Salvage. Battlefield units use regenerating Command. Skills use points earned from levels and discoveries.
+
+Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
+
+## Develop
+
+Node 22 recommended.
+
+```sh
+npm ci
+npm run dev -- --port 4178
+npm test
+npm run build
+npm run preview -- --port 4180
+```
+
+`src/` holds the game; `public/models/` holds compacted CC0 character assets; `tests/` checks permanent progression and saves. `scripts/compact-models.py` reproducibly compacts source models when the original downloaded models are present. `scripts/service-worker.mjs` writes the build-specific offline cache.
+
+The browser QA scripts use Playwright. Set `PLAYWRIGHT_MODULE` to an installed Playwright module path if it is not available as a normal dependency. Local QA reports and screenshots are generated in `work/qa/` and excluded from commits.
+
+GitHub Actions runs the progression tests, builds the Vite site and publishes the exact main-branch commit to Pages.
+
+## Credits
+
+Original world, weapons, mounts, story, systems, interface, animation layers and procedural audio for Oathfire. Character models and shared skeletal animations by Kay Lousberg, CC0. Three.js (MIT), Rapier (Apache 2.0), Vite (MIT); Cinzel and Inter (OFL). Full asset provenance and licenses are in [credits](public/credits.html) and `public/licenses/`.
