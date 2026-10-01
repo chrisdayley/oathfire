@@ -28,3 +28,11 @@
 #menu.battle-menu:not(.battle-detail)>footer{display:none}
 @media(max-height:600px){#menu.battle-menu:not(.battle-detail) header{height:64px}.roster-row{min-height:64px}.roster-select{padding:8px 12px!important}.battle-categories{margin-bottom:0}}
 #menu .row input[type=range]{height:44px;min-width:90px;flex-shrink:0;touch-action:pan-x}#menu .row>span{min-width:0}
+/* Compact expedition and equipment headers leave room for the object and decisions. */
+#menu.atlas-menu .atlas-detail>p{font:13px/1.5 Georgia!important;margin:12px 0}
+#menu.equipment-menu .item-quality{font-size:11px!important;margin:4px 0 10px;line-height:1.4}
+#menu.equipment-menu .weapon-key-stats small{font-size:9px!important;letter-spacing:.03em}
+#menu.equipment-menu .signature-power p{font-size:13px!important;line-height:1.5}
+#menu.equipment-menu .item-info h3{font-size:19px!important;margin:6px 0!important}
+#menu.equipment-menu .item-status{font-size:9px}
+@media(max-height:500px){#menu.equipment-menu header,#menu.atlas-menu header{height:52px}#menu.equipment-menu #menu-nav,#menu.atlas-menu #menu-nav{height:34px;min-height:34px}#menu.equipment-menu header h1,#menu.atlas-menu header h1{font-size:19px}#menu.equipment-menu header>div>small,#menu.atlas-menu header>div>small{font-size:8px}#menu.equipment-menu .item-info{padding:9px 12px}#menu.equipment-menu .weapon-key-stats>div{padding:6px 2px}#menu.equipment-menu .signature-power{margin:9px 0;padding:7px 10px}#menu.equipment-menu .signature-power h4{font-size:14px}#menu.atlas-menu .atlas-detail>button{margin-top:2px}#menu.atlas-menu .atlas-detail h2{font-size:16px!important}}

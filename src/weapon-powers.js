@@ -1,0 +1,12 @@
+import * as T from 'three';
+import {equipped} from './state.js';
+import {weaponPower} from './weapon-patterns.js';
+const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
+export function triggerWeaponPower(g,target,opt={},cast=false){const hero=g.hero,p=weaponPower(equipped(g.store.data));if(!p?.active||g.time<(hero.weaponPowerAt||0)||opt.secondary||(!cast&&!opt.heavy)||cast!==['nova','tide'].includes(p.id))return false;hero.weaponPowerAt=g.time+p.cooldown;const point=target?.pos?.clone()||hero.pos.clone(),combat=g.combat;
+ if(['kindle','quake','nova','rime'].includes(p.id)){combat.burst(point,p.id==='quake'?5:p.id==='nova'?4:3,p.damage,hero,p.id==='quake'?'dust':p.id==='rime'?'water':'fire');if(p.id==='kindle'&&target)target.burn=3;if(p.id==='rime'||p.id==='quake')for(const e of g.enemies)if(!e.dead&&distance(e.pos,point)<(p.id==='quake'?5:3)){if(p.id==='rime')e.rooted=2.5;else e.stun=.7;}}
+ if(['dawn','tide','ward'].includes(p.id)){for(const a of [hero,...g.allies])if(!a.dead&&distance(a.pos,hero.pos)<(p.id==='dawn'?5:6)){if(p.id==='ward')a.protect=4;else a.hp=Math.min(a===hero?g.heroStats().hp:a.stats.hp,a.hp+p.heal);}g.fx.ward(hero.pos,5,1.3,p.id==='tide'?'water':'holy');if(p.id==='tide')hero.focus=Math.min(g.heroStats().focus,hero.focus+4);g.audio.play(p.id==='tide'?'quench':'tether',.65,{position:hero.pos,rank:2});}
+ if(p.id==='root'){for(const e of g.enemies)if(!e.dead&&distance(e.pos,point)<3)e.rooted=2.5;g.fx.roots(point,3,2.5,9);g.audio.play('thorns',.7,{position:point,rank:2});}
+ if(p.id==='storm'){let prior=point;for(const e of g.enemies.filter(e=>e!==target&&!e.dead&&distance(e.pos,point)<8).sort((a,b)=>distance(a.pos,point)-distance(b.pos,point)).slice(0,3)){g.fx.slash(prior.clone().add(new T.Vector3(0,1,0)),e.pos.clone().add(new T.Vector3(0,1,0)),0xa7caff);combat.hit(e,p.damage,hero,{secondary:true,element:'arcane'});prior=e.pos;}g.audio.play('grave',.7,{position:point,rank:3});}
+ if(p.id==='pierce'&&target){const dir=target.pos.clone().sub(hero.pos).setY(0).normalize(),behind=g.enemies.filter(e=>e!==target&&!e.dead&&distance(e.pos,point)<14&&e.pos.clone().sub(point).normalize().dot(dir)>.9).sort((a,b)=>distance(a.pos,point)-distance(b.pos,point)).slice(0,2);if(behind.length)combat.shoot(hero,behind.at(-1),{secondary:true,ignorePhys:target.phys,passThrough:behind.length,origin:point.clone().add(new T.Vector3(0,1,0)),damage:p.damage,type:'arrow',speed:42,pierce:1});}
+ return true;
+}

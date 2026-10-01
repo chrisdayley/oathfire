@@ -5,6 +5,18 @@ import {material} from './materials.js';
 import {mesh,box,cyl,beam,sunBadge,compactRigid,weapon,shield} from './art.js';
 
 export const HOST_DESIGNS={
+ runner:{name:'Raven Runner',subtitle:'Fast assault scout',description:'A hunched scavenger in a hooked raven mask, with ragged feather fins and curved claws. Slows and pikes interrupt its rush.',color:0x364348,base:'archer'},
+ bomber:{name:'Cinder Bomber',subtitle:'Timed explosives',description:'A soot-stained iron mask, bright copper bomb satchel and glowing fuse clusters. Leave its orange warning circle before detonation.',color:0x745135,base:'hollow'},
+ herald:{name:'War Herald',subtitle:'Damage and speed aura',description:'A tall torn crimson standard rises over its armored shoulders. Nearby enemies gain 15% damage and speed.',color:0x7b3432,base:'knight'},
+ longbow:{name:'Blackfeather Hunter',subtitle:'Long range marksman',description:'Black feather crown, narrow hood and an oversized ash bow. Slow volleys hit hard from 35m.',color:0x30343c,base:'archer'},
+ bulwark:{name:'Grave Bulwark',subtitle:'Frontal shield tank',description:'A broad coffin shield and squared iron helm protect its front. Flank or use charged attacks to defeat its 70% frontal protection.',color:0x43524f,base:'knight'},
+ mender:{name:'Bone Mender',subtitle:'Enemy healer',description:'An ivory antler mask and green medicine lantern distinguish this fragile support. Heals two nearby enemies every six seconds.',color:0x607e67,base:'mage'},
+ reaver:{name:'Blood Reaver',subtitle:'Wounded berserker',description:'A red split crest and hooked shoulder blades frame exposed furnace scars. Enrages below half health.',color:0x74352f,base:'knight'},
+ mortar:{name:'Ash Mortar',subtitle:'Long range bombardment',description:'An iron bombard tube rests across a braced shoulder harness. Large red circles telegraph its explosive shells.',color:0x514d43,base:'brute'},
+ wraith:{name:'Mirror Wraith',subtitle:'Phasing duelist',description:'A silver mirror mask, violet crystal fins and torn translucent-looking mantle. Its arrival ring warns before each blink.',color:0x6b5a80,base:'mage'},
+ warpriest:{name:'Hollow Warpriest',subtitle:'Armored support commander',description:'A triple lantern crown and immense reliquary staff shield and heal an escort. Eliminate the priest first.',color:0x584970,base:'mage'},
+ regent:{name:'The Glass Regent',subtitle:'Captain of the winter cities',description:'A crown of tall frostglass shards rises from a silver mask. His mirrored armor catches the violet light of imprisoned beacons.',color:0x7592ad,base:'veyr'},
+ hollowking:{name:'The Hollow King',subtitle:'The first broken promise',description:'A charred antler crown surrounds a caged ember. Black layered plate and an enormous golden reliquary mark the final keeper.',color:0x2b202d,base:'castellan'},
  hollow:{name:'The Unburied',subtitle:'Levy of the Hollow Host',description:'Exposed ribs, burial linen and a broken iron cap. These are the ordinary dead pressed back into service.',color:0x746450},
  archer:{name:'Duskbone Stalker',subtitle:'Hollow bowman',description:'A narrow ash-grey hood, leather rib harness and a tall quiver distinguish the ranged hunters.',color:0x424844},
  knight:{name:'Ossuary Knight',subtitle:'Armored line breaker',description:'Blackened fluted plate, an angular sallet and a serrated coffin shield. Cold light leaks through the visor.',color:0x313b3d},
@@ -38,12 +50,12 @@ export function adultPose(c){
 
 export function buildAppearance(c){
  const armor=c.armor?armorDefinition(c.armor):null,kind=c.armor?armorKind(c.armor):null,light=['trail','spellweave','dawn'].includes(kind),plus=c.armor?.plus||0;
- const role=c.design,rank=c.rank,undead=!!HOST_DESIGNS[role],bare=role==='hollow'||role==='archer',caster=role==='mage',brute=role==='brute',royal=['bell','castellan','veyr'].includes(role),hood=(kind&&kind!=='hearth')?light:['ranger','bow','rider','archer','mage','marksman','assassin','frost','pyre','lantern'].includes(role);
+ const variant=c.design,role=HOST_DESIGNS[variant]?.base||variant,rank=c.rank,undead=!!HOST_DESIGNS[variant],bare=role==='hollow'||role==='archer',caster=role==='mage',brute=role==='brute',royal=['bell','castellan','veyr'].includes(role),hood=(kind&&kind!=='hearth')?light:['ranger','bow','rider','archer','mage','marksman','assassin','frost','pyre','lantern'].includes(role);
  const charcoal=material('steel',undead?0x55594f:0x737e7c,{roughness:.72,metalness:.84});
  const steel=material(kind==='trail'?'leather':kind==='spellweave'?'cloth':'steel',armor?armor.steel:role==='castellan'?0x504038:role==='veyr'?0x65716d:undead?0x444c47:0x949f9e,{roughness:light?.85:.54,metalness:light?.18:.88});
  const brass=material('steel',armor?armor.trim:undead?0x9a7645:0xb59b60,{roughness:.52,metalness:.78});
  const leather=material('leather',undead?0x74634d:0x746858,{roughness:.92,metalness:0});
- const cloth=material('cloth',armor?armor.cloth:undead?(HOST_DESIGNS[role]?.color||0x3b4036):['ashwright','breaker'].includes(role)?0x6c4d31:['banner','engineer','assassin','pyre','marksman','frost','dawn','lantern'].includes(role)?c.color:0x102d34,{side:T.DoubleSide,roughness:1});
+ const cloth=material('cloth',armor?armor.cloth:undead?(HOST_DESIGNS[variant]?.color||0x3b4036):['ashwright','breaker'].includes(role)?0x6c4d31:['banner','engineer','assassin','pyre','marksman','frost','dawn','lantern'].includes(role)?c.color:0x102d34,{side:T.DoubleSide,roughness:1});
  const boneMat=material('stone',0xa19a80,{normalScale:new T.Vector2(.13,.13),roughness:1});
  const black=new T.MeshStandardMaterial({color:0x090e10,roughness:.94});
  const glow=new T.MeshStandardMaterial({color:kind==='ember'?0xffac48:kind==='spellweave'?0x9ac6ea:role==='brute'||role==='castellan'?0xff8535:0x85c9b1,emissive:kind==='ember'?0xce5520:kind==='spellweave'?0x568cb4:role==='brute'||role==='castellan'?0xed4a10:0x519f80,emissiveIntensity:1.6,roughness:.6});
@@ -221,6 +233,13 @@ export function buildAppearance(c){
   if(plus>=6)for(const suffix of ['l','r']){const a=part('upperarm.'+suffix);ring(a,light?.109:.137,light?.107:.139,.035,.009,brass);}
   if(plus>=10){const gem=mesh(new T.OctahedronGeometry(.033,0),glow,chest,0,.055,.202);gem.scale.y=1.5;for(const side of [-1,1])strip(chest,[[0,.045,.194],[side*.055,.10,.174],[side*.075,.17,.14]],.006,brass);}
  }
+ // Enemy silhouettes keep their own identifiers and equipment, even when sharing a rig.
+ if(variant==='herald'){cyl(chest,.017,.017,1.35,[-.20,.36,-.19],charcoal,8);const flag=mesh(new T.PlaneGeometry(.52,.63,1,1),cloth,chest,-.44,.73,-.19);flag.rotation.y=.2;for(let j=0;j<3;j++)box(chest,[.025,.4,.013],[-.63+j*.16,.7,-.175],brass);}
+ if(variant==='bomber')for(let j=0;j<3;j++){ellipsoid(hips,[.07,.085,.07],[.20,-.03-j*.10,.11],charcoal);cyl(hips,.008,.008,.07,[.20,.055-j*.10,.11],glow,6);}
+ if(['runner','longbow'].includes(variant))for(const side of [-1,1])for(let j=0;j<4;j++){const feather=box(head,[.023,.22+j*.03,.065],[side*(.12+j*.027),.13,-.05-j*.035],charcoal);feather.rotation.z=-side*.6;}
+ if(['mender','wraith','warpriest','regent','hollowking'].includes(variant)){const hue=new T.MeshStandardMaterial({color:variant==='mender'?0xb5d9a7:0xb5a1e4,emissive:variant==='mender'?0x4c8548:0x604387,emissiveIntensity:.7,metalness:.35,roughness:.3});c.materials.push(hue);for(const side of [-1,1])for(let j=0;j<(variant==='regent'?4:2);j++){const shard=mesh(new T.OctahedronGeometry(.042,0),hue,head,side*(.12+j*.033),.30+j*.07,-.03);shard.scale.y=3+j;}}
+ if(variant==='reaver')for(const side of [-1,1]){const fin=mesh(new T.ConeGeometry(.055,.4,4),brass,chest,side*.28,.25,-.01);fin.rotation.z=-side*.5;}
+ if(variant==='mortar'){cyl(chest,.095,.13,.66,[.29,.22,-.13],charcoal,12).rotation.x=1.1;cyl(chest,.115,.115,.07,[.29,.40,.17],brass,12).rotation.x=1.1;}
  // Bake rigid armor and anatomical pieces into a few genuinely skinned draw calls.
  c.visual.updateMatrixWorld(true);const skeleton=new T.Skeleton(Object.values(c.sockets).filter(b=>b.isBone));skeleton.calculateInverses();
  const bins=new Map(),inverse=c.visual.matrixWorld.clone().invert();
@@ -228,9 +247,9 @@ export function buildAppearance(c){
  c.body=[];for(const [mat,geos]of bins){const geometry=mergeGeometries(geos,false);if(!geometry)throw Error('Character mesh merge failed');geos.forEach(g=>g.dispose());const body=new T.SkinnedMesh(geometry,mat);body.name='Oathfire_'+role+'_'+mat.uuid.slice(0,6);body.castShadow=body.receiveShadow=true;body.frustumCulled=false;c.visual.add(body);body.bind(skeleton);c.body.push(body);}
  // Cloth silhouette is a tailored mantle, with a ragged hem for the Hollow Host.
  if(!bare&&!brute){const height=kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.23:1.02,width=kind==='marshal'?.65:royal?.62:.54,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*38)*.014+drop*.07));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cape=mesh(geo,cloth,bone(c,'chest'),0,-height*.5+.19,-.15);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
- c.held=compactRigid(weapon(c.weaponType,rank,c.color,c.temper,c.design));c.held.rotation.y=Math.PI;c.heldRest=c.held.quaternion.clone();bone(c,'handslot.r').add(c.held);c.gear.push(c.held);
+ c.held=compactRigid(weapon(c.weaponType,rank,c.color,c.temper,c.design,c.weaponItem));c.held.rotation.y=Math.PI;c.heldRest=c.held.quaternion.clone();bone(c,'handslot.r').add(c.held);c.gear.push(c.held);
  if(['sword','spear'].includes(c.weaponType)&&!caster&&!brute&&role!=='bell'&&role!=='assassin'){
-  c.heldShield=compactRigid(shield(c.design==='warden'?Math.max(4,rank):rank,undead?0x343c38:0x234b4d,undead?role:null));c.heldShield.rotation.y=Math.PI;c.heldShield.rotation.z=-Math.PI/2;c.heldShield.position.set(0,-.02,.05);bone(c,'handslot.l').add(c.heldShield);c.gear.push(c.heldShield);
+  c.heldShield=compactRigid(shield(c.design==='warden'?Math.max(4,rank):rank,undead?0x343c38:0x234b4d,undead?role:null));if(variant==='bulwark')c.heldShield.scale.set(1.35,1.45,1.15);c.heldShield.rotation.y=Math.PI;c.heldShield.rotation.z=-Math.PI/2;c.heldShield.position.set(0,-.02,.05);bone(c,'handslot.l').add(c.heldShield);c.gear.push(c.heldShield);
  }else c.heldShield=null;
  c.visual.userData.design=role;c.visual.userData.armorKind=kind;c.visual.userData.bodySource='original-oathfire-skinned-geometry';
 }

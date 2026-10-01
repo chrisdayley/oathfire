@@ -1,7 +1,8 @@
+import {decorateMissions} from './campaign.js';
 import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-1.8.0-steel-and-sorcery';
+export const BUILD='oathfire-2.0.0-kingdom-and-melody';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',subtitle:'Iron, resolve, a line that holds.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -44,6 +45,16 @@ export const UNITS={
 };
 export const DEFENSES={gate:{name:'Wall & gate',desc:'Protect the beacon. Each level rebuilds the gatehouse.',baseHp:1100,costs:[90,130,180,250,330,440,580,760,990]},tower:{...ARMY_SPEC.tower,desc:'Arrows control the approaches.',name:'Archer tower'},ballista:{...ARMY_SPEC.ballista,desc:'Heavy bolts answer armored siege units.',name:'Ballista'},...NEW_DEFENSES};
 export const ENEMIES={
+ runner:{name:'Raven runner',model:'Skeleton_Rogue',weapon:'sword',hp:46,damage:10,speed:4.4,range:1.9,xp:16,scale:.83},
+ bomber:{name:'Cinder bomber',model:'Skeleton_Minion',weapon:'staff',hp:82,damage:23,speed:1.85,range:20,xp:25,mechanic:'bomb'},
+ herald:{name:'War herald',model:'Skeleton_Warrior',weapon:'spear',hp:145,damage:10,speed:1.8,range:3,xp:34,mechanic:'aura'},
+ longbow:{name:'Blackfeather hunter',model:'Skeleton_Rogue',weapon:'bow',hp:88,damage:24,speed:1.8,range:35,xp:28},
+ bulwark:{name:'Grave bulwark',model:'Skeleton_Warrior',weapon:'sword',hp:320,damage:21,speed:1.35,range:2.7,xp:42,armor:22,scale:1.2,mechanic:'shield'},
+ mender:{name:'Bone mender',model:'Skeleton_Mage',weapon:'staff',hp:130,damage:10,speed:1.7,range:22,xp:40,mechanic:'heal'},
+ reaver:{name:'Blood reaver',model:'Skeleton_Warrior',weapon:'hammer',hp:260,damage:28,speed:2.7,range:2.8,xp:44,armor:8,mechanic:'rage'},
+ mortar:{name:'Ash mortar',model:'Skeleton_Warrior',weapon:'crossbow',hp:270,damage:36,speed:1.15,range:39,xp:55,armor:12,mechanic:'mortar'},
+ wraith:{name:'Mirror wraith',model:'Skeleton_Rogue',weapon:'sword',hp:190,damage:25,speed:2.9,range:2.6,xp:45,mechanic:'blink'},
+ warpriest:{name:'Hollow warpriest',model:'Skeleton_Mage',weapon:'staff',hp:350,damage:25,speed:1.6,range:26,xp:65,armor:14,mechanic:'priest'},
  hollow:{name:'Hollow soldier',model:'Skeleton_Minion',weapon:'sword',hp:62,damage:9,speed:2.1,range:2.3,xp:12},
  archer:{name:'Bone archer',model:'Skeleton_Rogue',weapon:'bow',hp:48,damage:9,speed:1.9,range:22,xp:15},
  knight:{name:'Hollow knight',model:'Skeleton_Warrior',weapon:'sword',hp:135,damage:15,speed:1.8,range:2.5,xp:23,armor:10},
@@ -52,7 +63,7 @@ export const ENEMIES={
  boss:{name:'The Bell Knight',model:'Skeleton_Warrior',weapon:'spear',hp:850,damage:28,speed:2.1,range:4,xp:140,scale:1.45,armor:20}
 };
 const locations=[['Hearthwatch Fields','plain','A line in the grass','Hold the open approaches while the first refugees reach the keep.'],['Reedwater Ford','river','Across the shallows','Use both crossings. Secure the crossing so Nell can bring her engineers and cannon plans home.'],['Sunken Quarry','quarry','Stone remembers','Take the high terraces and silence the grave callers.'],['Thorn Abbey','forest','A lantern in the dark','Protect the lantern order’s road and recover the cinder adepts’ lost writings.'],['The Bell Road','plain','The first broken oath','The Bell Knight leads the Hollow Host himself.'],['Ashen Foundry','desert','Fire under the stone','Recover Torren’s old forge and train the Ashbreakers.'],['The Split Crossing','river','Two fronts','The enemy arrives across both banks.'],['Frostmere','snow','The silent lake','Ice opens wide flanking routes around the shattered watch.'],['Westwind Downs','plain','Riders of the old dawn','Hold long enough for the riders to return.'],['The Buried Crown','desert','A name beneath the sand','Break Veyr’s second captain at the buried city.'],['Blackroot Reach','forest','The roots of the oath','Grave callers gather under the ancient canopy.'],['The Giant’s Stair','quarry','A promise in stone','An oathbound giant waits beyond the quarry walls.'],['Glasswater','river','The last crossing','Hold the river approaches to the Hollow March.'],['The Frozen Beacon','snow','A fire remembered','Relight the last uncorrupted beacon.'],['Crown of Ash','desert','No more borrowed souls','Face Marshal Veyr. Break the oath that binds the fallen.']];
-export const MISSIONS=locations.map(([name,biome,title,story],i)=>({id:i,name,biome,title,story,act:Math.floor(i/5)+1,boss:i%5===4,waves:3+Math.floor(i/5),reward:180+i*45,xp:115+i*24,scale:.85+i*.16,seed:7919+i*3511}));
+export const MISSIONS=decorateMissions(locations);
 export const BIOMES={plain:{name:'Hearthwatch Fields',ground:0x6f8050,grass:0x708850,rock:0x858374,fog:0xa3b2a7,sky:0xc3cfc5,sun:0xffd395,water:0x537e7a},river:{name:'Reedwater Delta',ground:0x63816d,grass:0x76996f,rock:0x788784,fog:0x96afb1,sky:0xc1d3d2,sun:0xf4d5a2,water:0x4b9895},quarry:{name:'Sunken Quarry',ground:0x938579,grass:0x737b52,rock:0xb5a799,fog:0xafb8b5,sky:0xc0caca,sun:0xffd7a0,water:0x567f7d},forest:{name:'Thorn Abbey',ground:0x4e6550,grass:0x587a50,rock:0x6e7e76,fog:0x7e9a8e,sky:0xabc7b1,sun:0xf6d99b,water:0x477e73},snow:{name:'Frostmere',ground:0xc4d2d1,grass:0xa1bbbd,rock:0x91a8ad,fog:0xa7c3cf,sky:0xc6dce4,sun:0xffe3c3,water:0x669bac},desert:{name:'Crown of Ash',ground:0xb4a17b,grass:0x969466,rock:0x9b8d77,fog:0xbba998,sky:0xd3c0a2,sun:0xffc185,water:0x647f70}};
 export const RARITIES=[{name:'Common',color:'#b9c0b7',mult:1},{name:'Uncommon',color:'#92bf98',mult:1.09},{name:'Rare',color:'#80b8d2',mult:1.20},{name:'Epic',color:'#c6a0db',mult:1.34},{name:'Legendary',color:'#edc374',mult:1.52}];
 export const FORGE=[1,1.04,1.07,1.10,1.13,1.17,1.20,1.23,1.26,1.30,1.35];

@@ -1,58 +1,51 @@
-# The Royal Orchestra — 1.7
+# Kingdom & Melody — Oathfire 2.0
 
-The music is original Oathfire composition played with recordings of acoustic orchestral instruments. Strings, brass, woodwinds, harp, timpani, bells and percussion share a stereo concert-hall mix. It is a sampled orchestra, not a recording of a live ensemble playing these pieces together.
+The score has been recomposed around recognizable melodies, breaths, answering phrases and contrasting sections. The replacement sample library uses stereo sections, a solo violin, short string and brass articulations, sustained sample loops, and soft/forceful brass layers. These are sampled performances arranged in the browser, not a recording of a live orchestra performing the complete pieces.
 
-## Pieces
+## Reference study and its limits
 
-| Scene | Piece | Character and form |
-| --- | --- | --- |
-| Hearthwatch | Banners in the Morning | D major, 108 BPM. Bright royal procession, singable violin theme, garden dance, woodwind bridge and full royal return. 72 measures in nine eight-bar sections: **160 seconds / 2:40 before the suite repeats**. |
-| Act I battles | The Hearthguard March | D minor. Dotted trumpet call, answering horns and marching snare; strings and brass gather with the waves. |
-| Act II battles | Standards through the Ash | C minor. A lower, resolute theme, with moving strings and denser low brass. |
-| Act III battles | The Last Banner | E minor. A rising military anthem with the strongest late-wave arrangement. |
-| Bell Knight | The Bell That Calls the Dead | D Phrygian, 132 BPM. Tolling bells, threatening semitone movement, horns and marching drums. |
-| Ash Castellan | The Furnace Crown | C harmonic minor, 150 BPM, 3/4. A furnace dance with hammering trombones and racing strings. |
-| Marshal Veyr | No More Borrowed Souls | C-sharp harmonic minor, 156 BPM. Trumpets over independent violin lines, bells and heavy percussion. |
-| Victory | The Oath Holds | Warm royal horn reprise, harp and woodwinds. |
-| Defeat | An Ember Remains | Slow oboe lament with restrained strings, horn and harp. |
+The user’s open Chrome tab was a violin/piano arrangement of **Scars of Time** by rdstewart. The supplied CreativeOyster arrangement was also opened in Chrome. The visible opening of the latter has a spacious 82 BPM introduction, guitar arpeggios, a flute entrance around measure 6, held notes answered by shorter ornaments, and a marked lift to 110 BPM with percussion at measure 20. Only the loaded opening notation was inspected; later pages did not load reliably. These observations concern those arrangements, not a verified transcription of the original recording.
 
-Castle form: Processional → Hearthwatch theme → The banners rise → Garden dance → Woodwind promenade → The sunlit court → Royal return → Bells over Hearthwatch → Homeward cadence. The full suite repeats only after its coda. Recurring melodies are intentional musical themes; this is not a two-minute sequence of unrelated notes.
+- [Violin/piano arrangement inspected in Chrome](https://musescore.com/user/34965227/scores/7279922)
+- [Supplied ensemble arrangement inspected in Chrome](https://musescore.com/user/9405616/scores/5292881)
+- [Chrono Cross soundtrack reference](https://archive.org/details/chrono_cross-original_soundtrack-1999)
 
-## Music follows the fight
+All **67 recordings** in that soundtrack listing were downloaded into an ignored research folder and processed across their full durations for energy contours, pulse estimates, crest factor and section contrasts. Those are signal measurements, not listening or note transcription. Automated tempo estimates can be half or double the musical pulse. The tools used in this session do not provide auditory perception, so no claim is made that all tracks were listened to or that the new music has passed a human listening review. The copyrighted reference recordings are not distributed with the game.
 
-The battle score is composed measure by measure from authored themes, harmonic movements, variations and countermelodies. Its measure cursor never wraps, and no audio buffer loops. It continues for a fight of any duration instead of running out or restarting a fixed recording. Melodic motifs return in developed arrangements.
+Mitsuda describes folk melody and the need to avoid stiffness, including revising an initially unsatisfactory opening demo. The practical lesson here is to let a small, memorable melody carry the piece before adding orchestral density. [Translated 2000 Mitsuda interview](https://shmuplations.com/yasunorimitsuda2/).
 
-At each wave, tempo increases by 5 BPM. Arrangement intensity adds faster string figures, lower brass, doubled melody, stronger timpani, snare flams and rolls. The next measure takes the new arrangement, preserving musical position. Related-key movements and horn/woodwind responses develop longer battles. Intensity is independent of the volume slider.
+Uematsu discusses individuality and composing in response to characters and story. Accordingly, the castle, each act and each boss receive different musical identities rather than one interchangeable background bed. [2010 Uematsu interview](https://squareenixmusic.com/features/interviews/nobuouematsu2.shtml).
 
-The act-ending encounters are missions 5, 10 and 15. The boss's arrival crossfades to its individual score. That theme remains until the battle ends, including if the boss dies before its accompanying enemies. Victory and defeat have separate orchestral aftermath cues. Returning home restores the castle suite.
+Mitsuda also describes the relationship between game imagery, story and music, and using accessible song structures with folk influences. The design uses repeating melodic ideas with varied answers and orchestration, rather than making every bar unrelated. [2005 Mitsuda interview](https://squareenixmusic.com/features/interviews/yasunorimitsuda.shtml).
 
-## Playback, controls and saves
+## New score
 
-- Music and effects have independent volume controls in Settings. Existing preferences are preserved; a new campaign starts with music at 50% and effects at 55%.
-- Castle menus keep music playing at 52% of the chosen music level. Battle menus pause notes and musical time; closing them resumes sample offsets and pending notes.
-- Suspended battles save score ID, measure, beat and elapsed musical time. A reload restores that position. Legacy saves without music data remain valid.
-- Backgrounding pauses the transport and suspends audio. Returning through a user gesture resumes playback, as required by mobile browser autoplay rules.
-- An unavailable sample download does not stop gameplay. A later audio-unlocking interaction retries it. The standalone player provides an explicit retry message.
-- [The soundtrack player](../soundtrack.html) previews every main piece and lets players choose battle intensity without unlocking missions. It also works offline after the game has cached this release.
+| Scene | Theme | Shape |
+|---|---|---|
+| Hearthwatch | A Kingdom Wakes | 96 bars; approximately **3:35 before looping**. Quiet oboe/harp prelude, singing violin, court dance, woodwind middle, full royal return. 92/96/112 BPM. |
+| Act I | Run with the Banners | 132 BPM. Rhythmic violin hook, held peaks, marching percussion and offbeat strings. |
+| Act II | Across the Amber River | 138 BPM. Longer lyrical answers, horn counterphrases and moving bass. |
+| Act III | Names in the Starlight | 144 BPM. Broad melodic rise over urgent strings. |
+| Act IV | Wings over Winter | 140 BPM. Woodwind exchanges and a lighter contrasting middle. |
+| Act V | The Road We Choose | 148 BPM. The banner melody returns with a different tonal center and heavier arrangement. |
+| Bell Knight | The Broken Bell | 126 BPM. Chromatic bell motif and weighty low strings. |
+| Ash Castellan | Dance of the Furnace King | 156 BPM. Angular melody, short trombone accents and hammering percussion. |
+| Marshal Veyr | A Crown Cannot Hold the Dawn | 150 BPM. Broad, conflicted melody with answering horns. |
+| Glass Regent | The Regent of Glass | 146 BPM. Celesta, cold chromatic turns and sharp brass. |
+| Hollow King | Until Every Voice Is Free | 164 BPM. A separate final-boss melody, bells and short brass. |
+| Victory | Carry the Light Home | 108 BPM. Horn-led homecoming. |
+| Defeat | Still, an Ember | 76 BPM. Exposed solo line and a restrained accompaniment. |
 
-## Assets and implementation
+Battle playback does not seek back to the beginning or wrap its measure counter. Five 96-bar developments move through different tonal centers. Themes and accompaniment patterns recur intentionally; this is not an assertion of infinitely unique music. Wave progression adds string pulse, brass, ornaments, upper strings and low reinforcement without abruptly changing tempo. Quieter middle sections preserve contrast even at high intensity. Boss entrances change to their own score and retain it until the encounter finishes.
 
-82 source recordings become 22 mono AAC banks at 32 kHz, totaling **2,552,337 bytes**. The bank manifest stores sample offsets, actual SFZ pitch centers, source paths, source hashes and pinned commits. Octave names in different instruments' filenames do not consistently use the same convention, so pitch centers come from the source SFZ mappings.
+## Rendering
 
-`src/music-score.js` contains the themes and orchestration. `src/music.js` manages scene changes, beat transport, pause/resume and checkpoints. `src/orchestra.js` schedules sampled voices, envelopes, stereo seating and a shared hall impulse. The mobile browser renderer uses at most 96 simultaneous voices and loads banks with four concurrent requests. Measured decoded audio memory in Chromium was 48.3 MB at its audio sample rate. Banks ship with the game and are precached by its service worker; runtime playback has no dependency on a third-party music host.
+The sampler retains pitch corrections and WAV sustain-loop points from source SFZ mappings. Sustained notes can ring for their written duration instead of fading after a short one-shot. It selects nearby recorded pitches, alternate takes where available, and soft/forte brass recordings. Notes receive expression envelopes, slight timing/pitch variation, stereo placement, velocity-dependent filtering and shared hall reverb. A 32 kHz AudioContext keeps the complete decoded orchestra at approximately 108 MB in the tested browser. A 112-voice ceiling bounds realtime work. Music and effects retain independent volume controls; menus pause combat music position, and saves retain measure, beat and elapsed time.
 
-`scripts/prepare-orchestra.py` reproduces the banks using Python with NumPy, curl and macOS afconvert. `scripts/music-render.mjs` renders audio diagnostic WAVs using Web Audio's OfflineAudioContext. The game build uses the checked-in banks and needs none of those asset preparation tools. Browser scripts accept `PLAYWRIGHT_MODULE` or `--playwright-module` and `GAME_URL`.
+Primary implementation references: [Virtual Playing Orchestra](https://virtualplaying.com/virtual-playing-orchestra/), [standard articulation documentation](https://virtualplaying.com/standard-orchestra-documentation/), [performance documentation](https://virtualplaying.com/performance-orchestra-documentation/), and [EastWest orchestral performance manual](https://media.soundsonline.com/manuals/EW-Symphonic-Orchestra-User-Manual.pdf). No EastWest samples are included.
 
-## Source and licensing
+## Provenance and reproducibility
 
-Instrument recordings: [Versilian Studios VSCO 2 Community Edition](https://versilian-studios.com/vsco-community/) and its [source repository](https://github.com/sgossner/VSCO-2-CE). Recordings by Sam Gossner and Simon Dalzell; sample cutting by Elan Hickler / Soundemote. CC0 1.0 permits redistribution and modifications. The full license is included in `public/licenses/VSCO-2-CE-CC0.txt`.
+`scripts/prepare-orchestra-v2.py` compacts the source recordings into 26 instrument banks, including four retained percussion banks. Download size is **7,219,025 bytes**. `public/music/chamber/orchestra.json` records roots, offsets, durations, loops, tuning, sources and SHA-256 hashes. Full source attribution and license links are in `public/music/chamber/LICENSES.txt` and the included VPO license document. These assets have mixed source licenses; they are **not all CC0**.
 
-- Source samples: `440300901dfe9275fd84e0b7763af1f8443ae62e`.
-- SFZ mapping: `6dd651d55dde97fd4028699be9d4481f26917891`.
-- Per-file provenance: `public/music/orchestra.json`.
-
-Scheduling and offline rendering follow the browser [AudioBufferSourceNode API](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start) and [OfflineAudioContext](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext).
-
-## Verification scope
-
-Automated score checks cover duration, form, wave escalation, all boss signatures, valid notes and samples, legacy saves and 1,200 measures per battle/boss score without a cursor wrap. Audio renders cover the full castle suite, 24 measures of every act/boss piece, and both aftermath cues. The measured renders have no clipped samples; the loudest peak is 0.974 at 100% music gain. Live browser QA checks actual nonzero audio, independent volume channels, menus, saves, real boss spawns, background/resume, download retry, offline banks and phone-sized layouts. These objective checks do not substitute for listening feedback or sustained tests on physical iOS and Android devices.
+Run `npm test` for score/bank validation, `scripts/music-render.mjs` for full castle and excerpts of every other cue, and `scripts/music-qa.mjs` for live scheduling, pause/resume, scene changes, volume isolation, offline access and download failure recovery. Technical audio tests can detect silence and clipping; they cannot determine whether a melody is beautiful or catchy.

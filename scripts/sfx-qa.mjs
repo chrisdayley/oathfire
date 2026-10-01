@@ -12,7 +12,7 @@ finally{if(!process.argv.includes('--inspect'))fs.writeFileSync(out+'/report.jso
 async function runChecks(){
  const wait=ms=>page.waitForTimeout(ms),foley=()=>page.evaluate(()=>window.__oathfire.audio.foley.history);
  await page.waitForFunction(()=>window.__oathfire.audio.foley?.state==='ready');await page.evaluate(()=>{const g=window.__oathfire;g.store.data.settings.music=0;g.audio.settings(g.store.data.settings);g.store.data.guide.active=false;});
- check('Steel and Sorcery release loaded',await page.evaluate(()=>window.__oathfire.debug().build==='oathfire-1.8.0-steel-and-sorcery'));
+ check('Steel and Sorcery release loaded',await page.evaluate(()=>window.__oathfire.debug().build==='oathfire-2.0.0-kingdom-and-melody'));
  report.audio=await page.evaluate(()=>window.__oathfire.audio.foley.debug());check('All 87 effect cues decode into five local banks',report.audio.banks===5&&report.audio.cues===87);
  const place=async(x,z,biome='plain')=>{await page.evaluate(({x,z,biome})=>{const g=window.__oathfire;g.ui.close();g.input.clear();if(g.world.biome!==biome){g.loadWorld(biome,7919);g.spawnHero({x,y:g.world.height(x,z)+.1,z});}else g.physics.teleport(g.hero.phys,{x,y:g.world.height(x,z)+.1,z});g.hero.velocity.set(0,0,0);g.view.yaw=0;g.hero.character.footsteps.previous=null;},{x,z,biome});await wait(500);await page.evaluate(()=>window.__oathfire.audio.foley.history=[]);};
  const move=async(speed,ms=2500)=>{await page.evaluate(speed=>window.__oathfire.input.joy.y=speed,speed);await wait(ms);await page.evaluate(()=>window.__oathfire.input.clear());await wait(200);return (await foley()).filter(e=>e.event==='footfall');};

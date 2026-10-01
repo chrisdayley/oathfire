@@ -1,3 +1,4 @@
+import {centerMap} from './campaign-ui.js';
 import {BATTLE_GLYPHS} from './battle-icons.js';
 import {fieldRoster} from './battle-roster.js';
 import {battleUnitStats,RESEARCH} from './research.js';
@@ -13,7 +14,7 @@ const glyphs={...BATTLE_GLYPHS,lock:'M7 14V9a9 9 0 0 1 18 0v5M5 14h22v16H5ZM16 1
 export function sigil(kind){return '<svg class="menu-sigil" viewBox="0 0 32 32" aria-hidden="true"><path d="'+(glyphs[kind]||glyphs.troops)+'"/></svg>';}
 export const sectionTabs=(ui,items)=>'<div class="detail-tabs" role="group" aria-label="Details">'+Object.entries(items).map(([id,label])=>'<button data-action="detail-section" data-id="'+id+'" class="'+(ui.detailTab===id?'active':'')+'" aria-pressed="'+(ui.detailTab===id)+'">'+label+'</button>').join('')+'</div>';
 const snapshot=ui=>Object.fromEntries(['screen','detailTab','unit','defense','item','inventoryFilter','battleCommand','detailKind','tree','selectedMission','enemy','researchFilter','researchId'].map(k=>[k,ui[k]]).concat([['tab',ui.g.menu],['scroll',$('menu-content').scrollTop]]));
-function refresh(ui,scroll=0){const grids=[...document.querySelectorAll('.research-grid,.field-roster-grid')].map(e=>({className:e.className,scroll:e.scrollTop}));ui.draw();ui.previewForTab();$('menu-content').scrollTop=scroll;for(const old of grids){const grid=document.getElementsByClassName(old.className)[0];if(grid)grid.scrollTop=old.scroll;}}
+function refresh(ui,scroll=0){const grids=[...document.querySelectorAll('.research-grid,.field-roster-grid')].map(e=>({className:e.className,scroll:e.scrollTop}));ui.draw();ui.previewForTab();$('menu-content').scrollTop=scroll;if(ui.g.menu==='campaign')centerMap(ui);for(const old of grids){const grid=document.getElementsByClassName(old.className)[0];if(grid)grid.scrollTop=old.scroll;}}
 export function navigate(ui,tab,options={},push=true){if(push)ui.navStack.push(snapshot(ui));ui.g.menu=tab;ui.screen='list';ui.detailTab='overview';ui.previewRank=null;Object.assign(ui,options);refresh(ui);}
 export function openMenu(ui,tab){const g=ui.g;if(!g.store.data)return;g.checkpoint();g.input.enabled=false;g.input.clear();ui.navStack=[];ui.battleCommand=!!g.battle;ui.detailKind=null;ui.screen='list';ui.detailTab='overview';ui.previewRank=null;
  if(g.battle){ui.screen=tab==='pause'?'pause':tab==='research'?'research':tab==='battle-defenses'?'defenses':'root';tab='army';}else if(tab==='pause'||tab==='army')tab='home';
@@ -21,13 +22,13 @@ export function openMenu(ui,tab){const g=ui.g;if(!g.store.data)return;g.checkpoi
 export function menuBack(ui){if(ui.navStack.length){const prior=ui.navStack.pop();ui.g.menu=prior.tab;Object.assign(ui,prior);ui.previewRank=null;refresh(ui,prior.scroll);}else if(ui.battleCommand&&ui.screen!=='root'){ui.screen='root';refresh(ui);}else if(ui.g.menu!=='home'&&!ui.battleCommand)navigate(ui,'home',{},false);else ui.close();}
 export function previewTab(ui){return ui.battleCommand?(ui.screen==='detail'?(ui.detailKind==='defenses'?'defenses':'troops'):['troops','defenses'].includes(ui.screen)?ui.screen:'none'):ui.g.menu;}
 export function drawMenu(ui){const g=ui.g,s=g.store.data,tab=g.menu,battle=ui.battleCommand;
- $('menu').className=(battle?'battle-menu ':'castle-menu ')+(battle&&['troops','defenses','research','research-detail'].includes(ui.screen)?'field-menu ':'')+(battle&&ui.screen==='detail'?'battle-detail ':'')+(tab==='home'?'castle-home ':'');
+ $('menu').className=(battle?'battle-menu ':'castle-menu ')+(battle&&['troops','defenses','research','research-detail'].includes(ui.screen)?'field-menu ':'')+(battle&&ui.screen==='detail'?'battle-detail ':'')+(tab==='home'?'castle-home ':'')+(tab==='campaign'?'atlas-menu ':'')+(tab==='equipment'?'equipment-menu ':'');
  $('menu-title').textContent=battle?({root:'Command the field',troops:'Deploy troops',defenses:'Castle defenses',orders:'Army orders',placements:'Choose emplacement',detail:ui.detailKind==='defenses'?DEFENSES[ui.defense].name:UNITS[ui.unit].name,pause:'Battle paused',research:'Combat research','research-detail':'Combat research'}[ui.screen]):labels[tab]||'Hearthwatch';
  $('menu').querySelector('header>div>small').textContent=battle?'OATHFIRE · BATTLE PAUSED':'OATHFIRE · THE LAST EMBER';ui.updateResources();
  $('menu-nav').innerHTML='<button data-action="menu-back" aria-label="Back">‹ <span>Back</span></button><span class="breadcrumb">'+(battle?'BATTLE COMMAND':tab==='home'?'YOUR KINGDOM':('HEARTHWATCH / '+labels[tab].toUpperCase()))+(ui.screen==='detail'?' / INSPECT':'')+'</span>'+(battle&&ui.screen!=='pause'?'<button data-action="battle-category" data-id="pause">Pause</button>':'');
  $('menu-note').textContent=battle?'Battle paused · Close to return to the fight.':g.store.error||'Saved on this device';
  $('menu-content').innerHTML=battle?battlePage(ui):tab==='home'?castleHome(ui):tab==='more'?keepPage(ui):ui[tab+'Page']?.()||ui.pausePage();
- $('model-stage').hidden=battle&&ui.screen!=='detail';ui.previewCaption();
+ $('model-stage').hidden=tab==='campaign'||battle&&ui.screen!=='detail';ui.previewCaption();
 }
 function tile(ui,id,name,subtitle,kind=id,action='navigate'){return '<button class="destination-tile" data-action="'+action+'" data-id="'+id+'">'+sigil(kind)+'<span><b>'+name+'</b><small>'+subtitle+'</small></span><em>›</em></button>';}
 function castleHome(ui){const s=ui.g.store.data,m=nextMission(s);return '<div class="hub-heading"><small>THE FIRE STILL BURNS</small><h2>Prepare your next oath</h2></div><button class="campaign-banner" data-action="navigate" data-id="campaign">'+sigil('campaign')+'<span><small>YOUR NEXT MISSION</small><b>'+m.name+'</b><small>War table · Read the story & begin</small></span><em>›</em></button><div class="destination-grid">'+tile(ui,'hero','Character','Level '+heroData(s).level+' · '+skillPoints(s)+' skill points')+tile(ui,'equipment','Armory','Equip · Compare · Forge')+tile(ui,'troops','Regiments','15 troop types · Train your army')+tile(ui,'defenses','Castle','8 defense types · Fortify')+'</div><div class="hub-bottom">'+ui.button('navigate','more','Market, chronicle & settings')+ui.button('resume',null,'Return to the world',false,true)+'</div>';}
@@ -58,7 +59,7 @@ export function menuAction(ui,action,id,value){switch(action){
  case 'detail-section':ui.detailTab=id;refresh(ui);return true;
  case 'inspect-object':ui.g.journey.mark(value);navigate(ui,ui.battleCommand?'army':value,{screen:'detail',detailKind:value,[value==='troops'?'unit':'defense']:id});return true;
  case 'equipment-slot':navigate(ui,'equipment',{screen:'inventory',inventoryFilter:id,item:heroData(ui.g.store.data).equipped[id]});return true;
- case 'item':navigate(ui,'equipment',{screen:'detail',item:id});return true;
+ case 'item':ui.itemOnHero=false;navigate(ui,'equipment',{screen:'detail',item:id});return true;
  case 'field-select':if(id==='gate'){ui.g.fieldDefense(id);refresh(ui);}else navigate(ui,'army',{screen:'placements',defense:id});return true;
  case 'field-build':ui.g.fieldDefense(ui.defense,Number(id));menuBack(ui);return true;
  case 'order':ui.g.setOrder(id);ui.g.toast({assault:'Your army is seeking the enemy.',follow:'Your army is following you.',hold:'Your army is holding this ground.'}[id]);refresh(ui);return true;

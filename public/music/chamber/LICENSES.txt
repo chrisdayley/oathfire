@@ -1,0 +1,10 @@
+Oathfire orchestral sample derivatives, distributed free of charge.
+Compiled from Virtual Playing Orchestra 3.3 by Paul Battersby, https://virtualplaying.com/virtual-playing-orchestra/ .
+Changes: excerpted, resampled to 32 kHz, gain balanced, stereo AAC sprites, preserved sustain loops and pitch corrections. Each sample source is identified in orchestra.json.
+Sonatina Symphonic Orchestra: Mattias Westlund, Creative Commons Sampling Plus 1.0, https://creativecommons.org/licenses/sampling+/1.0/
+Mattias Westlund additional horns: CC BY-SA 3.0, https://creativecommons.org/licenses/by-sa/3.0/
+No Budget Orchestra: Jeff Glatt and contributors, CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/ ; https://github.com/ssj71/No-Budget-Orchestra
+VSCO 2 CE: Versilian Studios, Sam Gossner and contributors, CC0 1.0; https://github.com/sgossner/VSCO-2-CE
+University of Iowa Electronic Music Studios: unrestricted use; https://theremin.music.uiowa.edu/MIS.html
+stamperadam celesta: CC0 1.0; https://freesound.org/people/stamperadam/
+The corresponding source licenses apply to the derivative sample banks. These sample licenses are separate from the game code license. All compositions are original Oathfire music. No Chrono or Final Fantasy recordings or melodies are distributed.
