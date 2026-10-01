@@ -1,5 +1,15 @@
 # Oathfire release QA
 
+## Armor update — 1.3 (October 1, 2026)
+
+- `npm test`: 22 passing tests. Armor coverage checks independent equipment slots, inactive carried gear, all six patterns, exact modifiers, rarity/forge/awakening, defensive sockets, randomized loot distribution, first-victory armor, inventory-full conversion, invalid patterns, and preservation of legacy item IDs, modifiers, upgrades and resources.
+- `armor-qa.mjs`: 21 passing browser checks using the actual UI, combat system and fixed simulation ticks. With equal protection values, Cinderforged reduced a fire hit from 79 to 59 while the physical hit stayed 79; charged strikes rose from 48 to 53 while quick strikes stayed 25. Bastion reduced block stamina use from 35.53 to 29.84. Marchwarden increased a troop hit from 100 to 110 at its extended radius and left distant troop damage at 100. Dawnkeeper changed draught recovery from 100 to 120. Starwoven focus regenerated at 4.55/s versus 3.5/s; Wayfarer stamina recovered at 22.5/s versus 18/s, with guard still at 2/s.
+- `campaign-test.mjs`: the input bot won all three waves of the first defense with normal starting stats, movement, attacks, purchases and potions. Zero enemies remained; the reward was a specialized armor pattern of at least Uncommon rarity. An earlier QA run was interrupted by a development-server reload during source edits; the final unchanged source completed successfully.
+- All 66 pattern/forge models (six patterns, +0 through +10) have skinned geometry and moving leg joints; each forge step changes geometry. Equipped and preview models update immediately. A candidate preview does not equip the item. Worn armor, full inventory and currency survive reload.
+- `playtest.mjs --pwa`: 33 passing production-build checks for movement, skeleton animation, quick/charged attacks, all menus, projectiles, spell/audio events, rock/stair collision, exploration rewards, recruitment, saved battle restoration, 844×390 controls and offline startup.
+
+Actual rendered armor and comparison menus were visually inspected. Mobile checks use desktop Chromium/Metal with touch/viewport emulation; physical iPhone/Android performance remains unmeasured. Test saves are isolated from the player's browser profile. Machine reports and screenshots are in `work/qa-armor/` and `work/qa/`.
+
 ## First Oath update — 1.2 (October 1, 2026)
 
 - `npm test`: 15 passing tests. New coverage preserves original save resources, ranks, equipment and hero progress; rejects corrupted migration data; enforces four-slot refitting, campaign locks and battle restrictions; prevents repeat victories from advancing unlock gates.

@@ -1,4 +1,4 @@
-# Oathfire — playable design, version 1.2
+# Oathfire — playable design, version 1.3
 
 ## The promise
 
@@ -43,6 +43,28 @@ The playable tooltip data in `src/data.js` is the authoritative mechanical contr
 Five weapon types plus armor, shield and relic slots. Rarity changes item strength; affixes change play through burns, armor stripping, life return, attack speed, guard efficiency, command damage or resource capacity. Enemy victory rewards and hidden chests give randomized equipment. Duplicate or unwanted items can be salvaged, but equipped items cannot be destroyed.
 
 Forging preserves identity and reaches +10. +3 unlocks an ember/frost/vital rune; +6 unlocks swift/sunder/guard tempering; +10 awakens after Act II. Shield power increases stamina capacity and relic power increases focus. Inventory, equipped items, forged levels and modifiers are included in save backups.
+
+### Armor patterns and build choices
+
+One body-armor slot is independent of weapon, shield and relic. The six dropped patterns sit alongside the starting Hearthwatch plate. Their Common, +0 innate benefits are:
+
+| Pattern | Base armor before item roll | Innate benefits |
+| --- | --- | --- |
+| Bastion harness | 19 | +14 stamina; 16% less block stamina cost; 4% slower movement |
+| Wayfarer leathers | 8 | 8% faster movement; 25% faster stamina recovery outside attacks, charges and guard |
+| Starwoven vestments | 6 | +20 focus; 30% faster focus recovery |
+| Cinderforged mail | 14 | 25% fire resistance; 12% stronger charged weapon attacks |
+| Dawnkeeper mantle | 10 | +24 health; 20% more healing from draughts and the wearer's Quench |
+| Marchwarden cuirass | 11 | +2 m command radius; nearby troops deal 10% more damage |
+
+The loot pool rolls armor 30% of the time, spread evenly across the six specialized patterns. Weapons occupy 50%, shields and relics 10% each. The first victory in mission 0 guarantees at least Uncommon armor; a full inventory converts rewards to Salvage. Existing completed victories are not replayed or reset by the update.
+
+Positive innate armor benefits scale by `(1 + rarityIndex × 0.10 + forgeRank × 0.03)`, with another 12% on awakening. The heavy-armor movement penalty stays fixed. Protection itself retains the existing rolled-base, rarity and curved forge multipliers. Integer resource bonuses round to whole points. The description and hero comparison show the effective values.
+
+Armor runes unlock at +3: Ember adds 15 percentage points of fire resistance, Frost adds 12 maximum stamina, Vital adds 24 maximum health. Armor tempers unlock at +6: Swift adds 5 percentage points of movement speed, Sunder adds 10 percentage points of charged damage, Guard adds 15 percentage points of block-cost reduction. Fire resistance is capped at 65%; armor's block-cost reduction is capped at 55%. Existing armor sockets gain these explicit defensive effects without altering saved item identity or investment.
+
+Only the worn piece applies its benefits. Armor can be shared across heroes, whose selections remain independent. Swapping gear does not refill health, stamina or focus. Named patterns have distinct material palettes and constructed silhouettes attached to the full-body rig. Every forge rank adds a visible metal seal; +3 adds trim, +6 adds shoulder reinforcement and +10 adds an illuminated setting. Previewing a candidate changes the menu model without changing the actual equipped hero.
+
 
 ## Regiments and castle
 

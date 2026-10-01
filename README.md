@@ -18,6 +18,12 @@ Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
 
+## Armor update — 1.3
+
+**Armory → Armor** opens a dedicated armor slot and filtered inventory. Six new patterns drop from hidden treasure and victory rewards: Bastion harness, Wayfarer leathers, Starwoven vestments, Cinderforged mail, Dawnkeeper mantle and Marchwarden cuirass. Each supports a different build, with real combat benefits and its own animated outfit. The first victory at Hearthwatch guarantees an Uncommon-or-better pattern when inventory has room.
+
+Select armor to try it on without equipping, compare your hero's actual totals, then equip it independently of the weapon. Rarity, rolled bonuses, ten forge upgrades, defensive runes and tempers add further choices. Forge ranks add visible metal seals and progressively reinforced construction. Existing items, their IDs, upgrades and each hero's equipment selections are preserved.
+
 ## First Oath update — 1.2
 
 The opening introduces Sera, Iona and Rowan, with a personal reason to defend the refugees’ road. All fifteen missions have a briefing, tactical advice, explicit win/loss conditions, unlock previews and an aftermath. Story screens pause the world; their action buttons remain visible on landscape phones.
