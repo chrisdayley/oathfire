@@ -11,7 +11,8 @@ export async function loadArt(){
   if(role==='color')t.colorSpace=T.SRGBColorSpace;
   ART.textures[name+'-'+role]=t;
  })));
- ART.sky=await new RGBELoader().loadAsync(import.meta.env.BASE_URL+'materials/autumn-sky.hdr');
+ const skin=await loader.loadAsync(import.meta.env.BASE_URL+'materials/human-skin.png');skin.colorSpace=T.SRGBColorSpace;skin.anisotropy=4;skin.userData.shared=true;ART.textures['human-skin']=skin;
+ ART.sky=await new RGBELoader().loadAsync(import.meta.env.BASE_URL+'materials/hearthwatch-sunset.hdr');
  ART.sky.mapping=T.EquirectangularReflectionMapping;ART.sky.userData.shared=true;
 }
 export function material(name,color=0xffffff,extra={}){

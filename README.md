@@ -4,7 +4,7 @@ A landscape mobile browser game combining direct 3D hero combat, battlefield arm
 
 **Play:** https://chrisdayley.github.io/oathfire/
 
-Three playable heroes; five weapon styles; quick and charged attacks; physical arrows, bolts and elemental magic; fifteen regiment types with ten ranks each; eight castle defenses with ten ranks; fifteen battles across six landscapes; a free-roam castle, vendors, hidden chests and a crypt puzzle.
+Three playable heroes; five weapon styles; quick and charged attacks; physical arrows, bolts and elemental magic; fifteen regiment types with ten ranks each; eight castle defenses with ten ranks; 24 main missions and eight optional rescues across six landscapes; a free-roam castle, vendors, hidden chests and a crypt puzzle.
 
 Version 1.1 replaces the original visible character bodies with original adult-proportioned armor and undead designs. The world now uses scanned surfaces, image-based lighting, detailed foliage and masonry; the armory and new Hollow Host compendium show the animated models in a stone chamber. The original painted concept studies are art direction references, not screenshots of the shipped renderer. See [design and implementation](docs/design.md) and [QA evidence](docs/qa.md).
 
@@ -17,6 +17,18 @@ Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard
 **Start your first mission:** finish or skip the opening story, then tap **Start first defense** in the world. Read Sera’s briefing and tap **Begin defense**. You can also walk to Sera at the war table beside the beacon. The gold training card teaches movement, camera control, quick/charged attacks, magic, jumping, regiments, defenses, deployment and orders. Replay it from **Keep → Market, chronicle & settings → Chronicle → Restart guided training**. Explore the keep and the broad field between battles. Permanent upgrades use Supplies and Salvage. Battlefield units use regenerating Command. Skills use points earned from levels and discoveries.
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
+
+## Hearthwatch Atelier — 2.1
+
+After victory, a saved sequence introduces each newly unlocked regiment, defense, combat research project and optional rescue. Each screen shows an animated model, four key stats, its tactical purpose and instructions. Swipe or use Next. The final screen offers training, defenses, character/armory, campaign and exploration; a contextual town guide follows the chosen activity. Returning after field exploration and reloading cannot silently discard a pending sequence. Chronicle can replay the latest unlocks.
+
+All 15 regiments have ten distinct physical appearances, progressing from quilted leather through mail and fitted plate to gilded elite armor, plumes and embroidered capes. Anatomical faces replace spherical heads; class-specific quivers, tools, stoles and standards preserve recognizable roles. Seven armor families keep their appearance and gain details at every forge rank. Enemies gain distinct sallets, ragged vestments, layered plate and furnace harnesses. The existing skeleton, weapon effects and Rapier collision controller remain in use.
+
+The castle gains a taller gatehouse and keep skyline, masonry galleries, portcullis teeth, heraldic banners, slate roofs, timber upper floors, market canopies, ivy, courtyard planting and patrolling residents. A photographed sunset HDR supplies the sky and reflections. New solid props have collision surfaces; the gate and western stairs remain traversable.
+
+These are real-time mobile models and still fall short of the painted concept art's full detail. This release makes substantial model and material changes; it does not use the concept images as scenery or advertise them as gameplay.
+
+Validation: 75 automated rules/save checks; the atelier browser suite checks 150 animated troop appearances, seven armor families, collision and jump behavior, resumable reveals, phone layouts at 844×390 / 667×375 / 390×844 and town guidance. Separate movement/audio and combat suites check foot contacts, projectile hits, weapon powers and a full late-game army. Browser emulation is not a physical iPhone/Android performance test. Asset URLs, licenses and hashes are in [atelier provenance](public/materials/atelier-provenance.json).
 
 ## Kingdom & Melody — 2.0
 

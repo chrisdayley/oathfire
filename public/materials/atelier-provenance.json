@@ -1,0 +1,49 @@
+{
+  "release": "2.1.0",
+  "assets": [
+    {
+      "name": "MakeHuman anatomical base",
+      "path": "work/atelier/base.obj",
+      "source": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/3dobjs/base.obj",
+      "license": "CC0-1.0",
+      "bytes": 1749303,
+      "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c"
+    },
+    {
+      "name": "MakeHuman adult male morph",
+      "path": "work/atelier/male.target",
+      "source": "https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/targets/macrodetails/caucasian-male-young.target",
+      "license": "CC0-1.0",
+      "bytes": 396479,
+      "sha256": "70e228ba7164737dae664454394536fc5935fa48d333c1a97d77e2dc6eacc5f5"
+    },
+    {
+      "name": "MakeHuman young light skin texture",
+      "path": "public/materials/human-skin.png",
+      "source": "https://download.tuxfamily.org/makehuman/assets/1.1/base/skins/textures/young_lightskinned_male_diffuse.png",
+      "license": "CC0-1.0",
+      "bytes": 3693828,
+      "sha256": "862a26e335e958b70534cb5f0d7c47ef30ab148a56c42b3e9da969cf76f12963"
+    },
+    {
+      "name": "Qwantani Sunset PureSky 2K",
+      "path": "public/materials/hearthwatch-sunset.hdr",
+      "source": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/qwantani_sunset_puresky_2k.hdr",
+      "license": "CC0-1.0",
+      "bytes": 4171959,
+      "sha256": "d66e08231e9c09ca40c6d035214ae8efb638782745c82addbb2a063fa32cabef"
+    },
+    {
+      "name": "Derived skinned head geometry and LOD",
+      "path": "src/head-mesh.js",
+      "recipe": "scripts/build-head.mjs",
+      "license": "CC0-1.0",
+      "sha256": "0d7dfcdafdb3e63d668320d63c41bd81d39f28b2b31e211b06718a7370b5db25"
+    }
+  ],
+  "attribution": {
+    "MakeHuman": "MakeHuman Community system assets; no MakeHuman application code included.",
+    "Qwantani Sunset PureSky": "Greg Zaal and Jarod Guest / Poly Haven"
+  },
+  "notes": "The source hashes pin the downloaded content. The extraction script checks them before rebuilding. Original Oathfire armor and castle meshes are authored in src/atelier.js, src/host-atelier.js and src/castle-atelier.js."
+}

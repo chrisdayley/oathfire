@@ -1,3 +1,4 @@
+import './unlock-sequence.css';
 import './style.css';
 import './menu-theme.css';
 import './battle-hud.css';

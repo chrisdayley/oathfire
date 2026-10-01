@@ -1,0 +1,43 @@
+import {UNITS,HEROES} from './data.js';
+import {equipped,heroStats,skillPoints} from './state.js';
+import {Character} from './characters.js';
+import {reviewCard,createUnlockReview} from './unlocks.js';
+import {acknowledgeReport} from './battle-rewards.js';
+import {fireDefensePreview,clearDefensePreview} from './defense-preview.js';
+import {nextMission,CHAPTERS} from './journey.js';
+import {RESEARCH} from './research.js';
+import {sigil} from './menu-flow.js';
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export class UnlockSequence{
+ constructor(ui){this.ui=ui;this.g=ui.g;this.el=document.createElement('section');this.el.id='unlock-sequence';this.el.hidden=true;this.el.setAttribute('role','dialog');this.el.setAttribute('aria-modal','true');this.el.setAttribute('aria-label','After the battle: unlocks and guidance');document.body.append(this.el);
+  this.el.onclick=e=>{const b=e.target.closest('[data-unlock]');if(!b||b.disabled)return;this.action(b.dataset.unlock,b.dataset.id);};
+  this.el.onpointerdown=e=>{if(!e.target.closest('button'))this.swipe={x:e.clientX,y:e.clientY};};this.el.onpointerup=e=>{if(!this.swipe)return;const dx=e.clientX-this.swipe.x,dy=e.clientY-this.swipe.y;this.swipe=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.5)this.move(dx<0?1:-1);};
+  window.addEventListener('keydown',e=>{if(this.el.hidden)return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();this.move(e.key==='ArrowRight'?1:-1);}});
+ }
+ get review(){return this.g.store.data.lastBattle?.tutorial;}
+ show(replay=false){const s=this.g.store.data,r=s.lastBattle;if(!r)return;
+  if(!r.tutorial)r.tutorial=createUnlockReview(s,{completed:Math.max(0,s.completed.length-(r.first&&!r.rescued?1:0))},r);
+  if(replay)r.tutorial.cursor=0;this.ui.close();this.ui.previewSpin=false;r.tutorial.started=true;this.g.store.persist();this.g.input.clear();this.el.hidden=false;document.getElementById('hud').hidden=true;this.draw();
+ }
+ release(){this.ui.preview?.dispose();this.ui.preview=null;clearDefensePreview(this.ui);if(this.model){this.model.traverse(o=>{if(o.geometry&&!o.geometry.userData.shared)o.geometry.dispose();});this.model=null;}this.g.view.setPreview(null);}
+ hide(){this.release();this.el.hidden=true;}
+ move(delta){const q=this.review;if(!q)return;const cursor=Math.max(0,Math.min(q.cards.length,q.cursor+delta));if(cursor===q.cursor)return;this.g.store.commit(s=>s.lastBattle.tutorial.cursor=cursor);this.draw();this.g.audio.play('ui',.45);}
+ action(a,id){if(a==='next'||a==='back')return this.move(a==='next'?1:-1);if(a==='choices'){this.g.store.commit(s=>s.lastBattle.tutorial.cursor=this.review.cards.length);this.draw();return;}if(a==='demo'){this.demo();return;}if(a==='go'){
+  this.g.store.commit(s=>{s.lastBattle.tutorial.complete=true;acknowledgeReport(s);s.guide.homeTask=id;});this.hide();this.g.returnHome();if(id!=='explore'){this.ui.open(id);if(id==='troops'){const card=this.review.cards.find(c=>c.kind==='unit');if(card){this.ui.unit=card.id;this.ui.screen='detail';this.ui.detailTab='overview';this.ui.draw();this.ui.previewForTab();}}if(id==='defenses'){const card=this.review.cards.find(c=>c.kind==='defense');if(card){this.ui.defense=card.id;this.ui.screen='detail';this.ui.detailTab='overview';this.ui.draw();this.ui.previewForTab();}}}else this.g.toast('Explore the keep. Rowan trains troops; Torren forges gear. The western stairs hide a cache.');
+ }}
+ demo(){if(this.ui.defensePreview)fireDefensePreview(this.ui);else if(this.ui.preview){this.ui.preview.attack(this.ui.preview.weaponType,true,0,.95);this.g.audio.play(this.ui.preview.weaponType==='staff'?'rally':this.ui.preview.weaponType,.5);}}
+ draw(){this.release();this.time=0;this.played=false;const q=this.review,s=this.g.store.data,card=q.cards[q.cursor],last=!card;
+ this.el.className=last?'unlock-choices':'';this.el.innerHTML='<header><div><small>HEARTHWATCH · AFTER THE BATTLE</small><b>'+(last?'Choose your next step':'The kingdom grows')+'</b></div><span class="unlock-counter">'+(last?'YOUR NEXT CHAPTER':(q.cursor+1)+' / '+q.cards.length)+'</span>'+(!last?'<button data-unlock="choices" class="quiet">Skip to choices</button>':'')+'</header>'+(last?this.choices():this.card(card))+'<footer><button data-unlock="back" '+(!q.cursor?'disabled':'')+'>‹ Back</button><div class="unlock-dots">'+q.cards.map((_,i)=>'<i class="'+(i===q.cursor?'current':i<q.cursor?'seen':'')+'"></i>').join('')+'<small>'+(last?'Progress saved':'Swipe or use Next')+'</small></div>'+(!last?'<button data-unlock="next" class="primary">'+(q.cursor===q.cards.length-1?'Choose next step':'Next reveal')+' ›</button>':'<span class="unlock-saved">All rewards saved</span>')+'</footer>';
+ if(card)this.previewCard(card);this.el.querySelector(last?'[data-unlock="go"]':'[data-unlock="next"]')?.focus({preventScroll:true});
+ }
+ card(card){const d=reviewCard(this.g.store.data,card);return '<main><div class="unlock-visual"><div id="unlock-model-stage" aria-label="Animated 3D preview of '+esc(d.title)+'"></div><div class="unlock-halo"></div><small class="unlock-visual-label">'+(card.kind==='unit'?'RECRUITABLE IN YOUR NEXT BATTLE':card.kind==='defense'?'READY TO BUILD AT HEARTHWATCH':'YOUR HERO · YOUR KINGDOM')+'</small><button class="unlock-demo" data-unlock="demo">↻ Show in motion</button></div><article class="unlock-copy" aria-live="polite"><small class="unlock-eyebrow">'+esc(d.eyebrow)+'</small><h1>'+esc(d.title)+'</h1><h2>'+esc(d.subtitle)+'</h2><p>'+esc(d.text)+'</p><div class="unlock-stats">'+d.stats.map(([k,v])=>'<div><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join('')+'</div><b class="unlock-note">'+esc(d.note)+'</b><div class="unlock-teach">'+sigil('banner')+'<p>'+esc(d.tip)+'</p></div></article></main>';}
+ choices(){const s=this.g.store.data,next=nextMission(s),points=skillPoints(s),rows=[['troops','Train regiments','Rowan · Permanent ranks and squad roles','troops'],['defenses','Prepare defenses','Nell · Upgrade or change emplacements','defenses'],[points?'hero':'equipment',points?'Spend '+points+' skill point'+(points===1?'':'s'):'Inspect your new loot',points?'Shape your hero’s abilities and passives':'Torren · Equip, compare and forge','equipment'],['campaign','Plan the next expedition',next.name+' · Missions and optional rescues','campaign'],['explore','Explore Hearthwatch','Vendors, training yard and hidden treasure','more']];return '<main class="unlock-next"><div class="unlock-mentor">'+sigil('banner')+'<small>SERA · KEEPER OF THE WAR TABLE</small><h1>A victory worth building on.</h1><p>'+esc(CHAPTERS[s.lastBattle.mission].aftermath)+'</p><b>'+Math.floor(s.supplies)+' Supplies · '+s.salvage+' Salvage</b><p class="unlock-advice">Spend Supplies on the army. Spend Salvage at the forge. Return to the war table when you feel ready.</p></div><div class="unlock-destinations">'+rows.map(([id,title,desc,icon])=>'<button data-unlock="go" data-id="'+id+'">'+sigil(icon)+'<span><b>'+esc(title)+'</b><small>'+esc(desc)+'</small></span><em>›</em></button>').join('')+'</div></main>';}
+ previewCard(card){const s=card.kind==='hero'?{...this.g.store.data,hero:card.id}:this.g.store.data;let role=s.hero,rank=4,weapon=heroStats(s).weapon,color=HEROES[role].color,armor=equipped(s,'armor'),item=equipped(s);
+ if(card.kind==='territory')card={kind:'defense',id:'gate'};
+ if(card.kind==='research'){const r=RESEARCH[card.id];if(r.group==='defenses')card={kind:'defense',id:r.id==='payload'?'ballista':'gate'};else if(r.group==='troops')card={kind:'unit',id:({pike:'pike',spears:'pike',fastShot:'bow',infantry:'shield',veterans:'breaker',mageFortune:'pyre',runic:'lantern',wildPath:'rider',elite:'dawn',forgeRunes:'giant'})[card.id]||'shield'};}
+ if(card.kind==='defense'){this.ui.defense=card.id;this.model=this.g.world.defenseModel(card.id,s.defenses[card.id]);this.ui.defensePreview=this.model;this.ui.defenseEffects=[];this.g.view.setPreview(this.model,['tower','gate','ballista'].includes(card.id)?card.id:'fortification');return;}
+ if(card.kind==='unit'){const u=UNITS[card.id];role=card.id;rank=s.units[role];weapon=u.weapon;color=u.color;armor=null;item=null;}
+ this.ui.preview=new Character('Knight',{design:role,rank,weapon,color,armor,weaponItem:item,mounted:role==='rider'});this.g.view.setPreview(this.ui.preview.root,role==='rider'?'rider':['spear','staff'].includes(weapon)?'tallHero':'hero');
+ }
+ update(dt){if(this.el.hidden)return;this.time+=dt;const ease=1-Math.pow(1-Math.min(1,this.time/1.1),3);this.g.view.previewSpin=.2+(1-ease)*.8;if(!this.played&&this.time>.95){this.played=true;this.demo();}}
+}
