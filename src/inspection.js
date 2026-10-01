@@ -1,4 +1,4 @@
-import {battleUnitStats,battleDefenseStats} from './research.js';
+import {battleUnitStats,battleDefenseStats,researchComplete,RESEARCH,WAR_BANDS} from './research.js';
 import {UNITS,DEFENSES,unitStats,defenseFiringStats} from './data.js';
 export const statNumber=n=>Number(n.toFixed(2));
 const n=statNumber;
@@ -23,6 +23,7 @@ export function unitInspection(id,rank,battle=null){
  if(id==='marksman')abilities.push(ability('Armor-piercing shot','Crossbow bolts ignore 70% of the target’s armor. Powerful single-target shots have a 2.8 s attack cycle.'));
  if(id==='frost')abilities.push(ability('Rime shard','Hits slow movement by 35% for '+n(2+rank*.2)+' s. Further hits refresh the duration; slow strength does not stack.'));
  if(id==='dawn')abilities.push(ability('Third-strike renewal','Every third landed hit heals the most wounded hero or soldier within 7 m for '+n((12+rank*2)*s.healFactor)+' health. The Sun sworn can heal itself.'));
+ const active=key=>researchComplete(battle,key);for(const [key,applies]of [['fastShot',['bow','marksman'].includes(id)],['mageFortune',['pyre','frost'].includes(id)],['infantry',id==='shield'],['veterans',WAR_BANDS.forge.includes(id)],['crossfire',['bow','staff','crossbow'].includes(u.weapon)]])if(applies&&active(key))abilities.push(ability('Battle research · '+RESEARCH[key].name,RESEARCH[key].description));
  return {...s,count:u.count,dps:s.damage/s.attackInterval,mitigation:100*(1-100/(100+s.armor*2)),abilities};
 }
 export function defenseInspection(id,rank,doctrine,battle=null){
@@ -44,5 +45,6 @@ export function defenseInspection(id,rank,doctrine,battle=null){
  if(id==='mortar')abilities.push(ability('Arcing bombardment','A lobbed stone deals '+s.damage+' area damage within 4 m. It cannot target enemies 9 m or closer; protect its blind spot with soldiers.'));
  if(id==='sanctuary')abilities.push(ability('Sheltering ember','Every '+n(s.interval)+' s, heal up to four wounded heroes or soldiers in range for '+s.damage+' health each, prioritizing the lowest health percentage. Also grants 30% damage reduction for 2 s. The brazier deals no damage.'));
  if(id==='storm')abilities.push(ability('Chain lightning','Hit up to three enemies for '+s.damage+', '+n(s.damage*.65)+', then '+n(s.damage*.4)+' damage before armor. Each jump must reach a different enemy within 7 m of the previous target.'));
+ if(id==='gate'&&researchComplete(battle,'demolition'))abilities.push(ability('Battle research · TNT',RESEARCH.demolition.description));if(id!=='gate'&&id!=='sanctuary'&&researchComplete(battle,'crossfire'))abilities.push(ability('Battle research · Crossfire',RESEARCH.crossfire.description));
  return {...s,protected:protectedEmplacement,dps:s.interval?s.damage/s.interval:0,minRange:id==='mortar'?9:0,abilities,role:DEFENSES[id].desc};
 }

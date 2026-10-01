@@ -1,41 +1,39 @@
-# Compact battle HUD and temporary research — 1.5
+# Combat research and menus — 1.6
 
-## Reference and scope
+The combat interface follows the expanded Heroes & Castles 2 research screen: an icon matrix, a selected description/action pane, and four committed slots. Troop and defense screens use the same selection pattern, with a live animated model, cost and three headline stats beside the roster. Full Stats & Abilities remain one tap deeper. Selection preserves list scroll. Castle preparation retains its separate tiered menus.
 
-Chris supplied a Heroes & Castles 2 battlefield screenshot showing corner vitals, resource and capacity counts, a recent-unit shortcut, and separate Units/Research entry points. That layout informed Oathfire's compact battle-only HUD. Castle preparation remains in Keep between missions.
+## Reference evidence
 
-The community [Research reference](https://heroesandcastles2.fandom.com/wiki/Research) documents four timed research choices per battle, cancellation of unfinished projects, and territory unlocks. Oathfire adopts that structure. The eight projects below are original balancing choices for Oathfire's roster, not a claim to reproduce all of the original game's research or its exact numerical balance. No reference artwork or code is included.
+The [iPhone AC review](https://iphoneac-blog.com/archives/8821956.html) contains an [actual expanded Research screenshot](https://livedoor.blogimg.jp/kamurai2nd-iphone/imgs/5/d/5d44a7db.jpg), inspected during this revision. It shows a six-column icon matrix, selected research details on the right, and four slots below. The expanded Units screen was not independently recovered; our troop layout applies the confirmed Research screen's pattern. The user's screenshot supplies the closed battle HUD reference. All Oathfire icons, rendering and interface code are original.
 
-## On the battlefield
+The [community research catalog](https://heroesandcastles2.fandom.com/wiki/Research) and [Japanese strategy guide](https://nerusora.com/heroes-and-castles-2-walkthrough/) informed the mechanics: four timed choices, emergency wall repairs, reinforcements, veterancy, elemental rain, hero improvements and faction bonuses. These are adapted mechanics, not a claim of identical balance or reproduction of the original game. The guide's advice to preserve a repair option influenced the commitment rules. [TouchArcade's review](https://toucharcade.com/2015/05/21/heroes-and-castles-2-review/) corroborates paused management and automatic army behavior.
 
-- Upper left: current health, stamina and magic with small proportion bars; Command and its regeneration rate. At the resource cap it reads Full.
-- Below: up to four most recently purchased squad types, showing their current Command price. Tap to buy again without opening a menu. Free starting soldiers do not create purchase history. Unaffordable and over-capacity purchases are disabled, with independent enforcement in game logic.
-- Upper right: living soldiers out of 24, remaining spaces, installed emplacements out of four, gate/beacon condition and wave. The four initial defenses are already installed, so the count starts at 4/4. A refit replaces one of them; it does not add a fifth. The gate is counted separately through its condition bar.
-- Bottom: Command and Research. Command opens Troops / Defenses / Orders / Research. Research goes directly to four slots and Troops / Defenses filters. Tap a project name for details, or its Research button to start.
+## Rules
 
-All four projects can progress concurrently. No Command or permanent currency is charged to start research: its costs are time and a committed slot. Menus pause timers. Canceling unfinished research frees its slot and loses its progress; a completed project stays committed until this battle ends. Existing troops receive completed effects immediately. New recruits and later defense refits use those same effects. A few projects increase the price of future recruits, displayed in both roster and quick-recruit buttons.
+Research costs battle time and one of four slots, with no Command or permanent-currency payment. All chosen projects run concurrently while gameplay advances. Menus pause them. Canceling unfinished work frees its slot and discards its progress. Completed work remains committed through the battle. Reclaiming castles unlocks later options.
 
-| Project | Duration | Unlock (victories) | Effect for this battle |
-| --- | --- | --- | --- |
-| Longbow drill | 25 s | 0 | Longbows +25% range; new squads cost 5 more Command. |
-| Shield discipline | 35 s | 0 | Shieldward +25% maximum health, +20% damage; new squads cost 5 more Command. |
-| Pike formations | 40 s | 1 | Pikeguard +35% damage, retaining their siege-target multiplier. |
-| Runic focus | 50 s | 4 | Lanternkeepers, Cinder adepts, Rime scholars and Sun sworn +25% direct attack damage and healing, +15% maximum health. |
-| Reinforced gate | 40 s | 0 | +20% maximum gate health; a one-time full repair if it still stands. A fallen gate stays fallen. |
-| Windlass drills | 35 s | 0 | Archer tower, ballista, cannon and mortar fire 20% faster (interval divided by 1.2). |
-| Siege payloads | 45 s | 2 | Ballista, cannon and mortar +25% damage, including their blasts. |
-| Ward harmonics | 50 s | 4 | Rime obelisk, Storm spire and Sanctuary brazier +20% range and +25% damage/healing. |
+Thirty-three choices include adaptations of all 24 cataloged reference options and nine Oathfire additions. The source of truth for names, times, unlocks and exact effects is `src/research.js`; the selected in-game pane displays the complete description. Runtime effects live in `src/research-combat.js`.
 
-Health upgrades preserve each living soldier's current health percentage. Damage, healing and range changes appear in battlefield Stats and Abilities; castle inspection continues to show permanent values. Permanent rank, doctrine and research multipliers compose without rewriting the owned ranks. Runic focus does not change fixed secondary ember-field or splinter values.
+The reference families cover wall reinforcement/demolition, hero health/damage/armor/stun/armor bypass/regeneration/siege resistance, free archers and Command, archer reload/range, infantry and spears, veterans/champions, mages, and three army-wide traditions. Oathfire maps the original races to Hearth, Wild and Forge regiments. Longbow distance is adapted to our world scale; Fast shot uses a 0.35 s reload; reserve archers queue at the 24-soldier cap; Siege hero targets our siege brutes and captains. Walls II replaces Walls I's maximum-health multiplier. Boss stun durations are shorter. Faction, champion and veteran multipliers compose; permanent ranks stay unchanged.
 
-Research, remaining timers, completed choices and recent-purchase history are included in suspended battle checkpoints. Old saves that lack these optional fields remain valid. A new mission starts with empty slots; returning home and victory remove temporary research effects. Permanent equipment, upgrades, resources and hero progression are preserved.
+Oathfire additions:
 
-The first mission briefing and How to play explain Research and quick recruitment. The large training card is hidden during combat to preserve battlefield visibility; preparation training remains at home.
+- Shield discipline: +25% health, +20% damage; new squads cost 5 extra Command.
+- Pike formations: +35% Pikeguard damage.
+- Runic focus: +25% attack/healing power and +15% health for the support/caster regiments.
+- Windlass drills: mechanical defenses fire 20% faster.
+- Siege payloads: +25% siege damage, including blasts.
+- Ward harmonics: +20% magical-defense range, +25% damage/healing.
+- Crossfire doctrine: allied ranged attacks and defenses gain +20% damage against slowed or marked targets.
+- Field logistics: +20% Command regeneration; future recruits cost 10% less after surcharges, rounded up.
+- The last oath: survive one fatal hero hit at 30% health with three seconds of invulnerability. A destroyed beacon still loses the battle.
 
-## Verification
+Health improvements preserve current health percentage. Standing walls repair once when reinforcement completes. General's rally can bank Command above 220; this reserve remains until spent. Normal regeneration resumes below 220. Veterans arrive with stronger models and retain their individual veteran flag in suspended saves. Mage's fortune launches five visible falling fireballs or ice shards; it is not a number-only bonus.
 
-Verified for release 1.5: 38 Node tests, 28 research/HUD browser checks, 37 menu regression checks, and a full first-mission victory with all enemies defeated and the armor reward. No browser runtime errors were reported.
+Battlefield inspection includes active research modifiers and relevant additional abilities. Quick-recruit prices use the same cost calculation as the selected troop pane. Research, timers, reserves, triggered one-use perks, recruited veterans, and recent-purchase history survive suspension. Older saves without those optional fields load normally. Returning home or beginning another mission removes temporary effects.
 
-The reproducible Node suite covers formulas, all eight effects, four-slot limits, cancellation/restarts, territory locks, permanent-stat isolation and current/legacy suspended saves. `scripts/research-qa.mjs` exercises real touch clicks, actual troop stats and projectiles, healing, pause/resume, gate repair, quick recruitment and battle reset. It also captures actual 667×375 and 844×390 browser viewports, verifies separate HUD controls and 44 CSS pixel research/recruit targets, and checks for runtime errors.
+## Compact battle HUD
 
-`scripts/menu-qa.mjs` covers the existing tiered castle and battle menus. `scripts/campaign-test.mjs --research` plays the entire first defense with normal combat rules and four research choices; it requires victory, no surviving enemies and the armor reward. Use `PLAYWRIGHT_MODULE` or `--playwright-module` to provide Playwright. Browser emulation does not establish physical iPhone/Android performance or ergonomics.
+Upper left: health, stamina, magic, Command and income; below, up to four recently purchased squad shortcuts with their current costs. Upper right: living soldiers / 24, free capacity, emplacements / four, gate/beacon condition and wave. Command and Research have separate bottom controls. Castle currencies and management destinations stay in castle preparation.
+
+See [battle rewards](battle-rewards.md) for settlement and chest behavior, and [QA evidence](qa.md) for verified release checks.

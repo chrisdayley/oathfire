@@ -1,4 +1,6 @@
-import {battleUnitStats} from './research.js';
+import {BATTLE_GLYPHS} from './battle-icons.js';
+import {fieldRoster} from './battle-roster.js';
+import {battleUnitStats,RESEARCH} from './research.js';
 import {researchPage} from './research-ui.js';
 import {UNITS,DEFENSES,HEROES,ROMAN,unitStats} from './data.js';
 import {unitUnlocked,defenseUnlocked,heroData,skillPoints} from './state.js';
@@ -7,19 +9,19 @@ import {nextMission} from './journey.js';
 import {fieldDefenseCost} from './field-command.js';
 const $=id=>document.getElementById(id);
 const labels={home:'Hearthwatch',hero:'Character',equipment:'Armory',troops:'Regiments',defenses:'Castle defenses',campaign:'War table',shop:'Market',bestiary:'Hollow Host',journal:'Chronicle',settings:'Settings',more:'The keep',army:'Battle command'};
-const glyphs={hero:'M16 3 6 7v10c0 7 10 12 10 12s10-5 10-12V7Z M16 8v14m-5-8h10',equipment:'m8 4 8 5 8-5 4 8-6 3v13H10V15l-6-3Z',troops:'M6 28V8l10-5 10 5v20M10 12h12M16 4v24M4 22h24',defenses:'M4 28V10h5V4h5v6h4V4h5v6h5v18ZM13 28V18h6v10',campaign:'M5 6v23M6 6c8-8 12 8 21 0v13c-9 8-13-8-21 0',orders:'M4 8h24M4 16h24M4 24h24M10 4v8M22 12v8M14 20v8',more:'M16 3 29 16 16 29 3 16ZM10 16h12m-6-6v12',bow:'M9 3q25 13 0 26L20 16ZM3 16h25m-5-4 5 4-5 4',fire:'M17 2c5 9-3 9 5 15l3-7c10 20-25 24-20 5l6 6c-4-11 6-12 6-19Z',spear:'M5 29 24 7m-7-3 12-2-3 12ZM9 20l6 5'};
+const glyphs={...BATTLE_GLYPHS,lock:'M7 14V9a9 9 0 0 1 18 0v5M5 14h22v16H5ZM16 19v6',hero:'M16 3 6 7v10c0 7 10 12 10 12s10-5 10-12V7Z M16 8v14m-5-8h10',equipment:'m8 4 8 5 8-5 4 8-6 3v13H10V15l-6-3Z',troops:'M6 28V8l10-5 10 5v20M10 12h12M16 4v24M4 22h24',defenses:'M4 28V10h5V4h5v6h4V4h5v6h5v18ZM13 28V18h6v10',campaign:'M5 6v23M6 6c8-8 12 8 21 0v13c-9 8-13-8-21 0',orders:'M4 8h24M4 16h24M4 24h24M10 4v8M22 12v8M14 20v8',more:'M16 3 29 16 16 29 3 16ZM10 16h12m-6-6v12',bow:'M9 3q25 13 0 26L20 16ZM3 16h25m-5-4 5 4-5 4',fire:'M17 2c5 9-3 9 5 15l3-7c10 20-25 24-20 5l6 6c-4-11 6-12 6-19Z',spear:'M5 29 24 7m-7-3 12-2-3 12ZM9 20l6 5'};
 export function sigil(kind){return '<svg class="menu-sigil" viewBox="0 0 32 32" aria-hidden="true"><path d="'+(glyphs[kind]||glyphs.troops)+'"/></svg>';}
 export const sectionTabs=(ui,items)=>'<div class="detail-tabs" role="group" aria-label="Details">'+Object.entries(items).map(([id,label])=>'<button data-action="detail-section" data-id="'+id+'" class="'+(ui.detailTab===id?'active':'')+'" aria-pressed="'+(ui.detailTab===id)+'">'+label+'</button>').join('')+'</div>';
 const snapshot=ui=>Object.fromEntries(['screen','detailTab','unit','defense','item','inventoryFilter','battleCommand','detailKind','tree','selectedMission','enemy','researchFilter','researchId'].map(k=>[k,ui[k]]).concat([['tab',ui.g.menu],['scroll',$('menu-content').scrollTop]]));
-function refresh(ui,scroll=0){ui.draw();ui.previewForTab();$('menu-content').scrollTop=scroll;}
+function refresh(ui,scroll=0){const grids=[...document.querySelectorAll('.research-grid,.field-roster-grid')].map(e=>({className:e.className,scroll:e.scrollTop}));ui.draw();ui.previewForTab();$('menu-content').scrollTop=scroll;for(const old of grids){const grid=document.getElementsByClassName(old.className)[0];if(grid)grid.scrollTop=old.scroll;}}
 export function navigate(ui,tab,options={},push=true){if(push)ui.navStack.push(snapshot(ui));ui.g.menu=tab;ui.screen='list';ui.detailTab='overview';ui.previewRank=null;Object.assign(ui,options);refresh(ui);}
 export function openMenu(ui,tab){const g=ui.g;if(!g.store.data)return;g.checkpoint();g.input.enabled=false;g.input.clear();ui.navStack=[];ui.battleCommand=!!g.battle;ui.detailKind=null;ui.screen='list';ui.detailTab='overview';ui.previewRank=null;
  if(g.battle){ui.screen=tab==='pause'?'pause':tab==='research'?'research':tab==='battle-defenses'?'defenses':'root';tab='army';}else if(tab==='pause'||tab==='army')tab='home';
  g.menu=tab;if(tab==='equipment')ui.item=null;if(tab==='campaign')ui.selectedMission=nextMission(g.store.data).id;$('menu').hidden=false;$('hud').hidden=true;refresh(ui);}
 export function menuBack(ui){if(ui.navStack.length){const prior=ui.navStack.pop();ui.g.menu=prior.tab;Object.assign(ui,prior);ui.previewRank=null;refresh(ui,prior.scroll);}else if(ui.battleCommand&&ui.screen!=='root'){ui.screen='root';refresh(ui);}else if(ui.g.menu!=='home'&&!ui.battleCommand)navigate(ui,'home',{},false);else ui.close();}
-export function previewTab(ui){return ui.battleCommand?(ui.screen==='detail'?(ui.detailKind==='defenses'?'defenses':'troops'):'none'):ui.g.menu;}
+export function previewTab(ui){return ui.battleCommand?(ui.screen==='detail'?(ui.detailKind==='defenses'?'defenses':'troops'):['troops','defenses'].includes(ui.screen)?ui.screen:'none'):ui.g.menu;}
 export function drawMenu(ui){const g=ui.g,s=g.store.data,tab=g.menu,battle=ui.battleCommand;
- $('menu').className=(battle?'battle-menu ':'castle-menu ')+(battle&&ui.screen==='detail'?'battle-detail ':'')+(tab==='home'?'castle-home ':'');
+ $('menu').className=(battle?'battle-menu ':'castle-menu ')+(battle&&['troops','defenses','research','research-detail'].includes(ui.screen)?'field-menu ':'')+(battle&&ui.screen==='detail'?'battle-detail ':'')+(tab==='home'?'castle-home ':'');
  $('menu-title').textContent=battle?({root:'Command the field',troops:'Deploy troops',defenses:'Castle defenses',orders:'Army orders',placements:'Choose emplacement',detail:ui.detailKind==='defenses'?DEFENSES[ui.defense].name:UNITS[ui.unit].name,pause:'Battle paused',research:'Combat research','research-detail':'Combat research'}[ui.screen]):labels[tab]||'Hearthwatch';
  $('menu').querySelector('header>div>small').textContent=battle?'OATHFIRE · BATTLE PAUSED':'OATHFIRE · THE LAST EMBER';ui.updateResources();
  $('menu-nav').innerHTML='<button data-action="menu-back" aria-label="Back">‹ <span>Back</span></button><span class="breadcrumb">'+(battle?'BATTLE COMMAND':tab==='home'?'YOUR KINGDOM':('HEARTHWATCH / '+labels[tab].toUpperCase()))+(ui.screen==='detail'?' / INSPECT':'')+'</span>'+(battle&&ui.screen!=='pause'?'<button data-action="battle-category" data-id="pause">Pause</button>':'');
@@ -37,7 +39,7 @@ export function rosterList(ui,kind,battle=false){const s=ui.g.store.data,b=ui.g.
 }
 function battlePage(ui){const g=ui.g,s=g.store.data,b=g.battle;if(ui.screen==='research'||ui.screen==='research-detail')return researchPage(ui);
  if(ui.screen==='root')return '<div class="battle-categories">'+tile(ui,'troops','Troops','Deploy · Troops seek enemies','troops','battle-category')+tile(ui,'defenses','Defenses','Refit emplacements · Repair gate','defenses','battle-category')+tile(ui,'orders','Orders','Attack · Follow · Hold','orders','battle-category')+tile(ui,'research','Research','Four timed upgrades · This battle only','more','battle-category')+'</div>';
- if(ui.screen==='troops'||ui.screen==='defenses')return rosterList(ui,ui.screen,true);
+ if(ui.screen==='troops'||ui.screen==='defenses')return fieldRoster(ui,ui.screen);
  if(ui.screen==='detail')return ui.detailKind==='troops'?ui.troopsPage():ui.defensesPage();
  if(ui.screen==='placements')return '<h2>'+DEFENSES[ui.defense].name+'</h2><p class="list-hint">⚑ '+fieldDefenseCost(ui.defense)+' Command · Rank '+ROMAN[s.defenses[ui.defense]-1]+'<br>Replaces a defense for this battle only.</p><div class="placement-list">'+EMPLACEMENTS.map((p,i)=>'<button data-action="field-build" data-id="'+i+'" '+(b.layout[i]===ui.defense||b.command<fieldDefenseCost(ui.defense)?'disabled':'')+'><span><b>'+p.name+'</b><small>'+DEFENSES[b.layout[i]].name+'</small></span><em>'+(b.layout[i]===ui.defense?'Installed':'Replace ›')+'</em></button>').join('')+'</div>';
  if(ui.screen==='orders')return '<p class="list-hint">Orders affect troops already on the field. New recruits always advance; engineers guard and repair the gate.</p><div class="order-list">'+[['assault','Seek & attack','Hunt enemies across the battlefield.'],['follow','Follow me','Stay near your hero and engage nearby threats.'],['hold','Hold here','Defend your hero’s current position.']].map(([id,title,desc])=>'<button class="'+(g.order===id?'active':'')+'" data-action="order" data-id="'+id+'"><b>'+(g.order===id?'✓ ':'')+title+'</b><span>'+desc+'</span></button>').join('')+'</div>';
@@ -45,7 +47,8 @@ function battlePage(ui){const g=ui.g,s=g.store.data,b=g.battle;if(ui.screen==='r
 }
 export function menuAction(ui,action,id,value){switch(action){
  case 'research-filter':ui.researchFilter=id;refresh(ui);return true;
- case 'research-inspect':navigate(ui,'army',{screen:'research-detail',researchId:id});return true;
+ case 'research-inspect':ui.researchId=id;ui.researchFilter=Object.keys(RESEARCH).includes(id)&&ui.researchFilter!=='all'&&ui.researchFilter!==RESEARCH[id].group?'all':ui.researchFilter;refresh(ui);return true;
+ case 'field-inspect':if(value==='troops')ui.unit=id;else ui.defense=id;refresh(ui);return true;
  case 'research-start':ui.g.research(id);refresh(ui);return true;
  case 'research-cancel':ui.g.research(id,true);refresh(ui);return true;
  case 'menu-back':menuBack(ui);return true;
