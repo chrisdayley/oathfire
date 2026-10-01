@@ -6,7 +6,7 @@ A landscape mobile browser game combining direct 3D hero combat, battlefield arm
 
 Three playable heroes; five weapon styles; quick and charged attacks; physical arrows, bolts and elemental magic; eight regiment types with ten ranks each; three castle defenses with ten ranks; fifteen battles across six landscapes; a free-roam castle, vendors, hidden chests and a crypt puzzle.
 
-This is a playable first release with stylized real-time 3D artwork. The original painted concept studies are art direction references, not screenshots of the shipped renderer. See [design and implementation](docs/design.md) and [QA evidence](docs/qa.md).
+Version 1.1 replaces the original visible character bodies with original adult-proportioned armor and undead designs. The world now uses scanned surfaces, image-based lighting, detailed foliage and masonry; the armory and new Hollow Host compendium show the animated models in a stone chamber. The original painted concept studies are art direction references, not screenshots of the shipped renderer. See [design and implementation](docs/design.md) and [QA evidence](docs/qa.md).
 
 ## Play
 
@@ -30,7 +30,7 @@ npm run build
 npm run preview -- --port 4180
 ```
 
-`src/` holds the game; `public/models/` holds compacted CC0 character assets; `tests/` checks permanent progression and saves. `scripts/compact-models.py` reproducibly compacts source models when the original downloaded models are present. `scripts/service-worker.mjs` writes the build-specific offline cache.
+`src/` holds the game; `src/character-designs.js` builds the original skinned bodies; `public/models/Knight.glb` supplies the CC0 animation rig and clips; `public/materials/` holds the licensed PBR surface scans and sky; `tests/` checks permanent progression and saves. `scripts/compact-models.py` reproducibly compacts source models when the original downloaded models are present. `scripts/service-worker.mjs` writes the build-specific offline cache.
 
 The browser QA scripts use Playwright. Set `PLAYWRIGHT_MODULE` to an installed Playwright module path if it is not available as a normal dependency. Local QA reports and screenshots are generated in `work/qa/` and excluded from commits.
 
@@ -38,4 +38,4 @@ GitHub Actions runs the progression tests, builds the Vite site and publishes th
 
 ## Credits
 
-Original world, weapons, mounts, story, systems, interface, animation layers and procedural audio for Oathfire. Character models and shared skeletal animations by Kay Lousberg, CC0. Three.js (MIT), Rapier (Apache 2.0), Vite (MIT); Cinzel and Inter (OFL). Full asset provenance and licenses are in [credits](public/credits.html) and `public/licenses/`.
+Original world, weapons, mounts, story, systems, interface, animation layers and procedural audio for Oathfire. Animation rig and shared skeletal clips by Kay Lousberg, CC0; the source body meshes are removed at runtime. Surface scans and sky by Poly Haven contributors, CC0. Download URLs, source pages and verified hashes are recorded in `public/materials/provenance.json`. Three.js (MIT), Rapier (Apache 2.0), Vite (MIT); Cinzel and Inter (OFL). Full asset provenance and licenses are in [credits](public/credits.html) and `public/licenses/`.

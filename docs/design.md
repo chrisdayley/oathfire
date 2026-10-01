@@ -1,4 +1,4 @@
-# Oathfire — playable design, version 1
+# Oathfire — playable design, version 1.1
 
 ## The promise
 
@@ -65,3 +65,18 @@ The game pauses in menus. Saves use local storage plus IndexedDB and a previous-
 The painted mockups established warm stone, a teal-and-gold kingdom, lived-in vendors and a broad landscape. The first executable release reproduces that composition and interface structure with a lighter stylized renderer. It does not match the paintings' photorealistic material detail. Its character foundations remain visibly stylized.
 
 This release focuses on a complete playable campaign loop. It does not include multiplayer, dialogue voice acting, seamless travel across all fifteen territories, destructible terrain, advanced squad routing morale or hand-animated cinematic cutscenes. Physical iPhone/Android device performance remains a separate validation step; browser viewport emulation does not certify it.
+
+
+## Refined art implementation — 1.1
+
+The visible KayKit bodies have been retired. Original geometry supplies adult proportions, fitted breastplates, layered shoulder armor, articulated gauntlets and boots, split tabards, moving cloth and rank-specific equipment. These parts are bound to the licensed animation skeleton as skinned meshes. The animation clips still supply full-body walking, running, weapon attacks, casting, hit reactions and death; additive pose adjustments retarget the longer limbs and provide a relaxed weapon-carry position. The first-person equipment uses the same material family.
+
+The Warden wears dark teal cloth under worn steel with restrained brass trim. The Briar Ranger has a fitted hood, harness and quiver. The Ashwright uses a leather forge apron and reinforced gauntlets. All eight regiments retain ten geometric upgrade stages. Stormriders have a newly sculpted, articulated horse with reins, saddle, stirrups and progressively plated barding.
+
+The Hollow Host has eight authored designs. The Unburied expose bone beneath burial linen and a broken iron cap; Duskbone Stalkers wear a narrow hood and carry a quiver; Ossuary Knights use blackened plate, a crested helm and coffin shield; Grave Callers wear mourning cloth and carry a caged soul lantern. Kiln Brutes carry a furnace inside broad, angular siege armor. The Bell Knight has a bronze bell helm and chained relics; the Ash Castellan has basalt shoulders and burning seams; Marshal Veyr wears a nine-tine crown, broken sun halo and ruined royal mantle. The three bosses use the correct design when a suspended battle is restored. Their combat weapon matches the displayed spear, hammer or sword.
+
+The Hollow Host menu is an animated enemy compendium. Its models are the same constructors used on the battlefield. Rotation and the Preview action button work on enemies as well as allies. Character, equipment and enemy previews use an actual stone chamber, floor, weapon racks and directional shadows rather than a plain disk.
+
+The environment uses self-hosted CC0 scans for masonry, cobbles, soil, grass, natural rock, timber, leather, metal and cloth, plus an HDR sky. Stone color, roughness and normal detail use world-scale triplanar mapping. The courtyard gains recessed arrow slits, window arches, gate voussoirs, quoins, tower cornices and timber braces. A noise-animated brazier replaces the beacon crystal. Branches and individually instanced leaves replace solid foliage crowns; continuous ridges replace isolated cone mountains. Collision routes and the broad battlefield dimensions are retained.
+
+This is an implemented real-time art pass, not a substitute concept painting. The original studies remain the quality target; hand-sculpted faces, bespoke high-detail creatures and further biome-specific architectural assets remain beyond this pass. The shipped models and screenshots must be judged as the actual result, not described as photorealistic concept-art matches.

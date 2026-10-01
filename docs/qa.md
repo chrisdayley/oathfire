@@ -41,3 +41,16 @@ No physical iPhone or Android device was available for this run. Landscape viewp
 The final production build passed 33 browser checks, including cold offline startup and restoration of the saved battle. The character walked to z=27.83 on the 5.23m-high rampart through the actual stair collision. No runtime or WebGL shader errors were reported.
 
 Exact GitHub deployment and public asset hashes are verified at release time. Local raw screenshots and detailed machine reports are kept in `work/qa/`.
+
+
+## Version 1.1 — refined art pass
+
+The new build passed all 11 permanent progression/save tests, all 33 production browser/PWA checks, and all 34 extended checks. The first-person hands, full-body movement, touch controls, travelling arrows, quick/held attacks, rock collision, jump clearance and complete rampart route still work with the replacement body geometry. The test used a fresh isolated browser campaign, not a user's save.
+
+All eight regiments and all three defenses still have ten distinct geometry stages. Every territory builds valid physics and enemy spawns. The developed final-battle fixture completed all five waves with zero enemies remaining and 209 hero health. Spell audio checks produced 23 distinct non-silent waveforms without clipping. Save/army restoration and cold offline start both passed.
+
+The art catalogue was inspected in the live renderer: Warden, mounted Stormrider, all eight Hollow Host designs, courtyard, open field and rank-X tower. Comparison with the concept paintings drove adult body proportions, steel/leather/cloth materials, fitted equipment, masonry, organic foliage and atmospheric ridges. Recessed skull sockets replaced protruding eyes; idle weapons received carrying poses; the highest tower received a wider preview camera so its roof is visible. The game still has a simpler, constructed geometry style than the painted references; this pass is not a photorealism claim.
+
+Browser QA on macOS uses the Metal backend. Software WebGL is also capable of displaying the scene but is not used as evidence of real device performance. Mobile checks use an actual 844×390 browser viewport with touch emulation. No physical phone performance or Safari compatibility certification is claimed. All new scanned assets are bundled locally, and their uploaded Git blob hashes are checked against the downloaded bytes.
+
+Additional skinning checks sampled transformed arm and leg vertices across animation frames for all three heroes and all eight enemy designs. All eleven bodies deformed, retained finite coordinates and used the new original meshes. The rank-X tower roof projected inside the preview viewport (normalized y=0.539). The mobile bestiary was also inspected at 844×390. No JavaScript or shader errors were recorded.

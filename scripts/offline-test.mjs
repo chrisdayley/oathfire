@@ -1,7 +1,7 @@
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||process.argv[2]||'playwright');
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({headless:true,args:process.platform==='darwin'?['--use-angle=metal']:[]});
 const page=await browser.newPage();
 page.on('requestfailed',r=>console.log('FAILED',r.url(),r.failure()));
 page.on('pageerror',e=>console.log('ERROR',e.message));
