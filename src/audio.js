@@ -1,9 +1,10 @@
-// Original procedural sound design. No third-party sound recordings or runtime downloads.
+import {MusicDirector} from './music.js';
+// Original SFX synthesis and score, with a locally hosted CC0 sampled orchestra.
 export class Soundscape{
- constructor(){this.ctx=null;this.volume=.55;this.musicVolume=.28;this.history=[];this.lastFoot=0;this.ambient=[];}
+ constructor(){this.ctx=null;this.volume=.55;this.musicVolume=.5;this.history=[];this.lastFoot=0;this.music=null;}
  async unlock(){if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=this.volume;this.compressor=this.ctx.createDynamicsCompressor();this.compressor.threshold.value=-15;this.compressor.ratio.value=5;this.master.connect(this.compressor);this.compressor.connect(this.ctx.destination);this.noise=this.ctx.createBuffer(1,this.ctx.sampleRate*2,this.ctx.sampleRate);const d=this.noise.getChannelData(0);let pink=0;for(let i=0;i<d.length;i++){pink=.96*pink+.04*(Math.random()*2-1);d[i]=pink*3;}}
- if(this.ctx?.state==='suspended')await this.ctx.resume();if(!this.ambient.length)this.startAmbient();}
- settings(s){this.volume=s.volume;this.musicVolume=s.music;if(this.master)this.master.gain.setTargetAtTime(this.volume,this.ctx.currentTime,.08);for(const n of this.ambient)n.gain.setTargetAtTime(this.musicVolume*.022,this.ctx.currentTime,.5);}
+ if(this.ctx?.state==='suspended')await this.ctx.resume();if(!this.music)this.music=new MusicDirector(this);else this.music.retry();}
+ settings(s){this.volume=s.volume;this.musicVolume=s.music;if(this.master)this.master.gain.setTargetAtTime(this.volume,this.ctx.currentTime,.08);this.music?.settings(this.musicVolume);}
  tone(f,dur=.2,type='sine',gain=.12,delay=0,end=null){if(!this.ctx||this.ctx.state!=='running')return;let t=this.ctx.currentTime+delay,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(end)o.frequency.exponentialRampToValueAtTime(Math.max(15,end),t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,gain),t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+dur+.03);}
  hiss(dur=.25,gain=.25,filter='highpass',freq=1100,delay=0,end=350){if(!this.ctx||this.ctx.state!=='running')return;const t=this.ctx.currentTime+delay,b=this.ctx.createBufferSource(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain();b.buffer=this.noise;f.type=filter;f.frequency.setValueAtTime(freq,t);f.frequency.exponentialRampToValueAtTime(end,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,gain),t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+dur);b.connect(f);f.connect(g);g.connect(this.master);b.start(t,Math.random());b.stop(t+dur+.03);}
  play(name,power=1){if(!this.ctx)return;this.history.push({name,t:this.ctx.currentTime});if(this.history.length>80)this.history.shift();const p=Math.min(power,1.7);
@@ -49,6 +50,6 @@ export class Soundscape{
   else if(name==='victory'){[196,247,294,392,494,587].forEach((f,i)=>this.tone(f,.8,'triangle',.06,i*.13));}
   else this.hiss(.2,.2,'bandpass',1400,0,500);
  }
- startAmbient(){if(!this.ctx)return;for(const f of [65.406,98,130.81]){const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sine';o.frequency.value=f;g.gain.value=this.musicVolume*.022;o.connect(g);g.connect(this.master);o.start();this.ambient.push(g);}}
- suspend(){if(this.ctx?.state==='running')this.ctx.suspend();}
+ updateMusic(game){this.music?.update(game);}
+ suspend(){this.music?.setPaused(true);if(this.ctx?.state==='running')this.ctx.suspend();}
 }

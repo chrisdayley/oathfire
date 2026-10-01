@@ -102,3 +102,17 @@ Build `oathfire-1.6.0-spoils-and-strategy`. Research reference and adaptation de
 The new reward dialog is isolated from gameplay input. Rewards are granted before the animation, and result-mode combat cannot award additional kills after settlement. The chest viewer creates its own lighting environment rather than reusing a render target from the game's separate WebGL context. Tall reward contents scroll from their top edge. Reduced motion skips the hinge sequence and idle particles. Existing campaigns do not need a reset.
 
 Release verification requires the GitHub Pages workflow for the exact source commit to complete successfully, byte-for-byte comparison of every generated public file, and live browser QA against that deployment. Local captures and logs are reproducible with the scripts above; ignored `output/` and `work/` are not shipped. Physical iPhone/Android audio, thermal behavior and performance have not been measured here.
+
+
+## The Royal Orchestra — 1.7
+
+Build `oathfire-1.7.0-royal-orchestra`. See `music.md` for score form, licensing and playback behavior.
+
+- 58 Node tests pass, including 72 castle measures totaling 160 seconds, increasingly intense wave profiles, distinct boss themes, valid sampled notes, 1,200 measures without a battle cursor wrap, source-bank integrity and legacy save validation.
+- 46 production-browser music checks pass. Actual audio signal was measured at the output; music/effects mutes were tested independently. Menu and background pause/resume, saved measure/beat restoration, real boss spawns, aftermath cues, soundtrack selection, download failure/retry and offline playback passed.
+- All seven main pieces are available through the soundtrack page. Its controls were checked at actual 667×375, 844×390 and 390×844 viewports; no horizontal overflow and button heights at least 44 CSS px. Visual inspection caught and corrected a stale castle-duration message when selecting a battle piece.
+- Full castle suite, 24 measures of each of the six military/boss pieces, and eight measures of each aftermath cue rendered without clipped samples. The maximum measured peak was 0.974. This is an objective audio-render check, not a claim of human listening review.
+- Decoded instrument memory measured 48.3 MB. Peak concurrent sample voices in the transition test was 57 of the 96-voice cap. All 22 audio banks were present in the offline cache, and the soundtrack opened and played while network access was disabled.
+- A complete first-defense regression with movement, attacks, spells, troop purchases and timed research won in 54.37 seconds of accelerated simulated battle time, with all enemies defeated and the guaranteed armor reward. No runtime errors.
+
+Existing equipment, ranks and sound preferences survive the music update. No physical iOS/Android device listening, Bluetooth latency, battery/thermal testing or sustained performance testing is claimed.

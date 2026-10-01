@@ -21,7 +21,7 @@ const cached=async request=>(await caches.open(CACHE)).match(request,{ignoreVary
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET'||new URL(e.request.url).origin!==location.origin)return;
   if(e.request.mode==='navigate'){
-    e.respondWith(fetch(e.request).catch(()=>cached('./index.html')));
+    e.respondWith(fetch(e.request).catch(async()=>await cached(e.request)||await cached('./index.html')));
     return;
   }
   e.respondWith(cached(e.request).then(r=>r||fetch(e.request)));

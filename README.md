@@ -18,6 +18,12 @@ Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
 
+## The Royal Orchestra — 1.7
+
+[Listen to all seven themes](https://chrisdayley.github.io/oathfire/soundtrack.html), including bosses you have not reached. **Banners in the Morning** is a happy royal castle suite: 72 bars, nine sections and 2:40 before repeating. Each act has a military march that gains tempo, moving strings, brass and percussion with each wave. Battle and boss scores keep developing without wrapping a track, so they last through any length of fight. Melodic motifs return in varied arrangements.
+
+The Bell Knight, Ash Castellan and Marshal Veyr each have their own intense score. Separate victory and defeat cues follow the result. All music uses real recorded strings, brass, woodwinds, harp and percussion from VSCO 2 CE (CC0), assembled into original Oathfire compositions. Audio downloads total 2.6 MB. Music and sound effects have separate volume controls. Battle menus pause musical position; saved battles restore the current measure and beat. See [composition, architecture and credits](docs/music.md).
+
 ## Spoils & Strategy — 1.6
 
 Combat menus now use an icon/roster grid with one selected action pane, guided by the inspected expanded Heroes & Castles 2 Research screen. Troops and defenses show a live 3D model, Command cost and core stats; full Stats & Abilities remain one tap away.
@@ -68,4 +74,4 @@ GitHub Actions runs the progression tests, builds the Vite site and publishes th
 
 ## Credits
 
-Original world, weapons, mounts, story, systems, interface, animation layers and procedural audio for Oathfire. Animation rig and shared skeletal clips by Kay Lousberg, CC0; the source body meshes are removed at runtime. Surface scans and sky by Poly Haven contributors, CC0. Download URLs, source pages and verified hashes are recorded in `public/materials/provenance.json`. Three.js (MIT), Rapier (Apache 2.0), Vite (MIT); Cinzel and Inter (OFL). Full asset provenance and licenses are in [credits](public/credits.html) and `public/licenses/`.
+Original world, weapons, mounts, story, systems, interface, animation layers and original score for Oathfire. Sampled orchestra: VSCO 2 Community Edition (CC0), Sam Gossner and Simon Dalzell, with sample cutting by Elan Hickler / Soundemote. Animation rig and shared skeletal clips by Kay Lousberg, CC0; the source body meshes are removed at runtime. Surface scans and sky by Poly Haven contributors, CC0. Download URLs, source pages and verified hashes are recorded in `public/materials/provenance.json`. Three.js (MIT), Rapier (Apache 2.0), Vite (MIT); Cinzel and Inter (OFL). Full asset provenance and licenses are in [credits](public/credits.html) and `public/licenses/`.
