@@ -1,7 +1,7 @@
 import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-1.4.0-command-and-keep';
+export const BUILD='oathfire-1.5.0-battle-research';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',subtitle:'Iron, resolve, a line that holds.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},

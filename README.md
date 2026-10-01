@@ -18,11 +18,17 @@ Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
 
+## Battle research & compact HUD — 1.5
+
+Battle information sits in the corners: health, stamina, magic, Command and recent squad shortcuts on the left; living soldiers/capacity, free army spaces, installed defenses, gate condition and wave on the right. Tap a recent squad icon to buy another squad at its current cost. Command and Research have separate bottom buttons. The castle HUD returns between battles.
+
+**Research → Troops / Defenses:** choose up to four concurrent timed projects. Unfinished research can be canceled; completed projects commit their slot until the battle ends. Eight projects improve range, health, damage, firing rate or healing. Some also raise new-squad Command prices. Research itself costs time and a slot, not Command. Reclaiming castles unlocks further choices. Timers pause in menus and resume with a suspended battle; starting another battle clears all research. Permanent training, loot and equipment are preserved. See [mechanics and verification](docs/battle-research.md).
+
 ## Command & Keep update — 1.4
 
 Newly deployed soldiers automatically seek enemies across the battlefield, close to actual attack range, and reacquire targets when an enemy falls. Explicit Hold and Follow orders apply to soldiers already on the field; engineers remain gate repair specialists. Individual orders and hold positions survive a suspended battle.
 
-**During battle:** Command → Troops / Defenses / Orders. The paused battlefield stays visible beside a compact roster with an explicit Command cost for every entry. Deploy directly from a row, or tap its name for the animated model, health, damage, detailed stats and abilities. Seven emplacement types can be refitted for this battle using Command; the eighth entry repairs a standing gate. Replacing a defense preserves the other emplacements' cooldowns. Permanent training and the castle's home arrangement are preserved.
+**During battle:** Command → Troops / Defenses / Orders / Research. The paused battlefield stays visible beside a compact roster with an explicit Command cost for every entry. Deploy directly from a row, or tap its name for the animated model, health, damage, detailed stats and abilities. Seven emplacement types can be refitted for this battle using Command; the eighth entry repairs a standing gate. Replacing a defense preserves the other emplacements' cooldowns. Permanent training and the castle's home arrangement are preserved.
 
 **At the castle:** Keep → Character / Armory / Regiments / Castle, with a prominent mission destination. Equipment follows slot → inventory → item, then Benefits / Compare / Forge. Regiments and defenses follow roster → object → Overview / Stats / Abilities / Upgrade. Full numerical information and all ten visual ranks remain available without appearing together on a deployment screen. Market, Chronicle, Bestiary and Settings sit one level deeper. Back restores the previous list and scroll position.
 

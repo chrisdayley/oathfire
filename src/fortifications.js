@@ -1,3 +1,4 @@
+import {battleDefenseStats} from './research.js';
 import * as T from 'three';
 import {box,cyl,mesh,beam,sunBadge} from './art.js';
 import {flameVolume} from './environment-design.js';
@@ -36,15 +37,15 @@ export function fortificationModel(kind,rank,m){
 }
 export function tickFortification(g,t,dt,alive){
  t.cooldown=(t.cooldown||0)-dt;if(t.cooldown>0)return;
- const st=defenseStats(t.id,t.level),d=DEFENSES[t.id],owner={team:'ally',pos:t.model.position,stats:{},defense:t.id,rank:t.level},pos=t.model.position;
+ const st=battleDefenseStats(t.id,t.level,g.store.data.doctrines[t.id],g.battle),d=DEFENSES[t.id],owner={team:'ally',pos:t.model.position,stats:{},defense:t.id,rank:t.level},pos=t.model.position;
  if(t.id==='sanctuary'){
   const wounded=[g.hero,...g.allies].filter(a=>!a.dead&&a.hp<a.stats.hp&&distance(a.pos,pos)<st.range).sort((a,b)=>a.hp/a.stats.hp-b.hp/b.stats.hp).slice(0,4);
   if(!wounded.length)return;for(const a of wounded){a.hp=Math.min(a.stats.hp,a.hp+st.damage);a.protect=Math.max(a.protect||0,2);g.fx.ward(a.pos,.9,1);}
-  g.fx.ward(pos,st.range,1);g.audio.play('sanctuary',.35);t.cooldown=d.interval;return;
+  g.fx.ward(pos,st.range,1);g.audio.play('sanctuary',.35);t.cooldown=st.interval;return;
  }
  const candidates=alive.filter(e=>distance(e.pos,pos)<st.range&&(t.id!=='mortar'||distance(e.pos,pos)>9));
  candidates.sort((a,b)=>t.id==='cannon'?b.stats.armor-a.stats.armor:distance(a.pos,pos)-distance(b.pos,pos));const target=candidates[0];if(!target)return;
- t.cooldown=d.interval/(g.battle.overdrive>0?1.3:1);t.recoil=.35;const direction=target.pos.clone().sub(pos).setY(0).normalize();t.model.userData.aim.rotation.y=Math.atan2(direction.x,direction.z)+Math.PI;
+ t.cooldown=st.interval/(g.battle.overdrive>0?1.3:1);t.recoil=.35;const direction=target.pos.clone().sub(pos).setY(0).normalize();t.model.userData.aim.rotation.y=Math.atan2(direction.x,direction.z)+Math.PI;
  const origin=pos.clone().addScaledVector(UP,['storm','frost'].includes(t.id)?4.65:2.5).addScaledVector(direction,['cannon','mortar'].includes(t.id)?2.25:0);
  if(t.id==='storm'){
   const hit=new Set();let from=origin,to=target;for(let i=0;i<3&&to;i++){hit.add(to);const end=to.pos.clone().addScaledVector(UP,1.1);let a=from;for(let j=1;j<=6;j++){const p=from.clone().lerp(end,j/6);if(j<6)p.add(new T.Vector3(Math.sin(j*5+g.time)*.4,.2*Math.sin(j),0));g.fx.slash(a,p,0xafd7ff);a=p;}g.combat.hit(to,st.damage*[1,.65,.4][i],owner,{secondary:true});g.fx.emit('arcane',end,8,{speed:2});from=end;to=alive.filter(e=>!e.dead&&!hit.has(e)&&distance(e.pos,from)<7).sort((a,b)=>distance(a.pos,from)-distance(b.pos,from))[0];}g.audio.play('storm',.4);

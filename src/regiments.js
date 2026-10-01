@@ -16,7 +16,7 @@ export function regimentHit(g,t,source,opt){
  if(source?.team!=='ally'||!source.unit||opt.secondary)return;
  const rank=g.store.data.units[source.unit];
  if(source.unit==='dawn'){
-  source.landed=(source.landed||0)+1;if(source.landed%3===0){const allies=[g.hero,...g.allies].filter(a=>!a.dead&&a.hp<a.stats.hp&&dist(a.pos,source.pos)<7).sort((a,b)=>a.hp/a.stats.hp-b.hp/b.stats.hp);const a=allies[0];if(a){a.hp=Math.min(a===g.hero?heroStats(g.store.data).hp:a.stats.hp,a.hp+12+rank*2);g.fx.ward(a.pos,1,.7);g.audio.play('tether',.25);}}
+  source.landed=(source.landed||0)+1;if(source.landed%3===0){const allies=[g.hero,...g.allies].filter(a=>!a.dead&&a.hp<a.stats.hp&&dist(a.pos,source.pos)<7).sort((a,b)=>a.hp/a.stats.hp-b.hp/b.stats.hp);const a=allies[0];if(a){a.hp=Math.min(a===g.hero?heroStats(g.store.data).hp:a.stats.hp,a.hp+(12+rank*2)*(source.stats.healFactor||1));g.fx.ward(a.pos,1,.7);g.audio.play('tether',.25);}}
  }
  if(source.unit==='rider'&&source.cavalryCharge){t.stun=Math.max(t.stun||0,.7);source.cavalryCharge=false;source.chargeDistance=0;g.fx.emit('dust',t.pos,15,{speed:2});}
 }
