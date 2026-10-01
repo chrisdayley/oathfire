@@ -1,10 +1,10 @@
 import './soundtrack.css';
 import {Soundscape} from './audio.js';
-import {MUSIC_TITLES} from './music-score.js';
+import {RECORDING_TITLES as MUSIC_TITLES} from './recorded-score.js';
 const sound=new Soundscape(),$=id=>document.getElementById(id);
 const tracks=[
- {id:'castle',kind:'castle',act:1,wave:0,waves:1,label:'CASTLE · 3:35 SUITE',description:'A lyrical morning prelude opens into a bright court dance, with singing violin, woodwind answers and a full royal return.'},
- {id:'march1',kind:'battle',act:1,wave:1,waves:3,label:'ACT I · THE HEARTHGUARD',description:'A soaring violin hook, crisp marching percussion and off-beat string figures.'},
+ {id:'castle',kind:'castle',act:1,wave:0,waves:1,label:'CASTLE · 3:20 ORCHESTRAL JIG',description:'A lively full-orchestra fantasy jig by Scott Buckley.'},
+ {id:'march1',kind:'battle',act:1,wave:1,waves:3,label:'ACT I · THE HEARTHGUARD',description:'Bold brass, sweeping strings and a heroic adventure theme. Scott Buckley, CC BY 4.0.'},
  {id:'march2',kind:'battle',act:2,wave:1,waves:4,label:'ACT II · THE ASHEN ROAD',description:'A lilting minor melody, warm horn answers and sweeping strings above an urgent bass line.'},
  {id:'march3',kind:'battle',act:3,wave:1,waves:5,label:'ACT III · THE LAST BANNER',description:'A broad, hopeful melody over urgent strings, rising into full brass as the waves gather.'},
  {id:'march4',kind:'battle',act:4,wave:1,waves:6,label:'ACT IV · THE GLASS REGENT',description:'A windborne melody and silver woodwinds gather into a mountain march.'},
@@ -16,10 +16,10 @@ const tracks=[
  {id:'bell',kind:'boss',act:1,wave:3,waves:3,label:'BOSS · THE BELL KNIGHT',description:'Ominous tolling bells, tense Phrygian horns and relentless marching drums.'},
  {id:'castellan',kind:'boss',act:2,wave:4,waves:4,label:'BOSS · THE ASH CASTELLAN',description:'A fast furnace dance, hammering low brass and racing strings.'},
  {id:'veyr',kind:'boss',act:3,wave:5,waves:5,label:'BOSS · MARSHAL VEYR',description:'A defiant, high-reaching theme carried by strings and brass above a relentless march.'}
-];let selected=tracks[0],playing=false,starting=false,analyser,bins;
+].map(t=>({...t,description:t.id==='castle'?'A lively fantasy jig for full orchestra. Scott Buckley, CC BY 4.0.':t.kind==='battle'?'An orchestral suite that moves into stronger recordings as waves arrive. Scott Buckley, CC BY 4.0.':'A complete orchestral production by Scott Buckley, CC BY 4.0.'}));let selected=tracks[0],playing=false,starting=false,analyser,bins;
 const list=document.querySelector('.track-list');list.innerHTML=tracks.map((t,i)=>'<button class="track '+(i===0?'active':'')+'" data-track="'+t.id+'"><em>'+String(i+1).padStart(2,'0')+'</em><span><small>'+t.label+'</small><b>'+MUSIC_TITLES[t.id]+'</b><p>'+t.description+'</p></span></button>').join('');
 const bars=document.querySelector('.visualizer');bars.innerHTML=Array.from({length:38},()=>'<i></i>').join('');
-const pieceStatus=()=>selected.kind==='castle'?'A complete 3:35 suite before the repeat.':'Continuous score · themes develop without restarting.';
+const pieceStatus=()=>selected.kind==='castle'?'A complete 3:20 recording before the repeat.':'Recorded orchestral suite · later waves crossfade to stronger cues.';
 function draw(){document.querySelectorAll('[data-track]').forEach(b=>(b.classList.toggle('active',b.dataset.track===selected.id),b.setAttribute('aria-pressed',b.dataset.track===selected.id)));$('track-title').textContent=MUSIC_TITLES[selected.id];$('track-description').textContent=selected.description;$('kind').textContent=selected.label;$('wave-controls').hidden=selected.kind!=='battle';$('waves').innerHTML=Array.from({length:selected.waves},(_,i)=>'<button data-wave="'+(i+1)+'" class="'+(selected.wave===i+1?'active':'')+'">Wave '+(i+1)+'</button>').join('');$('play').textContent=playing?'Pause score':'Play score';}
 async function play(){if(starting)return;starting=true;$('play').disabled=true;$('status').textContent='Preparing the orchestra…';await sound.unlock();sound.settings({volume:0,music:Number($('volume').value)});if(!sound.music){$('status').textContent='This browser does not support Web Audio.';$('play').disabled=false;starting=false;return;}await sound.music.ready;if(sound.music.state!=='ready'){$('status').textContent='Music could not load. Press Play to retry.';$('play').disabled=false;starting=false;return;}if(!analyser){analyser=sound.ctx.createAnalyser();analyser.fftSize=256;sound.music.bus.connect(analyser);bins=new Uint8Array(analyser.frequencyBinCount);}sound.music.setPaused(false);if(sound.music.scene.id!==selected.id)sound.music.change({...selected,key:selected.id});playing=true;starting=false;$('play').disabled=false;$('status').textContent=pieceStatus();draw();}
 $('play').onclick=()=>{if(playing){sound.music.setPaused(true);playing=false;draw();$('status').textContent='Paused · Press Play to resume.';}else play();};

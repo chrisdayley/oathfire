@@ -6,7 +6,7 @@ export function finishResearch(g,ids){const b=g.battle,s=g.store.data;if(!b)retu
  for(const a of g.allies){if(a.dead)continue;const health=a.hp/a.stats.hp;a.stats=battleUnitStats(a.unit,s.units[a.unit],b,a);a.hp=Math.min(a.stats.hp,a.stats.hp*health);}
  if(ids.some(id=>id==='gate'||id==='gate2')){b.maxGate=battleDefenseStats('gate',s.defenses.gate,s.doctrines.gate,b).hp;if(b.gate>0)b.gate=b.maxGate;}
  if(ids.includes('windlass'))for(const t of g.world.towerObjects)if(['tower','ballista','cannon','mortar'].includes(t.id)&&t.cooldown>0)t.cooldown/=1.2;
- if(ids.includes('reinforcements'))b.reserveArchers=(b.reserveArchers||0)+5;if(ids.includes('rally'))b.command+=200;
+ if(ids.includes('reinforcements'))b.reserveArchers=(b.reserveArchers||0)+2;if(ids.includes('rally'))b.command+=70;
  for(const id of ids)g.toast(RESEARCH[id].name+' ready · active this battle.');g.audio.play('upgrade');g.fx.ward(g.hero.pos,2,1);g.checkpoint();}
 export function tickResearch(g,dt){const b=g.battle;if(!b)return;if(b.command<220)b.command=Math.min(220,b.command+dt*commandIncome(b));if(researchComplete(b,'regeneration')&&!g.hero.dead)g.hero.hp=Math.min(g.hero.stats.hp,g.hero.hp+dt);
  if(researchComplete(b,'anchor')){g.hero.knock=null;g.hero.stun=0;}

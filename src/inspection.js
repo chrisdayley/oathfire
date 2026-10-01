@@ -23,8 +23,9 @@ export function unitInspection(id,rank,battle=null){
  if(id==='marksman')abilities.push(ability('Armor-piercing shot','Crossbow bolts ignore 70% of the target’s armor. Powerful single-target shots have a 2.8 s attack cycle.'));
  if(id==='frost')abilities.push(ability('Rime shard','Hits slow movement by 35% for '+n(2+rank*.2)+' s. Further hits refresh the duration; slow strength does not stack.'));
  if(id==='dawn')abilities.push(ability('Third-strike renewal','Every third landed hit heals the most wounded hero or soldier within 7 m for '+n((12+rank*2)*s.healFactor)+' health. The Sun sworn can heal itself.'));
+ if(['shield','bow','pike'].includes(id))abilities.push(ability('Veteran muster','Deploy two soldiers at once at rank VII. Deployment costs 80% more Command; field capacity still counts both soldiers.',7));
  const active=key=>researchComplete(battle,key);for(const [key,applies]of [['fastShot',['bow','marksman'].includes(id)],['mageFortune',['pyre','frost'].includes(id)],['infantry',id==='shield'],['veterans',WAR_BANDS.forge.includes(id)],['crossfire',['bow','staff','crossbow'].includes(u.weapon)]])if(applies&&active(key))abilities.push(ability('Battle research · '+RESEARCH[key].name,RESEARCH[key].description));
- return {...s,count:u.count,dps:s.damage/s.attackInterval,mitigation:100*(1-100/(100+s.armor*2)),abilities};
+ return {...s,count:s.count,dps:s.damage/s.attackInterval,mitigation:100*(1-100/(100+s.armor*2)),abilities};
 }
 export function defenseInspection(id,rank,doctrine,battle=null){
  const s=battleDefenseStats(id,rank,doctrine,battle),abilities=[],protectedEmplacement=id!=='gate';

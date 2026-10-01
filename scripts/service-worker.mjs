@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(f=>f.isDirectory()?walk(path.join(d,f.name)):[path.join(d,f.name)]);
-const files=walk('dist').filter(f=>!f.includes('/art/')&&(!f.includes('/models/')||f.endsWith('/Knight.glb'))&&!f.includes('/licenses/')&&!f.endsWith('sw.js')&&!f.endsWith('.map'));
+const files=walk('dist').filter(f=>!f.includes('/art/')&&(!f.includes('/models/')||f.endsWith('/Knight.glb'))&&!f.includes('/licenses/')&&!f.endsWith('sw.js')&&!f.endsWith('.map')&&!f.includes('/music/chamber/')&&!f.includes('/music/orchestra/'));
 const hash=crypto.createHash('sha256');
 for(const f of files)hash.update(fs.readFileSync(f));
 hash.update(fs.readFileSync('scripts/service-worker.mjs'));
@@ -24,7 +24,19 @@ self.addEventListener('fetch',e=>{
     e.respondWith(fetch(e.request).catch(async()=>await cached(e.request)||await cached('./index.html')));
     return;
   }
-  e.respondWith(cached(e.request).then(r=>r||fetch(e.request)));
+  e.respondWith(cached(e.request).then(async r=>{
+    if(!r)return fetch(e.request);
+    const range=e.request.headers.get('range');
+    if(!range)return r;
+    // Safari media seeking and resume require a byte-range response offline too.
+    const match=/^bytes=(\\d*)-(\\d*)$/.exec(range);if(!match)return fetch(e.request);
+    const data=await r.arrayBuffer(),length=data.byteLength;
+    const start=match[1]?Number(match[1]):Math.max(0,length-Number(match[2]));
+    const end=match[1]&&match[2]?Math.min(Number(match[2]),length-1):length-1;
+    if(start> end||start>=length)return new Response(null,{status:416,headers:{'Content-Range':'bytes */'+length}});
+    const headers=new Headers(r.headers);headers.delete('content-encoding');headers.set('Accept-Ranges','bytes');headers.set('Content-Range','bytes '+start+'-'+end+'/'+length);headers.set('Content-Length',String(end-start+1));
+    return new Response(data.slice(start,end+1),{status:206,statusText:'Partial Content',headers});
+  }));
 });
 `);
 console.log('Offline cache:',version,urls.length,'files');

@@ -4,12 +4,12 @@ import {unitInspection,defenseInspection} from '../src/inspection.js';
 test('Every soldier and rank exposes finite per-soldier values and an ability description',()=>{
  for(const [id,u]of Object.entries(UNITS))for(let rank=1;rank<=10;rank++){
   const s=unitInspection(id,rank),base=unitStats(id,rank);for(const key of ['hp','damage','armor','attackInterval','speed','reach','count','cost','dps'])assert.ok(Number.isFinite(s[key])&&s[key]>0,id+' '+rank+' '+key);
-  assert.equal(s.hp,base.hp);assert.equal(s.damage,base.damage);assert.equal(s.count,u.count);assert.equal(s.dps,s.damage/s.attackInterval);assert.ok(s.abilities.length);assert.ok(s.abilities.every(a=>a.text&&!/undefined|NaN/.test(a.text)));
+  assert.equal(s.hp,base.hp);assert.equal(s.damage,base.damage);assert.equal(s.count,base.count);assert.equal(s.dps,s.damage/s.attackInterval);assert.ok(s.abilities.length);assert.ok(s.abilities.every(a=>a.text&&!/undefined|NaN/.test(a.text)));
  }
 });
 test('Inspection distinguishes slow marksmen, ordinary archers, armor and deployment costs',()=>{
  const bow=unitInspection('bow',1),marks=unitInspection('marksman',1),shield=unitInspection('shield',5),dawn=unitInspection('dawn',10);
- assert.equal(bow.attackInterval,1.5);assert.equal(marks.attackInterval,2.8);assert.equal(shield.armor,20);assert.equal(dawn.armor,44);assert.equal(shield.cost,39);assert.equal(shield.count,3);assert.equal(shield.abilities[0].unlock,5);
+ assert.equal(bow.attackInterval,1.5);assert.equal(marks.attackInterval,2.8);assert.equal(shield.armor,20);assert.equal(dawn.armor,44);assert.equal(shield.cost,25);assert.equal(shield.count,1);assert.equal(shield.abilities[0].unlock,5);
 });
 test('Healing and control descriptions expose their exact rank-scaled amounts and timers',()=>{
  assert.match(unitInspection('lantern',1).abilities[0].text,/14 health/);assert.match(unitInspection('lantern',10).abilities[0].text,/32 health/);

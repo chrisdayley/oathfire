@@ -9,6 +9,13 @@ export function dressProfile(role,rank,kind=null){
  const ranger=['bow','ranger','rider','marksman','assassin'].includes(role),mage=['lantern','pyre','frost'].includes(role),smith=['ashwright','breaker','engineer','giant','crew'].includes(role),hero=['warden','ranger','ashwright'].includes(role);
  return {ranger,mage,smith,hero,rank,plate:(hero&&!ranger&&!smith)||rank>=5,mail:rank>=3||hero,cloak:hero||mage||rank>=4,hood:ranger&&rank>=3,elite:rank>=8,ivory:rank>=5&&rank<8,blackened:rank>=8,kind,title:RANK_DRESS[Math.min(9,rank-1)]};
 }
+// Saturated liveries are earned gradually; classes remain recognizable at a distance.
+export function rankPalette(role,rank){
+ const category=['bow','ranger','rider','marksman','assassin'].includes(role)?'ranger':['lantern','pyre','frost'].includes(role)?'mage':['ashwright','breaker','engineer','giant','crew'].includes(role)?'smith':'guard';
+ const colors={ranger:[0x60533e,0x365568,0x235b91,0x2446a1,0x263983],guard:[0x69503c,0x684847,0x8b2839,0x962b46,0xe5d8bb],mage:[0x635477,0x624077,0x673796,0x8532a1,0x4b286b],smith:[0x5b4939,0x65432e,0x8a462c,0x522b26,0x302330]};
+ const band=Math.min(4,Math.floor((rank-1)/2));let cloth=colors[category][band];if(role==='frost')cloth=[0x658087,0x427587,0x438ea2,0x6facbd,0xb4d8e3][band];if(role==='pyre')cloth=[0x694133,0x853729,0xa13920,0xbb4c23,0x812122][band];
+ return {cloth,steel:rank>=9?0x343740:rank>=7?0xd2d4d2:rank>=5?0xaeb4bf:0x8c929a,trim:rank>=9?0xe4bb59:rank>=7?0xcfab63:rank>=5?0xc1ab7c:0x887354,jewel:category==='ranger'?0x59a6fa:category==='guard'?0xbe213d:category==='smith'?0xf19b47:0xc485f0,category};
+}
 const textureCache=new Map();
 // Hand drawn weave, stitched diamonds, linked mail and heraldry, with mipmaps for mobile.
 export function textile(kind='weave',color='#174a50',gold='#bc9855'){
@@ -48,12 +55,12 @@ function face(g,m,p){
 }
 export function buildLiving(c,part){
  const role=c.design,rank=c.rank,armor=c.armor?armorDefinition(c.armor):null,kind=c.armor?armorKind(c.armor):null,p=dressProfile(role,rank,kind),ranged=p.ranger||role==='crew';
- const clothHex=armor?.cloth??(p.smith?0x473629:p.mage?(role==='pyre'?0x6d3024:role==='frost'?0x345d76:0x917143):rank<2?0x66513b:0x124a52),trimHex=armor?.trim??(rank<5?0x917752:rank<8?0xb39962:0xd0b373),plateHex=armor?.steel??(p.blackened?0x303f49:p.ivory?0xc0beb1:0x929da2);
- const m={cloth:material('cloth',clothHex,{side:T.DoubleSide,roughness:1}),quilt:material('cloth',0xffffff,{map:textile('quilt',p.ranger?'#54432f':'#67513c'),side:T.DoubleSide,roughness:1}),mail:material('steel',0xb6b5a5,{map:textile('mail'),roughness:.82,metalness:.45}),steel:material('steel',plateHex,{roughness:.58,metalness:.72,roughnessMap:null,envMapIntensity:.72}),edge:material('steel',trimHex,{roughness:.5,metalness:.72}),dark:material('leather',0x24282a,{roughness:.95}),leather:material('leather',p.ranger?0x605344:0x4b3e31,{roughness:.94}),skin:new T.MeshStandardMaterial({color:0xb4a294,map:ART.textures['human-skin'],roughness:.87}),eye:new T.MeshStandardMaterial({color:0xada994,roughness:.6}),iris:new T.MeshStandardMaterial({color:0x4b5548,roughness:.5}),hair:material('cloth',p.smith?0x615446:0x30271f,{roughness:1})};
+ const palette=rankPalette(role,rank),clothHex=armor?.cloth??palette.cloth,trimHex=armor?.trim??palette.trim,plateHex=armor?.steel??palette.steel;
+ const m={cloth:material('cloth',clothHex,{side:T.DoubleSide,roughness:1}),quilt:material('cloth',0xffffff,{map:textile('quilt',p.ranger?'#54432f':'#67513c'),side:T.DoubleSide,roughness:1}),mail:material('steel',0xb6b5a5,{map:textile('mail'),roughness:.82,metalness:.45}),steel:material('steel',plateHex,{roughness:.56,metalness:.72,envMapIntensity:.82}),edge:material('steel',trimHex,{roughness:.60,metalness:.70}),dark:material('leather',0x24282a,{roughness:.95}),leather:material('leather',p.ranger?0x605344:0x4b3e31,{roughness:.94}),skin:new T.MeshStandardMaterial({color:0xb4a294,map:ART.textures['human-skin'],roughness:.87}),eye:new T.MeshStandardMaterial({color:0xada994,roughness:.6}),iris:new T.MeshStandardMaterial({color:0x4b5548,roughness:.5}),hair:material('cloth',p.smith?0x615446:0x30271f,{roughness:1})};
  // Explicitly preserve a different fabric construction for each equipped armor family.
  if(kind==='trail'){p.plate=false;m.steel.color.setHex(armor.steel);m.steel.metalness=.12;m.steel.roughness=.95;}
  if(kind==='spellweave'||kind==='dawn'){p.mage=true;p.plate=false;}
- c.materials.push(...Object.values(m));c.atelier={...p,clothHex,trimHex};
+ c.materials.push(...Object.values(m));c.atelier={...p,clothHex,trimHex,palette};
  const hips=part('hips'),spine=part('spine'),chest=part('chest'),head=part('head');
  shell(hips,[[-.12,.166,.105],[0,.17,.113],[.17,.153,.105]],m.quilt);
  shell(spine,[[0,.15,.102],[.11,.17,.118],[.26,.207,.139]],p.mail?m.mail:m.quilt);
@@ -77,7 +84,7 @@ export function buildLiving(c,part){
   orb(wrist,[.037,.038,.035],[0,.02,0],m.leather);shell(hand,[[0,.038,.032],[.056,.045,.03],[.091,.032,.025]],m.leather,{square:.5});for(let i=0;i<4;i++)tube(hand,[[(i-1.5)*.019,.055,.023],[(i-1.5)*.018,.107,.027],[(i-1.5)*.016,.113,.045]],.008,m.leather);tube(hand,[[side*.04,.015,0],[side*.056,.051,.024],[side*.042,.075,.043]],.009,m.leather);
   // Narrow ranger pauldrons remain asymmetric and leave the string arm clear.
   if(rank>=2||p.hero){const size=(p.ranger?(side<0?.66:.84):1)*(rank>=8?1.19:rank>=5?1.09:.93),plates=(rank>=8?4:rank>=4?3:1);const shoulderMat=(rank>=4||p.hero)&&!p.smith?m.steel:m.leather;
-   for(let i=0;i<plates;i++){const a=shell(arm,[[-.065+i*.042,.064,.089],[.005+i*.042,.137-i*.008,.121-i*.005],[.075+i*.046,.114-i*.007,.106-i*.006]],shoulderMat,{square:.7});a.scale.set(size,1,size);rim(arm,(.114-i*.007)*size,(.106-i*.006)*size,.075+i*.046,m.edge,rank>=7?.006:.003);}
+   for(let i=0;i<plates;i++){const a=shell(arm,[[-.036+i*.033,.088,.074],[-.012+i*.033,.126-i*.008,.101-i*.005],[.058+i*.042,.113-i*.007,.105-i*.006]],shoulderMat,{square:.48,segments:10});a.scale.set(size,1,size);rim(arm,(.114-i*.007)*size,(.106-i*.006)*size,.075+i*.046,m.edge,rank>=7?.006:.003);}
    if(rank>=6||p.hero){const seal=sunBadge(arm,.04,m.edge);seal.position.set(0,.033,-.127*size);seal.rotation.x=Math.PI;}
   }
   if(rank>=4||p.hero){const bracer=plaque(fore,[[-.058,0],[0,-.015],[.058,0],[.046,.19],[0,.235],[-.043,.19]],[0,.015,-.067],m.steel);bracer.rotation.y=Math.PI;for(const y of [.045,.18])shell(fore,[[y,.067-y*.09,.063-y*.065],[y+.019,.067-y*.09,.063-y*.065]],m.edge);}
@@ -99,7 +106,7 @@ export function buildLiving(c,part){
  if(ranged){const q=cyl(chest,.075,.059,.51,[.18,-.08,-.23],m.leather,12);q.rotation.z=-.25;for(const y of [-.27,.13])rim(chest,.077,.061,y,m.edge).position.set(.18,0,-.23);for(let i=0;i<5+(rank>=6?3:0);i++){const x=.13+i*.014,z=-.22+(i%2)*.027,top=.37+(i%3)*.025;beam(chest,[x,-.17,z],[x-.06,top,z],.004,m.leather,5);for(const turn of [0,Math.PI/2]){const f=plaque(chest,[[0,0],[.025,.013],[.025,.085],[0,.07]],[x-.06,top-.08,z],rank>=7?m.edge:m.cloth,.002);f.rotation.y=turn;}}
   tube(chest,[[-.205,.177,.07],[.02,-.01,.183],[.17,-.16,.10]],.022,m.leather);
  }
- if(role==='banner'){beam(chest,[-.21,-.1,-.18],[-.21,1.0,-.18],.017,m.edge,8);const fm=m.cloth.clone();fm.map=textile('banner','#134c52');fm.color.setHex(0xffffff);c.materials.push(fm);mesh(new T.PlaneGeometry(.41,.55,5,5),fm,chest,-.02,.70,-.18);}
+ if(role==='banner'){beam(chest,[-.21,-.1,-.18],[-.21,1.0,-.18],.017,m.edge,8);const fm=m.cloth.clone();fm.map=textile('banner','#'+new T.Color(clothHex).getHexString());fm.color.setHex(0xffffff);c.materials.push(fm);mesh(new T.PlaneGeometry(.41,.55,5,5),fm,chest,-.02,.70,-.18);}
  if(role==='engineer'||role==='crew'){box(chest,[.30,.34,.12],[0,-.01,-.22],m.leather);for(const side of [-1,1])tube(chest,[[side*.14,.19,-.06],[side*.21,0,.13],[side*.12,-.12,.12]],.017,m.leather);beam(chest,[.18,-.1,-.27],[.18,.35,-.27],.024,m.leather);box(chest,[.20,.07,.07],[.18,.35,-.27],m.steel);}
  if(rank>=8&&!p.smith&&!p.ranger){for(const side of [-1,1])for(let i=0;i<5;i++){const crest=plaque(head,[[-.008,0],[.008,-.008],[.022,.055],[.027,.13+i*.013],[.014,.16+i*.012],[-.004,.048]],[side*(.115+i*.009),.175-i*.007,-.025-i*.018],m.edge,.004);crest.rotation.z=-side*(.38+i*.08);}}
  if(rank>=10&&!p.smith&&!p.ranger){for(let i=0;i<14;i++)tube(head,[[0,.27,-.015-i*.006],[0,.37-i*.005,-.03-i*.011],[0,.41-i*.007,-.16-i*.010],[0,.27-i*.009,-.24-i*.008]],.008,m.cloth);}
@@ -107,6 +114,15 @@ export function buildLiving(c,part){
  if(p.plate){for(const side of [-1,1]){for(let j=0;j<7;j++)orb(chest,[.0035,.0035,.0025],[side*(.12+j*.009),.14-j*.038,.14+Math.sin(j*.7)*.022],m.edge);for(let j=0;j<3;j++)tube(chest,[[side*(.040+j*.03),-.12,.14],[side*(.063+j*.03),-.015,.156],[side*(.068+j*.032),.08,.143]],.0025,m.edge);}
   if(rank>=6||p.hero){for(const side of [-1,1]){const front=plaque(hips,[[-.060,0],[.061,0],[.08,-.40],[.035,-.53],[-.053,-.50]],[side*.073,.095,.157],m.cloth,.004);front.rotation.z=side*-.035;tube(hips,[[side*.12,.09,.175],[side*.13,-.23,.175],[side*.13,-.38,.175]],.004,m.edge);const med=sunBadge(hips,.043,m.edge);med.position.set(side*.073,-.23,.18);}for(const side of [-1,1]){const thigh=part('upperleg.'+(side>0?'l':'r'));for(let j=0;j<4;j++){const t=plaque(thigh,[[-.072,0],[.072,0],[.065,.068],[0,.085],[-.065,.068]],[0,.045+j*.068,-.093],m.steel);t.rotation.y=Math.PI;tube(thigh,[[-.066,.107+j*.068,-.103],[0,.127+j*.068,-.103],[.066,.107+j*.068,-.103]],.003,m.edge);}}}}
  for(let i=0;i<rank;i++){const sleeve=part('lowerarm.l');const pip=plaque(sleeve,[[-.006,0],[0,.009],[.006,0],[0,-.009]],[(i%2-.5)*.018,.035+Math.floor(i/2)*.022,-.069],m.edge,.003);}
+ // Enamel insets sit within metal frames, with engraved ribs and rank-specific regalia.
+ const enamel=material('steel',clothHex,{roughness:.30,metalness:.32,envMapIntensity:.8}),gem=new T.MeshPhysicalMaterial({color:palette.jewel,metalness:.28,roughness:.12,clearcoat:1});c.materials.push(enamel,gem);
+ if(rank>=3){for(const side of [-1,1]){const a=part('upperarm.'+(side>0?'l':'r'));const inset=plaque(a,[[-.050,0],[.045,0],[.062,.058],[0,.096],[-.060,.058]],[0,.038,-.128],enamel);inset.rotation.y=Math.PI;}}
+ if(rank>=5){for(const side of [-1,1]){plaque(chest,[[0,0],[.060,.02],[.085,.10],[.054,.155],[.007,.133]],[side>0?.06:-.14,-.06,.151],enamel,.008);for(let j=0;j<3;j++)tube(chest,[[side*(.084+j*.018),-.01,.172],[side*(.105+j*.018),.055,.166],[side*(.10+j*.018),.115,.149]],.0025,m.edge);}}
+ if(rank>=6){for(const side of [-1,1]){const jewel=mesh(new T.OctahedronGeometry(.021),gem,chest,side*.128,.175,.099);jewel.scale.z=.42;}}
+ if(rank>=7){for(const side of [-1,1]){const a=part('lowerarm.'+(side>0?'l':'r'));plaque(a,[[-.025,0],[.025,0],[.032,.10],[0,.15],[-.032,.10]],[0,.038,-.076],enamel,.01);for(let i=0;i<rank-6;i++)tube(a,[[side*.032,.04+i*.025,-.082],[0,.052+i*.025,-.090],[-side*.032,.04+i*.025,-.082]],.0025,m.edge);}}
+ if(rank>=8){for(const side of [-1,1]){const t=plaque(hips,[[-.07,0],[.07,0],[.063,-.30],[0,-.40],[-.063,-.30]],[side*.19,-.13,.07],enamel,.014);t.rotation.y=side*.6;const s=part('upperarm.'+(side>0?'l':'r'));for(let j=0;j<3;j++){const flute=plaque(s,[[-.014,0],[.014,0],[.02,.13],[0,.18],[-.02,.13]],[-.068+j*.068,.015,-.140],m.edge,.005);flute.rotation.y=Math.PI;}}}
+ if(rank>=9){for(const side of [-1,1]){const jewel=mesh(new T.OctahedronGeometry(.033),gem,chest,side*.18,.137,.118);jewel.scale.z=.4;}const med=mesh(new T.OctahedronGeometry(.036),gem,hips,0,.15,.178);med.scale.z=.35;}
+ if(rank>=10){for(const side of [-1,1])tube(chest,[[side*.14,.16,.135],[side*.20,.08,.17],[side*.15,-.035,.18],[side*.06,-.055,.17]],.006,m.edge);}
  // Family identity on visible armor: straps, pale vestments, cinder channels, or command sash.
  if(kind==='bastion')for(const side of [-1,1])plaque(chest,[[-.035,0],[.04,0],[.08,.15],[-.055,.18]],[side*.14,.085,.115],m.steel);
  if(kind==='ember')for(const side of [-1,1])tube(chest,[[side*.1,-.13,.14],[side*.13,0,.16],[side*.10,.13,.132]],.007,m.edge);

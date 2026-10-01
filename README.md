@@ -18,6 +18,16 @@ Desktop: WASD movement; right mouse drag camera; J or left click attack; K guard
 
 Progress saves in the browser's local storage and IndexedDB. Use Settings to export/import a backup. The service worker supports offline play after the first complete online load. No account, ads or real-money purchases.
 
+## Living Kingdom — 2.2
+
+Regiment liveries now advance through leather and muted cloth into royal blue, crimson, ivory, copper and amethyst. Higher ranks add enamel breastplate insets, jewels, engraved vambraces, layered tassets and sculpted shoulder armor. Rank previews use the same models as battle.
+
+Hearthwatch gains colored shutters, striped market awnings, flower boxes, lanterns, carts, stocked stalls and more varied masonry. Battlefields gain wildflowers, ferns, a working watermill, a ruined chapel, farms and supply crates. Beyond the arena are hillside settlements, an abbey, a stone viaduct, branching woodland and three mountain ranges. Solid foreground scenery is registered with physics and troop navigation. The navigation grid now accounts for an obstacle's full cell overlap to prevent soldiers walking into thin walls.
+
+New soldiers deploy one at a time. Shieldward, Longbows and Pikeguard gain a two-soldier muster at rank VII with an 80% deployment surcharge. Base Command income is 0.6/second, rising to 0.75 with a captured camp; direct hero kills grant 2 Command, while allied kills grant none. Opening Command is 55, with one starting Shieldward. Waves increase their numbers, health and damage; the first mission grows from 7 to 11 to 14 attackers. Rank-up cards display the old/new level, increased health and earned skill points without tutorial filler.
+
+Eight full orchestral recordings by Scott Buckley, CC BY 4.0, replace the note sequencer. The 3:20 castle jig is the only looping cue. Battle waves crossfade forward through unused recordings; each act boss has a distinct opening theme. Pausing and saved games preserve the recording and playhead. [Credits and source hashes](public/music/recordings/credits.json). These are professionally produced orchestral recordings, not a claim of a newly recorded live orchestra. Legacy sampled banks remain credited in the repository but are excluded from the offline cache.
+
 ## Hearthwatch Atelier — 2.1
 
 After victory, a saved sequence introduces each newly unlocked regiment, defense, combat research project and optional rescue. Each screen shows an animated model, four key stats, its tactical purpose and instructions. Swipe or use Next. The final screen offers training, defenses, character/armory, campaign and exploration; a contextual town guide follows the chosen activity. Returning after field exploration and reloading cannot silently discard a pending sequence. Chronicle can replay the latest unlocks.
@@ -46,7 +56,7 @@ Five weapon types have different swings and confirmed-hit sounds, with separate 
 
 ## Music playback
 
-Battle music develops without resetting its measure counter; familiar themes return in changed arrangements and tonal centers. Wave progression adds orchestral layers. Combat menus pause playback position, and suspended saves restore measure and beat. Effects and music have separate volume controls. [Listen to the score](https://chrisdayley.github.io/oathfire/soundtrack.html).
+Full stereo orchestral recordings play through reusable media decks. Advancing waves crossfade to new cues; combat menus pause the playhead, and suspended saves restore it. Effects and music have separate volume controls. The offline cache supports byte-range requests for audio seeking. [Listen to the score](https://chrisdayley.github.io/oathfire/soundtrack.html).
 
 ## Spoils & Strategy — 1.6
 

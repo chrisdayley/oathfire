@@ -2,7 +2,7 @@ import {decorateMissions} from './campaign.js';
 import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-2.1.0-hearthwatch-atelier';
+export const BUILD='oathfire-2.2.0-living-kingdom';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',subtitle:'Iron, resolve, a line that holds.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -33,13 +33,13 @@ export const SPELLS={
 };
 for(const [id,name,icon] of [['sunwall','Sunwall','sun'],['march','Living standard','banner'],['reversal','Dawn reversal','fire'],['forgefall','Forgefall','hammer'],['sanctuary','Sanctuary','sun'],['inferno','Inferno','fire'],['briarstorm','Briarstorm','leaf'],['grove','Living grove','leaf'],['verdant','Verdant reversal','leaf']])SPELLS[id]={name,icon,cost:32,cooldown:30,desc:'A signature capstone technique. Only one capstone can be active.'};
 export const UNITS={
- shield:{name:'Shieldward',role:'Hold the line',model:'Knight',weapon:'sword',cost:35,count:3,hp:120,damage:16,speed:3.0,reach:2.4,unlock:0,color:0x468e8a,spec:ARMY_SPEC.shield},
- bow:{name:'Longbows',role:'Elevated ranged support',model:'Rogue_Hooded',weapon:'bow',cost:45,count:3,hp:72,damage:16,speed:3.4,reach:25,unlock:0,color:0x81995e},
- pike:{name:'Pikeguard',role:'Stop charges and giants',model:'Knight',weapon:'spear',cost:42,count:3,hp:110,damage:19,speed:3.0,reach:3.6,unlock:1,color:0x7599ac},
- lantern:{name:'Lanternkeepers',role:'Heal nearby soldiers',model:'Mage',weapon:'staff',cost:55,count:2,hp:84,damage:10,speed:3.2,reach:18,unlock:3,color:0xe9bc66},
- breaker:{name:'Ashbreakers',role:'Crush armored enemies',model:'Barbarian',weapon:'hammer',cost:65,count:2,hp:180,damage:34,speed:2.7,reach:2.8,unlock:5,color:0xa96b42},
- crew:{name:'Siege crew',role:'Heavy bolts against siege',model:'Knight',weapon:'crossbow',cost:80,count:2,hp:115,damage:54,speed:2.7,reach:30,unlock:6,color:0xb8a475},
- rider:{name:'Stormriders',role:'Fast flank and charge',model:'Rogue_Hooded',weapon:'spear',cost:90,count:2,hp:195,damage:26,speed:6.3,reach:3.4,unlock:8,color:0x658baf},
+ shield:{name:'Shieldward',role:'Hold the line',model:'Knight',weapon:'sword',cost:22,count:1,hp:120,damage:16,speed:3.0,reach:2.4,unlock:0,color:0x468e8a,spec:ARMY_SPEC.shield},
+ bow:{name:'Longbows',role:'Elevated ranged support',model:'Rogue_Hooded',weapon:'bow',cost:28,count:1,hp:72,damage:16,speed:3.4,reach:25,unlock:0,color:0x81995e},
+ pike:{name:'Pikeguard',role:'Stop charges and giants',model:'Knight',weapon:'spear',cost:26,count:1,hp:110,damage:19,speed:3.0,reach:3.6,unlock:1,color:0x7599ac},
+ lantern:{name:'Lanternkeepers',role:'Heal nearby soldiers',model:'Mage',weapon:'staff',cost:55,count:1,hp:84,damage:10,speed:3.2,reach:18,unlock:3,color:0xe9bc66},
+ breaker:{name:'Ashbreakers',role:'Crush armored enemies',model:'Barbarian',weapon:'hammer',cost:65,count:1,hp:180,damage:34,speed:2.7,reach:2.8,unlock:5,color:0xa96b42},
+ crew:{name:'Siege crew',role:'Heavy bolts against siege',model:'Knight',weapon:'crossbow',cost:80,count:1,hp:115,damage:54,speed:2.7,reach:30,unlock:6,color:0xb8a475},
+ rider:{name:'Stormriders',role:'Fast flank and charge',model:'Rogue_Hooded',weapon:'spear',cost:90,count:1,hp:195,damage:26,speed:6.3,reach:3.4,unlock:8,color:0x658baf},
  giant:{name:'Oathbound giant',role:'Break a crowded front',model:'Barbarian',weapon:'hammer',cost:120,count:1,hp:460,damage:62,speed:2.6,reach:4.4,unlock:11,color:0x8caa9b,scale:1.75},
  ...NEW_UNITS
 };
@@ -71,7 +71,7 @@ export const AFFIXES={sunder:{name:'Sundering',desc:'Heavy hits strip 20% armor 
 export const SERVICES=[{id:'forge',name:'Torren · Forge',x:-19,z:8,icon:'hammer',tab:'equipment',line:'Good steel deserves a second life.'},{id:'market',name:'Iona · Quartermaster',x:20,z:8,icon:'bag',tab:'shop',line:'A kingdom begins with someone coming home.'},{id:'troops',name:'Captain Rowan · Barracks',x:-18,z:-4,icon:'banner',tab:'troops',line:'Give them ground worth holding.'},{id:'defenses',name:'Nell · Engineer',x:19,z:-5,icon:'tower',tab:'defenses',line:'A good wall is a promise made of stone.'},{id:'campaign',name:'Sera · War table',x:0,z:17,icon:'map',tab:'campaign',line:'There is always another way around.'},{id:'hero',name:'Oath shrine',x:-10,z:23,icon:'sun',tab:'hero',line:'Choose what you will carry into the dark.'}];
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export function seeded(seed){let n=seed>>>0;return()=>{n+=0x6D2B79F5;let t=n;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
-export function unitStats(id,level){const u=UNITS[id],i=level-1;return {hp:u.spec?.hp[i]||Math.round(u.hp*(1+i*.13+i*i*.007)),damage:u.spec?.damage[i]||Math.round(u.damage*(1+i*.10)),speed:u.speed,reach:u.reach,cost:u.cost+Math.floor(i/3)*4,armor:id==='shield'?10+level*2:id==='dawn'?24+level*2:4,attackInterval:['bow','crossbow','staff'].includes(u.weapon)?({marksman:2.8,pyre:2.7,frost:2.2}[id]||1.5):WEAPONS[u.weapon].speed};}
+export function unitStats(id,level){const u=UNITS[id],i=level-1,count=['shield','bow','pike'].includes(id)&&level>=7?2:1;return {count,hp:u.spec?.hp[i]||Math.round(u.hp*(1+i*.13+i*i*.007)),damage:u.spec?.damage[i]||Math.round(u.damage*(1+i*.10)),speed:u.speed,reach:u.reach,cost:Math.ceil((u.cost+Math.floor(i/3)*3)*(count===2?1.8:1)),armor:id==='shield'?10+level*2:id==='dawn'?24+level*2:4,attackInterval:['bow','crossbow','staff'].includes(u.weapon)?({marksman:2.8,pyre:2.7,frost:2.2}[id]||1.5):WEAPONS[u.weapon].speed};}
 export function unitCost(id,level){return UNITS[id].spec?.costs[level-1]||Math.round([80,110,150,210,280,370,490,640,840][level-1]*(UNITS[id].cost/35)**.4);}
 export function defenseStats(id,level){const u=DEFENSES[id];return id==='gate'?{hp:1100+level*130+level*level*15,damage:0,range:0}:{hp:u.hp[level-1],damage:u.damage[level-1],range:u.third[level-1]};}
 // Both the battlefield and inspection screens use these doctrine-adjusted values.

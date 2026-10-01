@@ -1,5 +1,20 @@
 # Oathfire release QA
 
+## Living Kingdom — 2.2 (October 1, 2026)
+
+Build `oathfire-2.2.0-living-kingdom`. Existing save schema and storage keys are retained.
+
+- 80 rule, progression and save tests pass. Recruitment starts at one soldier; basic rank-VII muster buys two at increased cost. Wave rosters grow, enemy health/damage scale per wave, and each survivor retains its original wave strength when a battle resumes.
+- Two normal-rules first-mission simulations compare active play with idle archer recruitment. The idle strategy loses; active movement, quick/charged attacks and mixed recruitment win. Neither scenario modifies player/enemy stats or grants extra resources. These are limited bot scenarios, not a claim that the whole campaign is perfectly balanced.
+- The atelier suite verifies all 150 troop appearances, every rank's changed geometry, skinning and movement, seven armor families with eleven forge states, cloth animation, the solid barrel, open gate, climbable stairs and jumping. Unlocks and next-step cards fit 844×390, 667×375 and 390×844; reload resumes the reveal. Dedicated level-up checks verify large old/new numbers, actual health/skill-point gains and no text overflow.
+- Navigation regression found a real thin-wall sampling bug. Obstacle footprints now overlap navigation cells conservatively and waypoints use a tighter arrival radius. Shieldward, Longbows and Pikeguard pass long-distance autonomous pursuit and opposite-flank reacquisition around the added scenery. All seven emplacement refits, orders and gate behavior pass.
+- Sixteen combat checks cover ten weapon powers, bombs and dodges, wraith movement, cooldown saves, and a late mission with 59 enemies and a 24-soldier army. The measured desktop Chromium run at an 844×390 viewport had a 16.7 ms median frame time. This is not a physical phone performance result.
+- Recorded-music checks verify audible output, separate mute controls, wave crossfades, frozen/resumed playheads, saved recording position, five distinct boss openings, castle loop boundary, soundtrack controls and attribution. The production offline test verifies game loading, music playback, 206 byte ranges, suffix ranges, invalid-range responses and seeking with the network disconnected. The new audio is streamed through two decks rather than decoding the full 42 MB collection into PCM memory.
+- Existing foley regression verifies animated foot contacts, surfaces, armor sounds, weapon collisions, all hero spell cues, upgraded spell layers, settings and persistence. No runtime errors in the passing suites.
+
+The painted concept quality is not claimed as achieved. The release adds original constructed detail, richer rank liveries, terrain dressing, distant settlements and licensed finished orchestral productions. Automated audio checks establish playback and signal behavior; no claim is made of a newly recorded live orchestra or subjective listening approval on phone speakers. Composer attribution, modifications, source downloads and hashes are in `public/music/recordings/`.
+
+
 ## Steel & Sorcery — 1.8 (October 1, 2026)
 
 Build `oathfire-1.8.0-steel-and-sorcery`. See `sound-effects.md` for contact timing, elemental direction and source provenance.

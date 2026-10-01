@@ -5,7 +5,7 @@ import {material} from './materials.js';
 const trace=(g,ps,r,m)=>mesh(new T.TubeGeometry(new T.CatmullRomCurve3(ps.map(p=>new T.Vector3(...p))),18,r,5,false),m,g);
 export function dressHost(c,part,role,m){
  const chest=part('chest'),hips=part('hips'),head=part('head'),v=c.design,plate=!['hollow','archer','mage'].includes(role),giant=role==='brute';
- const iron=material('steel',giant?0x514c44:0x3c4546,{roughness:.76,roughnessMap:null,metalness:.65}),edge=material('steel',0x9b8770,{roughness:.72,roughnessMap:null,metalness:.60}),rag=material('cloth',['herald','reaver'].includes(v)?0x632e26:role==='mage'?0x3b343e:0x323f3d,{side:T.DoubleSide,roughness:1}),ash=material('cloth',0xaaa493,{roughness:1});c.materials.push(iron,edge,rag,ash);
+ const iron=material('steel',giant?0x514c44:0x3c4546,{roughness:.76,roughnessMap:null,metalness:.65}),edge=material('steel',0x9b8770,{roughness:.72,roughnessMap:null,metalness:.60}),rag=material('cloth',['herald','reaver'].includes(v)?0x632e26:role==='mage'?0x513653:['bomber','mortar'].includes(v)?0x694327:role==='archer'?0x484f63:0x403936,{side:T.DoubleSide,roughness:1}),ash=material('cloth',0xaaa493,{roughness:1});c.materials.push(iron,edge,rag,ash);
  if(plate){
   // A pointed sallet over a forged faceplate: no rounded toy helmet or neck peg.
   shell(head,[[-.03,.094,.09],[.09,.131,.125],[.18,.14,.13],[.28,.10,.09],[.335,.018,.045]],iron,{square:.58,segments:16});

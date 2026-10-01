@@ -1,3 +1,13 @@
+# Current music — Living Kingdom 2.2
+
+The earlier synthesized arrangements described below have been replaced in the game by eight complete orchestral productions by Scott Buckley, licensed CC BY 4.0. These preserve the composer's full mixes instead of reconstructing an orchestra from isolated notes. The castle uses *Three Sheets to the Wind* (3:20); battles progress through a forward-only cue sequence, and each of the five bosses has a different opening recording. `src/recorded-score.js` defines the selections and `src/music.js` handles crossfades, pause/resume, volume and saved playheads. Full provenance and conversion details are in `public/music/recordings/credits.json`; credit links appear in Settings, the soundtrack page and game credits.
+
+Pixabay's orchestra search was reviewed. It contains many short hits and accents; complete licensed compositions were selected for the sustained battle score instead. Sources: https://pixabay.com/sound-effects/search/orchestra/ and https://www.scottbuckley.com.au/library/using-this-music/ . This change does not claim original authorship of Buckley's work, a newly recorded live orchestra, or subjective listening approval on a physical phone.
+
+The prior composition and sampled-instrument research follows as release history. Its timings, renderer and instrument-bank descriptions no longer describe the default music runtime.
+
+---
+
 # Kingdom & Melody — Oathfire 2.0
 
 The score has been recomposed around recognizable melodies, breaths, answering phrases and contrasting sections. The replacement sample library uses stereo sections, a solo violin, short string and brass articulations, sustained sample loops, and soft/forceful brass layers. These are sampled performances arranged in the browser, not a recording of a live orchestra performing the complete pieces.
