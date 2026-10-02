@@ -1,6 +1,6 @@
 import * as T from 'three';
 import {box,cyl,mesh,beam,sunBadge} from './art.js';
-import {material,worldMaterial} from './materials.js';
+import {ART,material,worldMaterial} from './materials.js';
 import {textile} from './atelier.js';
 import {windowArch,detailedTree} from './environment-design.js';
 import {seeded} from './data.js';
@@ -43,7 +43,7 @@ export function dressCastle(w){
   for(const sign of [-1,1]){const bx=x+sign*2.1;w.solid([.62,.47,1.8],[bx,.235,z],m.wood,'bench');box(g,[.12,.6,1.9],[bx+sign*.29,.67,z],m.wood);}
  }
  // Ivy made from batched leaf geometry clings to selected wall seams.
- const ivy=material('cloth',0x3d5730,{side:T.DoubleSide,roughness:1});for(const side of [-1,1])for(let i=0;i<200;i++){const y=.25+r()*7.0,x=side*(8.8+r()*.9+Math.sin(y*2)*.18),z=-14.25+r()*.08;const leaf=mesh(new T.PlaneGeometry(.11+r()*.12,.13+r()*.14),ivy,g,x,y,z);leaf.rotation.z=r()*Math.PI;}
+ const ivy=material('cloth',0xabc784,{map:ART.textures['hornbeam-leaf'],alphaTest:.45,side:T.DoubleSide,roughness:1});for(const side of [-1,1])for(let i=0;i<200;i++){const y=.25+r()*7.0,x=side*(8.8+r()*.9+Math.sin(y*2)*.18),z=-14.25+r()*.08;const leaf=mesh(new T.PlaneGeometry(.11+r()*.12,.13+r()*.14),ivy,g,x,y,z);leaf.rotation.z=r()*Math.PI;}
  // Coopered barrels, crates and cart wheels beside the workshops.
  for(const [x,z]of [[-19,11],[-28,7],[19,12],[29,19],[-18,22]]){
   w.solid([.75,1.05,.75],[x,.525,z],m.wood,'barrel');for(const y of [.08,.30,.78,1.0])cyl(g,.46,.46,.045,[x,y,z],m.iron,16);for(let i=0;i<12;i++){const a=i*Math.PI/6;beam(g,[x+Math.cos(a)*.425,.07,z+Math.sin(a)*.425],[x+Math.cos(a)*.425,1.01,z+Math.sin(a)*.425],.015,m.dark);}

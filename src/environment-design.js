@@ -1,6 +1,6 @@
 import * as T from 'three';
 import {box,cyl,mesh,beam} from './art.js';
-import {material,worldMaterial} from './materials.js';
+import {ART,material,worldMaterial} from './materials.js';
 import {seeded,BIOMES} from './data.js';
 
 // The fire is a moving, tapered volume made from three intersecting flame sheets.
@@ -19,9 +19,6 @@ export function refineCastle(world){const m=world.materials,g=world.static;
  // passage depth when seen from either the courtyard or the open field.
  for(const [z,angle]of [[-14.48,0],[-19.52,Math.PI]]){
   const face=new T.Group();face.position.z=z;face.rotation.y=angle;g.add(face);
-  const radius=4.1,rise=1.44,cy=4.72;
-  for(let i=0;i<19;i++){const a0=i*Math.PI/19+.008,a1=(i+1)*Math.PI/19-.008,points=[];for(const [a,r,rr]of [[a0,radius,rise],[a1,radius,rise],[a1,radius+.44,rise+.44],[a0,radius+.44,rise+.44]])points.push(new T.Vector2(Math.cos(a)*r,cy+Math.sin(a)*rr));const s=new T.Shape(points);const block=mesh(new T.ExtrudeGeometry(s,{depth:.24,bevelEnabled:true,bevelThickness:.018,bevelSize:.02,bevelSegments:1,steps:1}),m.cap,face,0,0,0);}
-  for(const side of [-1,1])for(let j=0;j<8;j++)box(face,[.55,.55,.29],[side*4.23,.31+j*.58,.04],j%2?m.cap:m.stoneDark);
   for(const x of [-6.4,6.4]){windowArch(face,x,4.9,.10,.8,1.8,m);for(const xx of [-1.3,0,1.3]){box(face,[.40,.66,.5],[x+xx,7.64,.05],m.cap);box(face,[.6,.18,.7],[x+xx,7.95,.05],m.cap);}box(face,[4.5,.23,.6],[x,7.98,.04],m.cap);}
  }
  // Arrow slits, projecting corbels, layered tower cornices and corner quoins.
@@ -44,7 +41,7 @@ export function createBeacon(world){const m=world.materials,g=new T.Group();
  for(let i=0;i<5;i++){const log=cyl(g,.08,.09,1.10,[0,1.80,0],m.wood,8);log.rotation.z=Math.PI/2;log.rotation.y=i*Math.PI/5;}
  const fire=flameVolume(1.05);fire.position.y=1.80;g.add(fire);world.fireplaces.push({g,flame:fire,base:1.8});const light=new T.PointLight(0xff9038,10,9,2);light.position.y=2.5;g.add(light);g.position.set(0,0,6);return g;
 }
-function leafGeometry(){const p=[0,-.1,0,-.085,.06,.018,-.052,.19,.012,0,.28,0,.052,.19,.012,.085,.06,.018,0,.075,.035],uv=[.5,0,0,.4,.2,.75,.5,1,.8,.75,1,.4,.5,.5],idx=[];for(let i=0;i<6;i++)idx.push(i,(i+1)%6,6);const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g;}
+function leafGeometry(){const g=new T.PlaneGeometry(.32,.38,2,1),p=g.attributes.position;for(let i=0;i<p.count;i++)p.setXYZ(i,p.getX(i),p.getY(i)+.09,Math.cos(p.getX(i)*9)*.018);g.computeVertexNormals();return g;}
 export function detailedTree(world,x,y,z,h,pine,r){const trunk=world.materials.trunk||(world.materials.trunk=worldMaterial('timber',0x807568,1.8));
  cyl(world.static,.08,.30,h*.8,[x,y+h*.4,z],trunk,10);world.physics.addBox(x,y+h*.3,z,.55,h*.6,.55,'tree');world.nav.push({x,z,hx:.5,hz:.5,top:y+h});world.leafInstances ||= [];
  for(let b=0;b<9;b++){const a=b*2.4+r()*.5,spread=h*(pine?.24:.28)*(1-b*.055),by=y+h*(.36+b*.055),ex=x+Math.sin(a)*spread,ez=z+Math.cos(a)*spread,ey=by+h*.10;beam(world.static,[x,by,z],[ex,ey,ez],.025+(9-b)*.005,trunk,7);
@@ -53,8 +50,8 @@ export function detailedTree(world,x,y,z,h,pine,r){const trunk=world.materials.t
   }
  }
 }
-export function plantLeaves(world){const entries=world.leafInstances||[];if(!entries.length)return;const base=BIOMES[world.biome].grass,m=new T.MeshStandardMaterial({color:0xffffff,roughness:1,side:T.DoubleSide,emissive:base,emissiveIntensity:.035});m.onBeforeCompile=s=>{s.uniforms.uWind={value:0};world.leafShader=s;s.vertexShader='uniform float uWind;\n'+s.vertexShader;s.vertexShader=s.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n transformed.x+=sin(uWind*1.3+instanceMatrix[3].x+instanceMatrix[3].z*.3)*position.y*.23;');};
- const bins=new Map();for(const e of entries){const key=Math.floor(e.x/32)+','+Math.floor(e.z/32);if(!bins.has(key))bins.set(key,[]);bins.get(key).push(e);}const geo=leafGeometry(),d=new T.Object3D(),c=new T.Color();for(const group of bins.values()){const leaves=new T.InstancedMesh(geo,m,group.length);for(let i=0;i<group.length;i++){const e=group[i];d.position.set(e.x,e.y,e.z);d.rotation.set(e.rx,e.ry,e.rz);d.scale.setScalar(e.s);d.updateMatrix();leaves.setMatrixAt(i,d.matrix);c.setHex(world.biome==='snow'?0x79938c:e.v>.88?0xab7341:e.v>.65?0x9d914f:0x657b46);c.multiplyScalar(.8+e.v*.35);leaves.setColorAt(i,c);}leaves.castShadow=leaves.receiveShadow=true;leaves.computeBoundingSphere();world.root.add(leaves);}world.leafInstances=[];
+export function plantLeaves(world){const entries=world.leafInstances||[];if(!entries.length)return;const base=BIOMES[world.biome].grass,m=new T.MeshStandardMaterial({color:0xffffff,map:ART.textures['hornbeam-leaf'],alphaTest:.45,alphaToCoverage:true,roughness:1,side:T.DoubleSide,emissive:base,emissiveIntensity:.025});m.onBeforeCompile=s=>{s.uniforms.uWind={value:0};world.leafShader=s;s.vertexShader='uniform float uWind;\n'+s.vertexShader;s.vertexShader=s.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n transformed.x+=sin(uWind*1.3+instanceMatrix[3].x+instanceMatrix[3].z*.3)*position.y*.23;');};
+ const bins=new Map();for(const e of entries){const key=Math.floor(e.x/32)+','+Math.floor(e.z/32);if(!bins.has(key))bins.set(key,[]);bins.get(key).push(e);}const geo=leafGeometry(),depth=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,map:ART.textures['hornbeam-leaf'],alphaTest:.45}),d=new T.Object3D(),c=new T.Color();for(const group of bins.values()){const leaves=new T.InstancedMesh(geo,m,group.length);for(let i=0;i<group.length;i++){const e=group[i];d.position.set(e.x,e.y,e.z);d.rotation.set(e.rx,e.ry,e.rz);d.scale.setScalar(e.s);d.updateMatrix();leaves.setMatrixAt(i,d.matrix);c.setHex(world.biome==='snow'?0xb5caca:e.v>.88?0xffc18b:e.v>.65?0xebd998:0xbadba4);c.multiplyScalar(.8+e.v*.35);leaves.setColorAt(i,c);}leaves.customDepthMaterial=depth;leaves.castShadow=leaves.receiveShadow=true;leaves.computeBoundingSphere();world.root.add(leaves);}world.leafInstances=[];
 
 }
 export function mountainRidges(world){const g=new T.BufferGeometry(),pos=[],uv=[],colors=[],idx=[],segments=180,rings=5,base=new T.Color(0x68716b);for(let j=0;j<=rings;j++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2;const ridge=36+Math.sin(a*7+.4)*18+Math.sin(a*13)*12+Math.cos(a*23)*5;const dist=240+j*44;const rise=[-7,9,1,.63,.27,-.1][j];const y=j===0?-12:j===1?ridge*.23:j===2?ridge:ridge*rise;pos.push(Math.sin(a)*dist,y,-75+Math.cos(a)*dist);uv.push(i/segments*8,j*.5);const col=base.clone().multiplyScalar(.75+j*.10);if(y>57)col.lerp(new T.Color(0xb5c0b8),.65);colors.push(col.r,col.g,col.b);if(j<rings&&i<segments){const n=j*(segments+1)+i;idx.push(n,n+1,n+segments+1,n+1,n+segments+2,n+segments+1);}}g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setAttribute('color',new T.Float32BufferAttribute(colors,3));g.setIndex(idx);g.computeVertexNormals();const ridges=mesh(g,worldMaterial('rock',0xc1c5b6,18,{vertexColors:true,roughness:1}),world.root);ridges.castShadow=false;}

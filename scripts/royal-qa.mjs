@@ -1,0 +1,29 @@
+import{createRequire}from'node:module';import fs from'node:fs';import assert from'node:assert/strict';
+const require=createRequire(import.meta.url),{chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),out='output/royal-atelier',report={checks:[],errors:[],heroes:[],layouts:[]};fs.mkdirSync(out,{recursive:true});
+const browser=await chromium.launch({headless:true,args:['--use-angle=metal']}),page=await browser.newPage({viewport:{width:1440,height:900}});page.on('pageerror',e=>report.errors.push(e.message));page.on('console',m=>{if(m.type()==='error')report.errors.push(m.text());});
+const check=(name,ok)=>{assert.ok(ok,name);report.checks.push(name);console.log('PASS',name);};
+try{
+ await page.goto(process.env.GAME_URL||'http://127.0.0.1:4179');await page.waitForFunction(()=>window.__oathfire?.ready);await page.locator('#new-game').click();await page.locator('#begin-oath').click();await page.locator('#story-skip').click();await page.evaluate(()=>{window.__oathfire.store.data.guide.active=false;});
+ report.models=await page.evaluate(async()=>{const g=window.__oathfire,C=g.hero.character.constructor,rows=[];for(const role of ['warden','ashwright','ranger','bow'])for(let rank=1;rank<=10;rank++){
+  const c=new C('Knight',{design:role,weapon:role==='warden'?'sword':role==='ashwright'?'hammer':'bow',rank});let vertices=0,finite=true;c.update(.12,{speed:4});const q=c.sockets.upperlegl.quaternion.clone();c.update(.18,{speed:4});const moving=1-Math.abs(q.dot(c.sockets.upperlegl.quaternion))>.0001;c.attack(c.weaponType,false,0,.6);c.update(.2,{speed:0});const attack=c.actionLock>0;c.root.traverse(o=>{if(o.geometry){vertices+=o.geometry.attributes.position.count;finite&&=o.geometry.attributes.position.array.every(Number.isFinite);}});rows.push({role,rank,source:c.atelier.source,vertices,finite,moving,attack,bodies:c.body.length});c.dispose();}return rows;});
+ check('All 30 hero appearances and ten Longbowman ranks use the replacement assets',report.models.length===40&&report.models.every(x=>x.source==='blender-authored-glb'));
+ check('Replacement models retain walking and attack animation with finite geometry',report.models.every(x=>x.moving&&x.attack&&x.finite));
+ check('Each Longbowman rank changes its visible construction',new Set(report.models.filter(x=>x.role==='bow').map(x=>x.vertices)).size===10);
+ // Gameplay screenshots use the actual third-person camera and collision controller.
+ for(const [name,x,z,yaw,pitch]of [['sun-gate',2,10,0,.13],['forge',-12,4,1.25,.10],['royal-market',12,2,-1.5,.10],['gate-valley',0,-12,0,.08]]){
+  await page.evaluate(({x,z,yaw,pitch})=>{const g=window.__oathfire;g.ui.close();g.physics.teleport(g.hero.phys,{x,y:0,z});g.physics.position(g.hero.phys,g.hero.pos);g.hero.character.root.position.copy(g.hero.pos);g.view.yaw=yaw;g.view.pitch=pitch;},{x,z,yaw,pitch});await page.waitForTimeout(500);await page.screenshot({path:out+'/'+name+'.png'});
+ }
+ report.physics=await page.evaluate(()=>{const P=window.__oathfire.physics;function walk(x,z,vx,vz,n){const a=P.actor({},{x,y:0,z});for(let i=0;i<n;i++){P.move(a,{x:vx,y:0,z:vz},1/60);P.step();}const p=P.position(a);P.removeActor(a);return{x:p.x,y:p.y,z:p.z};}return{gate:walk(0,-12,0,-3,240),barrels:walk(26.8,5,0,3,150),forge:walk(-22,3,0,3,180)};});
+ check('The detailed gate retains a traversable central passage',report.physics.gate.z<-22);
+ check('Detailed barrel clusters have collision',report.physics.barrels.z<7);
+ check('Forge masonry blocks the player',report.physics.forge.z<6.5);
+ for(const role of ['warden','ashwright','ranger']){
+  await page.evaluate(role=>{const g=window.__oathfire;g.store.data.hero=role;g.refreshHero();g.ui.open('hero');},role);await page.waitForTimeout(350);await page.screenshot({path:out+'/menu-'+role+'.png'});
+ }
+ for(const [width,height]of [[844,390],[667,375],[390,844]]){await page.setViewportSize({width,height});await page.evaluate(()=>document.body.classList.add('allow-portrait'));await page.waitForTimeout(250);report.layouts.push(await page.evaluate(()=>{const s=document.getElementById('model-stage').getBoundingClientRect(),b=document.getElementById('close-menu').getBoundingClientRect();return{width:innerWidth,height:innerHeight,modelVisible:s.width>100&&s.height>100,closeVisible:b.left>=0&&b.right<=innerWidth&&b.bottom<=innerHeight};}));await page.screenshot({path:out+'/hero-mobile-'+width+'.png'});}
+ check('Hero inspection remains usable at three phone viewport sizes',report.layouts.every(x=>x.modelVisible&&x.closeVisible));
+ await page.setViewportSize({width:844,height:390});await page.evaluate(()=>{const g=window.__oathfire;g.ui.close();g.store.data.completed=Array.from({length:9},(_,i)=>i);g.beginMission(9);g.battle.nextWave=9999;g.battle.wave=4;for(let i=0;i<18;i++){g.store.data.units.bow=i%2?5:10;g.spawnAlly('bow',{x:(i%6-3)*3,z:-34-Math.floor(i/6)*3});}g.spawnWave();});await page.waitForTimeout(3000);
+ report.performance=await page.evaluate(async()=>{const frames=[];let last=performance.now();await new Promise(resolve=>{const tick=now=>{frames.push(now-last);last=now;if(frames.length<100)requestAnimationFrame(tick);else resolve();};requestAnimationFrame(tick);});frames.sort((a,b)=>a-b);const g=window.__oathfire;return {viewport:[innerWidth,innerHeight],medianMs:frames[50],p95Ms:frames[95],calls:g.view.renderer.info.render.calls,triangles:g.view.renderer.info.render.triangles,allies:g.allies.length,enemies:g.enemies.length};});
+ check('Battle remains responsive with 18 detailed archers',report.performance.medianMs<34);await page.screenshot({path:out+'/battle-art-stress.png'});
+ check('No render or gameplay exceptions',report.errors.length===0);
+}catch(e){report.failure=e.stack;process.exitCode=1;console.error(e.stack);await page.screenshot({path:out+'/qa-failure.png'}).catch(()=>{});}finally{fs.writeFileSync(out+'/royal-report.json',JSON.stringify(report,null,2));await browser.close();}

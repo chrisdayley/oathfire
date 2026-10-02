@@ -1,0 +1,26 @@
+{
+  "version": "2.3.0",
+  "source": "scripts/build-atelier-assets.py",
+  "models": [
+    {
+      "role": "warden",
+      "objects": 174,
+      "triangles": 55444
+    },
+    {
+      "role": "ashwright",
+      "objects": 194,
+      "triangles": 53880
+    },
+    {
+      "role": "ranger",
+      "objects": 183,
+      "triangles": 56908
+    },
+    {
+      "role": "bow",
+      "objects": 189,
+      "triangles": 36086
+    }
+  ]
+}

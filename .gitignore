@@ -7,3 +7,5 @@ output/
 
 research/
 scripts/ship.mjs
+
+*.blend1

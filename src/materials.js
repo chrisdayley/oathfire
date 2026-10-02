@@ -1,9 +1,11 @@
 import * as T from 'three';
 import {RGBELoader} from 'three/addons/loaders/RGBELoader.js';
+import {loadCourtyard} from './courtyard-assets.js';
 
 // Locally bundled CC0 scans. Shared textures survive scene and character disposal.
 export const ART={textures:{},sky:null};
 export async function loadArt(){
+ await loadCourtyard();
  const loader=new T.TextureLoader();
  await Promise.all(['stone','cobble','soil','steel','leather','timber','cloth','grass','rock'].flatMap(name=>['color','normal','rough'].map(async role=>{
   const t=await loader.loadAsync(import.meta.env.BASE_URL+'materials/'+name+'-'+role+'.jpg');
@@ -12,6 +14,8 @@ export async function loadArt(){
   ART.textures[name+'-'+role]=t;
  })));
  const skin=await loader.loadAsync(import.meta.env.BASE_URL+'materials/human-skin.png');skin.colorSpace=T.SRGBColorSpace;skin.anisotropy=4;skin.userData.shared=true;ART.textures['human-skin']=skin;
+ const brocade=await loader.loadAsync(import.meta.env.BASE_URL+'materials/royal-brocade.png');brocade.colorSpace=T.SRGBColorSpace;brocade.anisotropy=4;brocade.wrapS=brocade.wrapT=T.RepeatWrapping;brocade.userData.shared=true;ART.textures['royal-brocade']=brocade;
+ const leaf=await loader.loadAsync(import.meta.env.BASE_URL+'materials/hornbeam-leaf.png');leaf.colorSpace=T.SRGBColorSpace;leaf.anisotropy=4;leaf.userData.shared=true;ART.textures['hornbeam-leaf']=leaf;
  ART.sky=await new RGBELoader().loadAsync(import.meta.env.BASE_URL+'materials/hearthwatch-sunset.hdr');
  ART.sky.mapping=T.EquirectangularReflectionMapping;ART.sky.userData.shared=true;
 }

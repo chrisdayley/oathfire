@@ -3,11 +3,12 @@ import {HEAD,HEAD_LOD} from './head-mesh.js';
 import {material,ART} from './materials.js';
 import {armorDefinition,armorKind} from './armor.js';
 import {mesh,box,cyl,beam,sunBadge} from './art.js';
+import {attachAtelier} from './atelier-assets.js';
 
 export const RANK_DRESS=['Hearth levy','Sworn recruit','Border veteran','Steel watch','Dawn guard','Oath captain','Sun marshal','Crowned vanguard','Radiant champion','Sovereign guard'];
 export function dressProfile(role,rank,kind=null){
  const ranger=['bow','ranger','rider','marksman','assassin'].includes(role),mage=['lantern','pyre','frost'].includes(role),smith=['ashwright','breaker','engineer','giant','crew'].includes(role),hero=['warden','ranger','ashwright'].includes(role);
- return {ranger,mage,smith,hero,rank,plate:(hero&&!ranger&&!smith)||rank>=5,mail:rank>=3||hero,cloak:hero||mage||rank>=4,hood:ranger&&rank>=3,elite:rank>=8,ivory:rank>=5&&rank<8,blackened:rank>=8,kind,title:RANK_DRESS[Math.min(9,rank-1)]};
+ return {ranger,mage,smith,hero,rank,plate:(hero&&!ranger&&!smith)||rank>=5,mail:rank>=3||hero,cloak:(hero&&!smith)||mage||(!smith&&rank>=4),hood:ranger&&rank>=3,elite:rank>=8,ivory:rank>=5&&rank<8,blackened:rank>=8,kind,title:RANK_DRESS[Math.min(9,rank-1)]};
 }
 // Saturated liveries are earned gradually; classes remain recognizable at a distance.
 export function rankPalette(role,rank){
@@ -56,6 +57,7 @@ function face(g,m,p){
 export function buildLiving(c,part){
  const role=c.design,rank=c.rank,armor=c.armor?armorDefinition(c.armor):null,kind=c.armor?armorKind(c.armor):null,p=dressProfile(role,rank,kind),ranged=p.ranger||role==='crew';
  const palette=rankPalette(role,rank),clothHex=armor?.cloth??palette.cloth,trimHex=armor?.trim??palette.trim,plateHex=armor?.steel??palette.steel;
+ const authored=attachAtelier(c,part,p,palette,textile);if(authored)return authored;
  const m={cloth:material('cloth',clothHex,{side:T.DoubleSide,roughness:1}),quilt:material('cloth',0xffffff,{map:textile('quilt',p.ranger?'#54432f':'#67513c'),side:T.DoubleSide,roughness:1}),mail:material('steel',0xb6b5a5,{map:textile('mail'),roughness:.82,metalness:.45}),steel:material('steel',plateHex,{roughness:.56,metalness:.72,envMapIntensity:.82}),edge:material('steel',trimHex,{roughness:.60,metalness:.70}),dark:material('leather',0x24282a,{roughness:.95}),leather:material('leather',p.ranger?0x605344:0x4b3e31,{roughness:.94}),skin:new T.MeshStandardMaterial({color:0xb4a294,map:ART.textures['human-skin'],roughness:.87}),eye:new T.MeshStandardMaterial({color:0xada994,roughness:.6}),iris:new T.MeshStandardMaterial({color:0x4b5548,roughness:.5}),hair:material('cloth',p.smith?0x615446:0x30271f,{roughness:1})};
  // Explicitly preserve a different fabric construction for each equipped armor family.
  if(kind==='trail'){p.plate=false;m.steel.color.setHex(armor.steel);m.steel.metalness=.12;m.steel.roughness=.95;}

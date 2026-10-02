@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(f=>f.isDirectory()?walk(path.join(d,f.name)):[path.join(d,f.name)]);
-const files=walk('dist').filter(f=>!f.includes('/art/')&&(!f.includes('/models/')||f.endsWith('/Knight.glb'))&&!f.includes('/licenses/')&&!f.endsWith('sw.js')&&!f.endsWith('.map')&&!f.includes('/music/chamber/')&&!f.includes('/music/orchestra/'));
+const files=walk('dist').filter(f=>!f.includes('/art/')&&(!f.includes('/models/')||f.endsWith('/Knight.glb')||f.includes('/models/atelier/')||f.includes('/models/courtyard/'))&&!f.includes('/licenses/')&&!f.endsWith('sw.js')&&!f.endsWith('.map')&&!f.includes('/music/chamber/')&&!f.includes('/music/orchestra/'));
 const hash=crypto.createHash('sha256');
 for(const f of files)hash.update(fs.readFileSync(f));
 hash.update(fs.readFileSync('scripts/service-worker.mjs'));

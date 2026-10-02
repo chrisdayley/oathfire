@@ -56,7 +56,7 @@ export function livingWorld(w){
  // stones, brighter shutters, hanging lamps and overlapping slate shingles.
  const shades=[white,ochre,rose,m.cap,m.stoneDark];
  for(const side of [-1,1])for(let row=0;row<10;row++)for(let i=0;i<10;i++){
-  const x=side*(7.7+i*2.40+(row%2)*.8),y=.3+row*.48,z=-14.42;if(Math.abs(x)>31)continue;
+  const x=side*(7.7+i*2.40+(row%2)*.8),y=.3+row*.48,z=-15.46;if(Math.abs(x)>31)continue;
   const b=box(g,[1.00+r()*1.15,.35+r()*.055,.09+r()*.05],[x,y,z],shades[Math.floor(r()*5)]);b.rotation.z=(r()-.5)*.014;
  }
  for(const [x,z,width]of [[-24,12,10.8],[25,13,9.8],[-25,25,7.8],[25,26,7.8]]){

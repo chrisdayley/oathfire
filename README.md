@@ -8,6 +8,14 @@ Three playable heroes; five weapon styles; quick and charged attacks; physical a
 
 Version 1.1 replaces the original visible character bodies with original adult-proportioned armor and undead designs. The world now uses scanned surfaces, image-based lighting, detailed foliage and masonry; the armory and new Hollow Host compendium show the animated models in a stone chamber. The original painted concept studies are art direction references, not screenshots of the shipped renderer. See [design and implementation](docs/design.md) and [QA evidence](docs/qa.md).
 
+## Royal Atelier — 2.3
+
+All three heroes now load editable Blender assets: fitted Warden armor, the Ashwright’s forge apron and ember lantern, and the Veilranger’s embroidered hood and split coat. Higher appearance ranks add different liveries, layered hip armor, clasps, runes and crest details. The Longbowman has ten construction stages, from leather recruit to armored royal archer. Equipped armor families and their forge states remain visible. [Inspect the actual animated models](https://chrisdayley.github.io/oathfire/art-studio.html).
+
+The forge–market–gate route includes carved gate masonry, sculpted doors, wooden barrels, tables, lanterns, draped canopies, slate shingles, a brick forge hood and detailed leaf textures. Solid foreground props retain collision; the gate and rampart remain traversable. Asset files are included in the offline cache. The supplied paintings remain more detailed than these real-time models; this release does not claim equivalent photorealism.
+
+[Editable sources, rebuild steps and credits](art-source/README.md). Browser verification covers every hero and Longbowman rank, armor families, combat animation, collision, mobile inspection/reveal screens and offline startup. Phone-sized browser testing is not a physical-device performance benchmark.
+
 ## Play
 
 Mobile: left stick to move; drag the open screen to look; tap Attack for a quick strike, or hold and release for a charged attack. Guard just before a hit to counter. Jump over low obstacles. Command opens the paused battlefield menu; Keep opens castle preparation.

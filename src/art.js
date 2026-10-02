@@ -1,5 +1,6 @@
 import {weaponPattern,DEFAULT_PATTERNS} from './weapon-patterns.js';
 import * as T from 'three';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {seeded} from './data.js';
 import {material} from './materials.js';
@@ -8,6 +9,7 @@ export function boxGeo(x=1,y=1,z=1){const key=`b${x},${y},${z}`;if(!geoCache.has
 export function mat(color,roughness=.75,metalness=0,extra={}){return new T.MeshStandardMaterial({color,roughness,metalness,...extra});}
 export function mesh(geo,material,parent,x=0,y=0,z=0){const m=new T.Mesh(geo,material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;if(parent)parent.add(m);return m;}
 export function box(parent,size,pos,material){return mesh(boxGeo(...size),material,parent,...pos);}
+function forgedBlock(parent,size,pos,material){return mesh(new RoundedBoxGeometry(...size,2,.016),material,parent,...pos);}
 export function cyl(parent,rt,rb,h,pos,material,segments=10){return mesh(new T.CylinderGeometry(rt,rb,h,segments),material,parent,...pos);}
 export function sphere(parent,r,pos,material,segments=10){return mesh(new T.SphereGeometry(r,segments,Math.max(6,segments/2)),material,parent,...pos);}
 export function beam(parent,a,b,r,material,segments=8){const p=new T.Vector3(...a),q=new T.Vector3(...b),m=mesh(new T.CylinderGeometry(r,r,p.distanceTo(q),segments),material,parent);m.position.copy(p).add(q).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),q.sub(p).normalize());return m;}
@@ -23,7 +25,7 @@ export function weapon(type='sword',level=1,color=0x62988f,temper=null,design=nu
  }else if(type==='spear'){
   cyl(g,.03,.038,2.4,[0,.32,0],wood);for(let i=0;i<4;i++)cyl(g,.041,.041,.06,[0,-.15+i*.12,0],wrap);const tip=cyl(g,0,.12,.48,[0,1.76,0],steel,4);tip.rotation.y=Math.PI/4;cyl(g,.065,.065,.14,[0,1.48,0],gold);if(level>=5){const flag=mesh(new T.PlaneGeometry(.3,.52,1,3),mat(color,.85,0,{side:T.DoubleSide}),g,.15,1.08,0);flag.rotation.y=.3;}if(level>=8){for(const s of [-1,1])beam(g,[0,1.47,0],[s*.19,1.65,0],.028,gold);}
  }else if(type==='hammer'){
-  cyl(g,.045,.052,1.25,[0,.22,0],wood);cyl(g,.056,.056,.36,[0,-.25,0],wrap);box(g,[.55+level*.012,.32,.35],[0,.94,0],steel);box(g,[.13,.39,.39],[0,.94,0],gold);for(const s of [-1,1])box(g,[.05,.34,.38],[s*(.29+level*.006),.94,0],gold);if(level>=6){const b=sunBadge(g,.11,gold);b.position.set(0,.95,.19);}if(level>=9)box(g,[.07,.15,.37],[0,1.13,0],ember);
+  cyl(g,.045,.052,1.25,[0,.22,0],wood);cyl(g,.056,.056,.36,[0,-.25,0],wrap);forgedBlock(g,[.55+level*.012,.32,.35],[0,.94,0],steel);forgedBlock(g,[.13,.39,.39],[0,.94,0],gold);for(const s of [-1,1])forgedBlock(g,[.05,.34,.38],[s*(.29+level*.006),.94,0],gold);if(level>=6){const b=sunBadge(g,.11,gold);b.position.set(0,.95,.19);}if(level>=9)box(g,[.07,.15,.37],[0,1.13,0],ember);
  }else if(type==='bow'){
   const curve=new T.CatmullRomCurve3([new T.Vector3(level>=5?.10:0,-.84,0),new T.Vector3(level>=5?.02:.16,-.65,0),new T.Vector3(.22,-.42,0),new T.Vector3(.27,0,0),new T.Vector3(.22,.42,0),new T.Vector3(level>=5?.02:.16,.65,0),new T.Vector3(level>=5?.10:0,.84,0)]);mesh(new T.TubeGeometry(curve,28,.018+level*.0005,8,false),wood,g);beam(g,[level>=5?.10:0,-.84,0],[level>=5?.10:0,.84,0],.0025,mat(0xefe0bd));cyl(g,.046,.046,.22,[.265,0,0],wrap);if(level>=3)for(const y of [-.60,.6])sphere(g,.045,[.10,y,0],gold,8);if(level>=7)for(const y of [-.45,.45])beam(g,[.20,y,0],[.05,y*1.4,.01],.014,gold);if(level>=5)for(const sign of [-1,1]){beam(g,[.08,sign*.79,0],[.02,sign*.62,0],.025,gold);beam(g,[.23,sign*.38,-.022],[.06,sign*.63,-.022],.012,gold);}if(level>=8){for(const sign of [-1,1]){const s=new T.Shape();s.moveTo(.27,sign*.15);s.quadraticCurveTo(.10,sign*.29,.11,sign*.44);s.lineTo(.22,sign*.38);s.quadraticCurveTo(.15,sign*.28,.28,sign*.23);mesh(new T.ExtrudeGeometry(s,{depth:.017,bevelEnabled:true,bevelSize:.004,bevelThickness:.004,bevelSegments:1,steps:1}),gold,g,0,0,-.008);}}g.rotation.z=Math.PI/2;g.rotation.y=Math.PI/2;
  }else if(type==='crossbow'){
@@ -43,7 +45,7 @@ export function weapon(type='sword',level=1,color=0x62988f,temper=null,design=nu
 }
 export function shield(level=1,color=0x497d79,enemy=null){
  const g=new T.Group(),wood=material(level<4?'timber':'leather',level<4?0x817564:color,{roughness:.9}),edge=material('steel',enemy?0x6b695e:level>=8?0xac9561:0x8d9895,{roughness:.6,metalness:.78});
- if(level>=4&&!enemy){wood.map=null;wood.color.setHex(0x285961);}
+ if(level>=4&&!enemy){wood.map=null;wood.color.setHex(color);}
  const w=.275+level*.008,h=.38+level*.025;let points=[];
  if(enemy==='knight'||enemy==='veyr'){points=[[-w*.6,h], [w*.6,h],[w,h*.56],[w*.79,-h*.65],[0,-h*1.24],[-w*.79,-h*.65],[-w,h*.56]];}
  else if(level<4){for(let i=0;i<32;i++){const a=i/32*Math.PI*2;points.push([Math.cos(a)*w,Math.sin(a)*w]);}}
@@ -80,8 +82,8 @@ function equipmentWeapon(item,rank){
   if(variant===2){const ring=mesh(new T.TorusGeometry(.11,.014,6,24),trim,g,0,1.4,0);gem(0,1.39,.02,.055);}
  }else if(type==='hammer'){
   cyl(g,.038,.05,1.35,[0,.22,0],wood,12);cyl(g,.057,.053,.35,[0,-.26,0],leather,12);
-  if(variant===2){const bell=cyl(g,.13,.24,.44,[0,1.03,0],trim,16);cyl(g,.24,.24,.06,[0,.82,0],dark,16);gem(0,1.1,.17,.07);}
-  else{box(g,[variant===1?.70:.52,.32,.35],[0,.94,0],metal);box(g,[.13,.38,.40],[0,.94,0],trim);for(const side of [-1,1]){box(g,[.075,.38,.4],[side*(variant===1?.37:.28),.94,0],trim);if(variant===1)for(let j=0;j<3;j++){const tooth=cyl(g,0,.052,.17,[side*.42,.84+j*.10,0],dark,4);tooth.rotation.z=-side*Math.PI/2;}}gem(0,.97,.22,.06);}
+  for(let j=0;j<12;j++)cyl(g,.054,.054,.011,[0,-.41+j*.026,0],trim,12);for(const side of [-1,1])for(const yy of [.86,1.02]){sphere(g,.018,[side*.15,yy,.18],dark,8);}if(variant===2){const bell=cyl(g,.13,.24,.44,[0,1.03,0],trim,16);cyl(g,.24,.24,.06,[0,.82,0],dark,16);gem(0,1.1,.17,.07);}
+  else{forgedBlock(g,[variant===1?.70:.52,.32,.35],[0,.94,0],metal);forgedBlock(g,[.13,.38,.40],[0,.94,0],trim);for(const side of [-1,1]){forgedBlock(g,[.075,.38,.4],[side*(variant===1?.37:.28),.94,0],trim);if(variant===1)for(let j=0;j<3;j++){const tooth=cyl(g,0,.052,.17,[side*.42,.84+j*.10,0],dark,4);tooth.rotation.z=-side*Math.PI/2;}}gem(0,.97,.22,.06);}
  }else if(type==='bow'){
   for(const side of [-1,1]){const curve=new T.CatmullRomCurve3([new T.Vector3(.23,0,0),new T.Vector3(variant===2?.37:.27,side*.31,0),new T.Vector3(.03,side*.74,0),new T.Vector3(variant===1?-.08:.08,side*.85,0)]);mesh(new T.TubeGeometry(curve,24,.03,8,false),variant===2?metal:wood,g);if(variant===1)for(let j=0;j<3;j++)line([.24-j*.035,side*(.25+j*.12),0],[.39-j*.035,side*(.32+j*.12),0],.015,trim);if(variant===2){line([.3,side*.26,0],[.09,side*.65,0],.01,trim);gem(.25,side*.3,.03,.04);}}
   line([variant===1?-.08:.08,-.85,0],[variant===1?-.08:.08,.85,0],.004,mat(0xe9ddba));cyl(g,.045,.045,.21,[.23,0,0],leather,10);g.rotation.set(0,Math.PI/2,Math.PI/2);

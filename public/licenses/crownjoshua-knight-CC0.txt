@@ -1,0 +1,11 @@
+Knight (Rigged - Mid Poly), by crownjoshua
+https://opengameart.org/content/knight-rigged-mid-poly
+https://opengameart.org/sites/default/files/Knight_0.blend
+
+Published November 21, 2016; source page lists CC0.
+https://creativecommons.org/publicdomain/zero/1.0/
+Full CC0 legal text is also bundled as polyhaven-CC0.txt.
+
+Oathfire 2.3 derives the Warden's fitted breastplate and helmet from this model.
+The pieces are resized, retargeted to Oathfire's skeleton, and assigned Oathfire materials.
+The source rig, original animations and full original character are not shipped as the hero.

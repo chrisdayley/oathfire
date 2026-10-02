@@ -1,0 +1,54 @@
+[
+  {
+    "id": "large_castle_door",
+    "name": "Large Castle Door",
+    "authors": {
+      "Tina": "All"
+    },
+    "license": "CC0-1.0",
+    "source": "https://polyhaven.com/a/large_castle_door",
+    "sourceFileMd5": "40c7debfb0e9f51826b294d642bc0bfe",
+    "gameFile": "large_castle_door.glb",
+    "sha256": "b7aff5c25785cd0764b141621fae3954fa45299730d487777b4aa8d87e0340dd",
+    "changes": "Reduced mesh density; texture maps resized to 512px (castle door 1024px) and embedded in GLB."
+  },
+  {
+    "id": "wooden_barrels_01",
+    "name": "Wooden Barrels 01",
+    "authors": {
+      "James Ray Cock": "All"
+    },
+    "license": "CC0-1.0",
+    "source": "https://polyhaven.com/a/wooden_barrels_01",
+    "sourceFileMd5": "1228b95423a5430d74d238284fad724e",
+    "gameFile": "wooden_barrels_01.glb",
+    "sha256": "ace36fcc9f017345426a93cce85b7d3f06f40356c5f1298123e2347a4648032a",
+    "changes": "Reduced mesh density; texture maps resized to 512px (castle door 1024px) and embedded in GLB."
+  },
+  {
+    "id": "wooden_lantern_01",
+    "name": "Wooden Lantern 01",
+    "authors": {
+      "James Ray Cock": "All"
+    },
+    "license": "CC0-1.0",
+    "source": "https://polyhaven.com/a/wooden_lantern_01",
+    "sourceFileMd5": "e31edca6461023e076183cb74721b0b9",
+    "gameFile": "wooden_lantern_01.glb",
+    "sha256": "d4e58f20ba541ccf61948254e2f1704454d951fb620ac833b43a9816c93d59b3",
+    "changes": "Reduced mesh density; texture maps resized to 512px (castle door 1024px) and embedded in GLB."
+  },
+  {
+    "id": "round_wooden_table_01",
+    "name": "Round Wooden Table 01",
+    "authors": {
+      "Ulan Cabanilla": "All"
+    },
+    "license": "CC0-1.0",
+    "source": "https://polyhaven.com/a/round_wooden_table_01",
+    "sourceFileMd5": "9a2ad4a55a88ee7493a842026d944abc",
+    "gameFile": "round_wooden_table_01.glb",
+    "sha256": "d5c6e1e84d45b9bbdd201e4a47680aaf3a2ad871544bd9534ca34acf14d6b388",
+    "changes": "Reduced mesh density; texture maps resized to 512px (castle door 1024px) and embedded in GLB."
+  }
+]
