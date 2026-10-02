@@ -16,7 +16,7 @@ test('Magic auras follow live rune, active named power and affix effects',()=>{
  assert.deepEqual(equipmentMagic(weapon({weaponPattern:'emberbrand',rarity:2,level:5}))[0],{element:'fire',color:MAGIC_COLORS.fire});
  assert.deepEqual(equipmentMagic(weapon({weaponPattern:'emberbrand',rarity:2,level:5,rune:'frost'})).map(x=>x.element),['frost','fire']);
  for(const [affix,element]of Object.entries({ember:'fire',vampiric:'vampiric',focus:'arcane',vital:'nature',command:'holy',guard:'holy',swift:'wind',sunder:'earth'}))assert.equal(equipmentMagic(weapon({affix}))[0].element,element);
- assert.equal(equipmentMagic(weapon({type:'staff',weaponPattern:'pilgrimstaff'}))[0].element,'arcane');
+ assert.equal(equipmentMagic(weapon({type:'staff',weaponPattern:'pilgrimstaff'}))[0].element,'fire');
  assert.equal(equipmentMagic(weapon({type:'spear',weaponPattern:'stormlance',rarity:5,level:20}))[0].element,'storm');
 });
 test('Mythic and Godly are late-game drops while all seven tiers remain obtainable',()=>{

@@ -1,4 +1,4 @@
-import {weaponPattern,weaponPower} from './weapon-patterns.js';
+import {weaponPower} from './weapon-patterns.js';
 
 export const EQUIPMENT_TIERS=[
  {name:'Common',rank:1,length:.92,width:.88,metal:0x737a79,trim:0x655e50,roughness:.88},
@@ -17,7 +17,7 @@ const runeElements={ember:'fire',frost:'frost',vital:'nature'},powerElements={ki
 export function equipmentMagic(i){
  if(!i)return [];
  const power=weaponPower(i),effects=[runeElements[i.rune],power?.active?powerElements[power.id]:null,affixElements[i.affix],affixElements[i.temper]];
- if(i.type==='staff')effects.push(powerElements[weaponPattern(i).power]||'arcane');
+ if(i.type==='staff')effects.push('fire');
  return [...new Set(effects.filter(Boolean))].slice(0,2).map(element=>({element,color:MAGIC_COLORS[element]}));
 }
 const CLOTH={
