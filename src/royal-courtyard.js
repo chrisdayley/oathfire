@@ -33,9 +33,6 @@ export function royalCourtyard(w){
  block([1.83,.25,1.63],[-22,8.08,7.4],stone);w.physics.addBox(-22,4.75,7.4,1.55,6.3,1.4,'forge-chimney');
  // Slate roof shingles, deep timber eaves and projecting supports cast real shadows.
  for(const [x,z,width]of [[-24,12,10.8],[25,13,9.8]]){
-  for(const side of [-1,1])for(let row=0;row<6;row++)for(let col=0;col<15;col++){
-   const sh=block([width/14.8,.07,.75],[x-width/2+col*width/15+(row%2)*.14,6.48+row*.31,z+side*(3.06-row*.46)],tile,.018);sh.rotation.x=side*-.58;
-  }
   for(let j=0;j<7;j++){const xx=x-width*.46+j*width*.153;beam(g,[xx,3.87,z-3.15],[xx,3.21,z-2.70],.09,wood);block([.19,.33,.75],[xx,3.81,z-3.17],wood,.025);}
  }
  // A continuous stall frontage makes a sequence of places rather than isolated cubes.

@@ -1,0 +1,13 @@
+Oathfire Living Horizons — original artwork, October 2, 2026
+
+scenery/crownlands-panorama.jpg
+scenery/northern-panorama.jpg
+scenery/sunlands-panorama.jpg
+scenery/woodland-atlas.webp
+scenery/meadow-clump.webp
+
+Generated specifically for this project using the built-in OpenAI image-generation tool.
+Art direction: Christopher Dayley's supplied Oathfire castle concept and requests.
+No external artist's landscape painting was downloaded or copied into these assets.
+Exact prompts and encoding details are recorded in docs/scenery-art-2.6.md in the repository.
+Existing architectural surface and model credits remain in the other license files.

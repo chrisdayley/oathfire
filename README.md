@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Living Horizons — 2.6
+
+Three original painted landscape panoramas replace the sparse horizon: golden Crownlands, snowy northern valleys and the Sunlands. Castle roofs now use curved slate courses, solid timber gables, glazed dormers and deep eaves. A terraced upper town and cathedral enlarge Hearthwatch's skyline. Animated windmills, circling birds, chimney smoke, painted woodland, tapered grass, pottery and gallery details add color and life. World geometry is merged in spatial sections and windmill sails are compacted into a few meshes. Existing campaign progress and siege rules remain unchanged.
+
+See [artwork and exact generation prompts](docs/scenery-art-2.6.md) and [implementation and QA](docs/scenery-2.6.md).
+
 A landscape mobile browser game combining direct 3D hero combat, battlefield army commands, castle defense and permanent RPG progression.
 
 **Play:** https://chrisdayley.github.io/oathfire/

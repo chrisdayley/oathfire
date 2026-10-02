@@ -1,8 +1,9 @@
+import {craftedRoof} from './architecture.js';
 import {castleReserved} from './siege-rules.js';
 import * as T from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {box,cyl,mesh,beam} from './art.js';
-import {material,worldMaterial} from './materials.js';
+import {ART,material,worldMaterial} from './materials.js';
 import {windowArch} from './environment-design.js';
 import {seeded} from './data.js';
 
@@ -18,7 +19,7 @@ export function livingWorld(w){
   const h=new T.Group();h.position.set(x,y,z);g.add(h);const sx=4.8*size,sz=4*size,hh=3.4*size;
   box(h,[sx,hh,sz],[0,hh/2,0],[white,ochre,rose][variant%3]);
   for(const zz of [-sz/2-.025,sz/2+.025]){for(const xx of [-sx/2+.12,0,sx/2-.12])box(h,[.13*size,hh,.14*size],[xx,hh/2,zz],m.wood);box(h,[sx,.14*size,.15*size],[0,hh*.55,zz],m.wood);for(const xx of [-sx*.25,sx*.25])windowArch(h,xx,hh*.6,zz,.48*size,.72*size,m,zz<0?Math.PI:0);}
-  const roof=mesh(new T.ConeGeometry(1,1,4),roofMats[variant%3],h,0,hh+size*.95,0);roof.scale.set(sx*.82,1.9*size,sz*.86);roof.rotation.y=Math.PI/4;
+  craftedRoof(h,m,{y:hh,width:sx+.6*size,depth:sz+.7*size,rise:1.8*size,tiles:solid,dormers:solid?1:0,tint:[0x3c4e64,0x805039,0x626643][variant%3]});
   box(h,[.53*size,2.3*size,.6*size],[sx*.29,hh+.8*size,.3*size],m.stone);box(h,[.75*size,.16*size,.8*size],[sx*.29,hh+1.96*size,.3*size],m.cap);
   for(const xx of [-sx*.35,sx*.35])box(h,[.36*size,.67*size,.08*size],[xx,hh*.30,-sz/2-.055],variant%2?blue:red);
   if(solid){w.physics.addBox(x,y+hh/2,z,sx,hh,sz,'cottage');w.nav.push({x,z,hx:sx/2+.6,hz:sz/2+.6,top:y+hh});}
@@ -61,8 +62,6 @@ export function livingWorld(w){
   const b=box(g,[1.00+r()*1.15,.35+r()*.055,.09+r()*.05],[x,y,z],shades[Math.floor(r()*5)]);b.rotation.z=(r()-.5)*.014;
  }
  for(const [x,z,width]of [[-24,12,10.8],[25,13,9.8],[-25,25,7.8],[25,26,7.8]]){
-  // Roof courses follow the four-sided gable, adding a readable layered silhouette.
-  for(let j=0;j<9;j++){const yy=6.5+j*.22,rr=1-j/10;for(const sign of [-1,1]){box(g,[width*rr+.4,.09,.20],[x,yy,z+sign*2.95*rr],roofMats[j%3]);}}
   for(const dx of [-width*.28,width*.28]){for(const xx of [-.60,.60]){box(g,[.28,1.04,.15],[x+dx+xx,5.15,z-3.08],x<0?red:blue);for(const yy of [4.77,5.43])box(g,[.30,.06,.18],[x+dx+xx,yy,z-3.09],m.iron);}box(g,[1.85,.21,.54],[x+dx,4.35,z-3.05],m.wood);for(let j=0;j<12;j++){const fl=mesh(new T.IcosahedronGeometry(.07,0),j%2?red:plantMats[2],g,x+dx-.65+j*.12,4.60+r()*.12,z-3.11);beam(g,[fl.position.x,4.4,z-3.11],fl.position.toArray(),.008,plantMats[0]);}}
   for(const sign of [-1,1]){const xx=x+sign*(width/2-.3);beam(g,[xx,2.7,z-3],[xx,2.7,z-3.8],.045,m.iron);beam(g,[xx,2.7,z-3.8],[xx,2.25,z-3.8],.018,m.iron);const glass=material('cloth',0xffc772,{emissive:0xff913d,emissiveIntensity:.9});box(g,[.24,.38,.24],[xx,2.08,z-3.8],glass);for(const dx of [-.14,.14])for(const dz of [-.14,.14])beam(g,[xx+dx,1.85,z-3.8+dz],[xx+dx,2.32,z-3.8+dz],.015,m.iron);cyl(g,0,.25,.21,[xx,2.43,z-3.8],m.iron,4);}
  }
@@ -80,18 +79,12 @@ export function distantRanges(w){
  const r=seeded(971),m=worldMaterial('rock',0xb4b9bc,24,{vertexColors:true,roughness:1});
  // Continuous low country connects the arena to the horizon; towns never sit in a void.
  const land=new T.PlaneGeometry(1000,900,100,90);land.rotateX(-Math.PI/2);land.translate(0,0,-120);const lp=land.attributes.position,indices=[];for(let i=0;i<lp.count;i++){const x=lp.getX(i),z=lp.getZ(i);lp.setY(i,-3+Math.sin(x*.018)*Math.cos(z*.024)*2.2);}for(let i=0;i<land.index.count;i+=3){const ids=[land.index.getX(i),land.index.getX(i+1),land.index.getX(i+2)],x=ids.reduce((n,k)=>n+lp.getX(k),0)/3,z=ids.reduce((n,k)=>n+lp.getZ(k),0)/3;if(Math.abs(x)>124||z< -230||z>54)indices.push(...ids);}land.setIndex(indices);land.computeVertexNormals();const lowland=mesh(land,worldMaterial(w.biome==='snow'?'rock':'grass',w.biome==='snow'?0xd7dfdc:w.biome==='desert'?0xbda878:0xaab19a,7),w.root);lowland.castShadow=false;
- // Jagged ranges in three staggered depths: angular rock, snow line, atmospheric color.
- for(let band=0;band<3;band++){const n=240,rows=10,pos=[],uv=[],colors=[],idx=[];for(let row=0;row<=rows;row++)for(let i=0;i<=n;i++){
-  const a=i/n*Math.PI*2,dist=350+band*125+row*22,peaks=18+Math.abs(Math.sin(a*7+band*.7))*36+Math.abs(Math.sin(a*19+band))*14+Math.sin(a*37)*6;
-  const ridge=Math.max(0,1-Math.abs(row-4)/4),y=-8+peaks*ridge*(.65+band*.38);pos.push(Math.sin(a)*dist,y,-82+Math.cos(a)*dist);uv.push(i/n*40,row*2);
-  const c=new T.Color(band===0?0x8c9993:band===1?0x9ba7b7:0xb2bdce);c.multiplyScalar(.77+r()*.24);if(y>70+band*8)c.lerp(new T.Color(0xe4dfd8),Math.min(.9,(y-70-band*8)/27));colors.push(c.r,c.g,c.b);if(row<rows&&i<n){const k=row*(n+1)+i;idx.push(k,k+1,k+n+1,k+1,k+n+2,k+n+1);}}
-  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));geo.setIndex(idx);geo.computeVertexNormals();const ridge=mesh(geo,m,w.root);ridge.castShadow=false;
- }
- // Alpha-tested branching woodland cards form a detailed horizon with few triangles.
- const atlas=woodlandAtlas(),treeMat=new T.MeshStandardMaterial({map:atlas,alphaTest:.52,side:T.DoubleSide,roughness:1,color:0xffffff}),geo=new T.PlaneGeometry(1,1),im=new T.InstancedMesh(geo,treeMat,1000),o=new T.Object3D(),col=new T.Color();
- for(let i=0;i<500;i++){const side=i%2?-1:1,x=side*(136+r()*97),z=-245+r()*280,y=1+r()*3,h=7+r()*12,wide=h*(.6+r()*.2);for(let face=0;face<2;face++){o.position.set(x,y+h/2,z);o.rotation.y=face*Math.PI/2;o.scale.set(wide,h,1);o.updateMatrix();im.setMatrixAt(i*2+face,o.matrix);col.setHex(i%7===0?0xb3a272:i%9===0?0xb08862:0x9aad8c);im.setColorAt(i*2+face,col);}}im.castShadow=false;im.computeBoundingSphere();w.root.add(im);
+ // Detailed painted mountain ranges replace the old concentric hill meshes.
+ // Three hand-painted silhouettes use one texture; the near trees remain full 3D.
+ const treeMat=new T.MeshBasicMaterial({map:ART.textures.woodland,alphaTest:.5,alphaToCoverage:true,side:T.DoubleSide,color:w.biome==='snow'?0xc1cbd0:0xc7c4b0,fog:true}),o=new T.Object3D();
+ for(let variant=0;variant<3;variant++){const geo=new T.PlaneGeometry(1,1),uv=geo.attributes.uv;for(let k=0;k<uv.count;k++)uv.setX(k,(uv.getX(k)*.998+.001+variant)/3);const im=new T.InstancedMesh(geo,treeMat,320);
+ for(let i=0;i<160;i++){const side=i%2?-1:1,x=side*(136+r()*102),z=-255+r()*294,y=-3+Math.sin(x*.018)*Math.cos(z*.024)*2.2,h=8+r()*13,wide=h*.69;
+ for(let face=0;face<2;face++){o.position.set(x,y+h*.47,z);o.rotation.y=face*Math.PI/2+Math.sin(i)*.3;o.scale.set(wide,h,1);o.updateMatrix();im.setMatrixAt(i*2+face,o.matrix);}}
+ im.castShadow=false;im.computeBoundingSphere();w.root.add(im);}
+
 }
-let woodlandTexture;
-function woodlandAtlas(){if(woodlandTexture)return woodlandTexture;const c=document.createElement('canvas');c.width=512;c.height=640;const x=c.getContext('2d'),r=seeded(4562);x.clearRect(0,0,512,640);
- function branch(px,py,len,a,width,depth){const ex=px+Math.cos(a)*len,ey=py+Math.sin(a)*len;x.strokeStyle='#67503b';x.lineWidth=width;x.lineCap='round';x.beginPath();x.moveTo(px,py);x.quadraticCurveTo(px+Math.cos(a+.14)*len*.6,py+Math.sin(a+.14)*len*.6,ex,ey);x.stroke();if(depth>0){branch(ex,ey,len*.75,a-.40-r()*.28,width*.64,depth-1);branch(ex,ey,len*.66,a+.33+r()*.3,width*.60,depth-1);}else for(let i=0;i<100;i++){const angle=r()*6.28,rr=Math.sqrt(r())*46;x.fillStyle=['#536142','#78834e','#899357','#626f43','#a3a868'][Math.floor(r()*5)];x.beginPath();x.ellipse(ex+Math.cos(angle)*rr,ey+Math.sin(angle)*rr*.9,3+r()*5,2+r()*4,r()*6,0,6.28);x.fill();}}
- branch(256,639,167,-Math.PI/2,24,5);woodlandTexture=new T.CanvasTexture(c);woodlandTexture.colorSpace=T.SRGBColorSpace;woodlandTexture.userData.shared=true;return woodlandTexture;}

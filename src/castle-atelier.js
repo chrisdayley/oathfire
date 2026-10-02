@@ -1,3 +1,4 @@
+import {craftedRoof} from './architecture.js';
 import * as T from 'three';
 import {box,cyl,mesh,beam,sunBadge} from './art.js';
 import {ART,material,worldMaterial} from './materials.js';
@@ -26,7 +27,7 @@ export function dressCastle(w){
  // Half timber upper stories and slate gables over existing building colliders.
  for(const [x,z,width]of [[-24,12,10.8],[25,13,9.8],[-25,25,7.8],[25,26,7.8]]){
   box(g,[width,2.8,5.8],[x,5.0,z],plaster);w.physics.addBox(x,5,z,width,2.8,5.8,'upper-storey');box(g,[width+.25,.21,6.0],[x,6.4,z],m.wood);
-  const roof=cyl(g,0,1,1,[x,7.3,z],slate,4);roof.scale.set(width*.77,2.4,5.4);roof.rotation.y=Math.PI/4;
+  craftedRoof(g,m,{x,y:6.55,z,width:width+.85,depth:6.7,rise:3.2,dormers:2,tint:x<0?0x354960:0x74523e});
   for(const side of [-1,1]){const zz=z+side*2.94;for(let i=-2;i<=2;i++){box(g,[.15,2.8,.16],[x+i*width*.21,5,zz],m.wood);if(i<2)beam(g,[x+i*width*.21,3.7,zz],[x+(i+1)*width*.21,6.2,zz],.06,m.wood);}for(const dx of [-width*.28,width*.28]){windowArch(g,x+dx,4.6,zz+side*.06,.8,1.2,m,side<0?Math.PI:0);for(const sx of [-.60,.60])box(g,[.26,1.05,.11],[x+dx+sx,5.15,zz+side*.08],m.wood);}box(g,[width,.16,.18],[x,3.74,zz],m.wood);}
   box(g,[.95,3.8,.8],[x+width*.31,7.2,z+1],m.stone);box(g,[1.18,.20,1.03],[x+width*.31,9.1,z+1],m.cap);
  }
@@ -46,7 +47,7 @@ export function dressCastle(w){
  const ivy=material('cloth',0xabc784,{map:ART.textures['hornbeam-leaf'],alphaTest:.45,side:T.DoubleSide,roughness:1});for(const side of [-1,1])for(let i=0;i<200;i++){const y=.25+r()*7.0,x=side*(8.8+r()*.9+Math.sin(y*2)*.18),z=-14.25+r()*.08;const leaf=mesh(new T.PlaneGeometry(.11+r()*.12,.13+r()*.14),ivy,g,x,y,z);leaf.rotation.z=r()*Math.PI;}
  // Coopered barrels, crates and cart wheels beside the workshops.
  for(const [x,z]of [[-19,11],[-28,7],[19,12],[29,19],[-18,22]]){
-  w.solid([.75,1.05,.75],[x,.525,z],m.wood,'barrel');for(const y of [.08,.30,.78,1.0])cyl(g,.46,.46,.045,[x,y,z],m.iron,16);for(let i=0;i<12;i++){const a=i*Math.PI/6;beam(g,[x+Math.cos(a)*.425,.07,z+Math.sin(a)*.425],[x+Math.cos(a)*.425,1.01,z+Math.sin(a)*.425],.015,m.dark);}
+  w.physics.addBox(x,.525,z,.82,1.05,.82,'barrel');w.nav.push({x,z,hx:.95,hz:.95,top:1.05});const profile=[[0,0],[.34,.03],[.42,.18],[.47,.5],[.42,.88],[.34,1.03],[0,1.03]].map(([r,y])=>new T.Vector2(r,y));mesh(new T.LatheGeometry(profile,20),m.wood,g,x,0,z);for(const y of [.08,.30,.78,1.0])cyl(g,.46,.46,.045,[x,y,z],m.iron,16);for(let i=0;i<12;i++){const a=i*Math.PI/6;beam(g,[x+Math.cos(a)*.425,.07,z+Math.sin(a)*.425],[x+Math.cos(a)*.425,1.01,z+Math.sin(a)*.425],.015,m.dark);}
  }
  // A pair of broad steps on the side route are solid Rapier surfaces.
  for(const x of [-17,17])for(let i=0;i<3;i++)w.solid([2.4,.13*(i+1),.43],[x,.065*(i+1),27+i*.43],m.cap,'courtyard-step');

@@ -1,7 +1,7 @@
 import {createRequire} from 'node:module';import assert from 'node:assert/strict';import fs from 'node:fs';
 const require=createRequire(import.meta.url),{chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');const browser=await chromium.launch({headless:true,args:['--use-angle=metal']}),page=await browser.newPage({viewport:{width:844,height:390},isMobile:true,hasTouch:true}),errors=[],checks=[];const url=process.env.GAME_URL||'http://127.0.0.1:4180';page.on('pageerror',e=>errors.push(e.message));const check=(name,pass)=>{assert.ok(pass,name);checks.push(name);console.log('PASS',name);};
 try{
- await page.goto(url);await page.waitForFunction(()=>window.__oathfire?.ready);check('Production build is 2.5.0',await page.evaluate(()=>window.__oathfire.debug().build==='oathfire-2.5.0-crownfall'));
+ await page.goto(url);await page.waitForFunction(()=>window.__oathfire?.ready);check('Production build is 2.6.0',await page.evaluate(()=>window.__oathfire.debug().build==='oathfire-2.6.0-living-horizons'));
  await page.locator('#new-game').tap();await page.locator('#begin-oath').tap();await page.locator('#story-skip').tap();
  await page.evaluate(()=>{const g=window.__oathfire;g.store.data.guide.active=false;g.beginMission(0);g.store.data.heroes.warden.level=2;g.defeat('Regroup and return.');});
  await page.locator('[data-result="home"]').tap();check('A level earned during defeat still gets its reveal',await page.locator('.level-numbers').innerText()==='1\n→\n2');await page.locator('[data-unlock="next"]').tap();check('New active ability gets a specific reveal',/Signal Volley/.test(await page.locator('.unlock-copy').innerText()));await page.locator('[data-unlock="next"]').tap();

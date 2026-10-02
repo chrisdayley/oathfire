@@ -3,7 +3,7 @@ import {RGBELoader} from 'three/addons/loaders/RGBELoader.js';
 import {loadCourtyard} from './courtyard-assets.js';
 
 // Locally bundled CC0 scans. Shared textures survive scene and character disposal.
-export const ART={textures:{},sky:null};
+export const ART={textures:{},panoramas:{},sky:null};
 export async function loadArt(){
  await loadCourtyard();
  const loader=new T.TextureLoader();
@@ -13,6 +13,9 @@ export async function loadArt(){
   if(role==='color')t.colorSpace=T.SRGBColorSpace;
   ART.textures[name+'-'+role]=t;
  })));
+ await Promise.all([['plain','crownlands'],['snow','northern'],['desert','sunlands']].map(async([biome,file])=>{const t=await loader.loadAsync(import.meta.env.BASE_URL+'scenery/'+file+'-panorama.jpg');t.colorSpace=T.SRGBColorSpace;t.mapping=T.EquirectangularReflectionMapping;t.userData.shared=true;ART.panoramas[biome]=t;}));
+ const woodland=await loader.loadAsync(import.meta.env.BASE_URL+'scenery/woodland-atlas.webp');woodland.colorSpace=T.SRGBColorSpace;woodland.userData.shared=true;woodland.anisotropy=4;ART.textures.woodland=woodland;
+ const meadow=await loader.loadAsync(import.meta.env.BASE_URL+'scenery/meadow-clump.webp');meadow.colorSpace=T.SRGBColorSpace;meadow.anisotropy=4;meadow.userData.shared=true;ART.textures.meadow=meadow;
  const skin=await loader.loadAsync(import.meta.env.BASE_URL+'materials/human-skin.png');skin.colorSpace=T.SRGBColorSpace;skin.anisotropy=4;skin.userData.shared=true;ART.textures['human-skin']=skin;
  const brocade=await loader.loadAsync(import.meta.env.BASE_URL+'materials/royal-brocade.png');brocade.colorSpace=T.SRGBColorSpace;brocade.anisotropy=4;brocade.wrapS=brocade.wrapT=T.RepeatWrapping;brocade.userData.shared=true;ART.textures['royal-brocade']=brocade;
  const leaf=await loader.loadAsync(import.meta.env.BASE_URL+'materials/hornbeam-leaf.png');leaf.colorSpace=T.SRGBColorSpace;leaf.anisotropy=4;leaf.userData.shared=true;ART.textures['hornbeam-leaf']=leaf;
