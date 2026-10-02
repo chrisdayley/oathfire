@@ -45,7 +45,7 @@ export function tickFortification(g,t,dt,alive){
  }
  const candidates=alive.filter(e=>distance(e.pos,pos)<st.range&&(t.id!=='mortar'||distance(e.pos,pos)>9));
  candidates.sort((a,b)=>t.id==='cannon'?b.stats.armor-a.stats.armor:distance(a.pos,pos)-distance(b.pos,pos));const target=candidates[0];if(!target)return;
- t.cooldown=st.interval/(g.battle.overdrive>0?1.3:1);t.recoil=.35;const direction=target.pos.clone().sub(pos).setY(0).normalize();t.model.userData.aim.rotation.y=Math.atan2(direction.x,direction.z)+Math.PI;
+ t.cooldown=st.interval/(g.battle.overdrive>0?1+(g.battle.overdriveStrength??.3):1);t.recoil=.35;const direction=target.pos.clone().sub(pos).setY(0).normalize();t.model.userData.aim.rotation.y=Math.atan2(direction.x,direction.z)+Math.PI;
  const origin=pos.clone().addScaledVector(UP,['storm','frost'].includes(t.id)?4.65:2.5).addScaledVector(direction,['cannon','mortar'].includes(t.id)?2.25:0);
  if(t.id==='storm'){
   const hit=new Set();let from=origin,to=target;for(let i=0;i<3&&to;i++){hit.add(to);const end=to.pos.clone().addScaledVector(UP,1.1);let a=from;for(let j=1;j<=6;j++){const p=from.clone().lerp(end,j/6);if(j<6)p.add(new T.Vector3(Math.sin(j*5+g.time)*.4,.2*Math.sin(j),0));g.fx.slash(a,p,0xafd7ff);a=p;}g.combat.hit(to,st.damage*[1,.65,.4][i],owner,{secondary:true});g.fx.emit('arcane',end,8,{speed:2});from=end;to=alive.filter(e=>!e.dead&&!hit.has(e)&&distance(e.pos,from)<7).sort((a,b)=>distance(a.pos,from)-distance(b.pos,from))[0];}g.audio.play('storm',.4);

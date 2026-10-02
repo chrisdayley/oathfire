@@ -41,7 +41,7 @@ export function attachAtelier(c,part,profile,palette,textile){
   iris:new T.MeshStandardMaterial({color:0x3a5046,roughness:.47}),
   ember:new T.MeshStandardMaterial({color:0xffbc55,emissive:0xe46b21,emissiveIntensity:1.5,roughness:.4})
  };
- if((!style&&hero||rank>=7)&&!smith&&signature&&ART.textures['royal-brocade']){mats.cloth.map=texture('royal-brocade');mats.cloth.color.setHex(style?clothHex:royal?0xd1a3ba:0xa6b1bc);}
+ if((!style&&hero||rank>=7)&&!smith&&signature&&ART.textures['royal-brocade']){mats.cloth.map=texture('royal-brocade');mats.cloth.color.setHex(style||!hero?clothHex:royal?0xd1a3ba:0xa6b1bc);}
  c.materials.push(...Object.values(mats));const groups=new Map();let pieces=0;c.anatomyMaterial=hero?mats.skin:null;
  for(const p of template){const u=p.props;if(replaceHarnessPart(c,p.name))continue;if(hero&&c.design!=='warden'&&/^(Forged shoulder cap|Overlapping shoulder lame|Rolled pauldron rim)/.test(p.name))continue;if(smith&&/^Forging tool pocket/.test(p.name))continue;if(smith&&/^(Tailored sleeve|Forearm sleeve|Elbow joint)/.test(p.name))continue;if(rank<(u.minRank||1)||rank>(u.maxRank||10)||(u.minForge&&forge<u.minForge)||(u.armorKind&&u.armorKind!==kind))continue;
   if(style?.tier===0&&/engraved|Sun cabochon|Sun ray|Embroidered|Rolled pauldron rim|Overlapping shoulder lame|Royal|Earned rank seal/i.test(p.name))continue;

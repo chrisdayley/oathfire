@@ -7,8 +7,13 @@ export function groundSurface(biome='plain'){
  if(grassy){const compile=m.onBeforeCompile;m.onBeforeCompile=s=>{compile(s);s.uniforms.pathMap={value:ART.textures['soil-color']};s.fragmentShader='uniform sampler2D pathMap;\n'+s.fragmentShader;s.fragmentShader=s.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
  float meadow=sin(vSurfaceWorld.x*.055+vSurfaceWorld.z*.031)*.5+.5;
  diffuseColor.rgb*=mix(vec3(.90,1.22,.84),vec3(.95,1.35,.87),meadow);
- float roadDistance=abs(vSurfaceWorld.x-sin(vSurfaceWorld.z*.025)*4.);float road=1.-smoothstep(3.1,5.6,roadDistance);
+ float roadDistance=abs(vSurfaceWorld.x-sin(vSurfaceWorld.z*.025)*4.);
+ float verge=sin(vSurfaceWorld.z*.43+sin(vSurfaceWorld.x*.51))*sin(vSurfaceWorld.z*.17)*.7;
+ float road=1.-smoothstep(2.7+verge,5.1+verge,roadDistance);
+ float meadowPatch=sin(vSurfaceWorld.x*.17+sin(vSurfaceWorld.z*.09)*2.)*cos(vSurfaceWorld.z*.13)+sin(vSurfaceWorld.x*.53+vSurfaceWorld.z*.32)*.22;
+ diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.78,.72,.56),smoothstep(.3,1.,meadowPatch)*.35);
+
  diffuseColor.rgb=mix(diffuseColor.rgb,texture2D(pathMap,vSurfaceWorld.xz/3.5).rgb*.88,road);
- `);};m.customProgramCacheKey=()=> 'oathfire-grass-path-v3';}
+ `);};m.customProgramCacheKey=()=> 'oathfire-grass-path-v4';}
  return m;
 }

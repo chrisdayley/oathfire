@@ -17,12 +17,12 @@ test('Starter abilities are rank one for free; buying rank two changes an effect
  for(const [id,hero]of Object.entries(HEROES)){const s=newSave(id),h=heroData(s);for(const spell of hero.starter)assert.equal(skillRank(s,spell),1);assert.equal(skillPoints(s),0);h.level=2;trainSkill(s,hero.starter[0]);assert.equal(skillRank(s,hero.starter[0]),2);assert.equal(skillPoints(s),0);assert.match(skillGate(s,hero.starter[0]),/level 6/);validateSave(s);}
 });
 test('All active rank gates are reachable; equipped techniques are owned, distinct and signature-exclusive',()=>{
- for(const id of Object.keys(HEROES)){const s=newSave(id),h=heroData(s);h.level=30;h.questPoints=6;for(const n of HEROES[id].skills.filter(n=>n.active)){while(skillRank(s,n.id)<n.max)trainSkill(s,n.id);equipTechnique(s,n.id,0);equipTechnique(s,n.id,1);assert.notEqual(h.slots[0],h.slots[1]);assert.equal(h.slots[1],n.id);validateSave(s);}
+ for(const id of Object.keys(HEROES)){const s=newSave(id),h=heroData(s);h.level=30;h.questPoints=6;for(const n of HEROES[id].skills.filter(n=>n.active)){h.skills={};h.slots=[...HEROES[id].starter];h.capstone=null;while(skillRank(s,n.id)<n.max)trainSkill(s,n.id);equipTechnique(s,n.id,0);equipTechnique(s,n.id,1);assert.notEqual(h.slots[0],h.slots[1]);assert.equal(h.slots[1],n.id);validateSave(s);}
   assert.throws(()=>equipTechnique(s,'body',0));assert.throws(()=>equipTechnique(s,'missing',0));s.battle={};assert.throws(()=>equipTechnique(s,HEROES[id].starter[0],0));
  }
 });
 test('Old trained starters keep their effects and refund their formerly wasted first point',()=>{
- const s=newSave(),h=heroData(s);h.level=6;h.skills={step:3,rally:2};h.slots=['step','rally'];const inventory=JSON.stringify(s.inventory);validateSave(s);assert.equal(skillRank(s,'step'),3);assert.equal(skillRank(s,'rally'),2);assert.equal(skillPoints(s),2);assert.equal(JSON.stringify(s.inventory),inventory);
+ const s=newSave(),h=heroData(s);h.level=6;h.skills={step:3,rally:2};h.slots=['step','rally'];const inventory=JSON.stringify(s.inventory);validateSave(s);assert.equal(skillRank(s,'step'),3);assert.equal(skillRank(s,'rally'),2);assert.equal(skillPoints(s),4);assert.equal(JSON.stringify(s.inventory),inventory);
 });
 test('Crossing multiple ability levels creates valid specific reveals, never awards or spends points',()=>{
  for(const hero of Object.keys(HEROES)){const s=newSave(hero);heroData(s).level=18;const before=skillPoints(s),q=createUnlockReview(s,{completed:0},{win:true,first:false,endLevel:18,stats:{startLevel:1}});validateUnlockReview(q);const cards=q.cards.filter(c=>c.kind==='ability');assert.equal(cards.length,HEROES[hero].skills.filter(n=>n.active&&n.learnLevel>1).length);for(const card of cards){const d=reviewCard(s,card);assert.match(d.eyebrow,/ACTIVE/);assert.ok(d.text&&d.stats.length===4);}assert.equal(skillPoints(s),before);}

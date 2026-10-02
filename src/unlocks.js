@@ -1,3 +1,4 @@
+import {earnedSkillPoints} from './ability-progression.js';
 import {rewardItem} from './reward-visuals.js';
 import {armorBenefits} from './armor.js';
 import {itemValue} from './state.js';
@@ -53,4 +54,4 @@ export function reviewCard(save,card){
  };return definitions[card.id];
 }
 
-export function levelGains(save,card){const at=level=>heroStats({...save,hero:card.id,heroes:{...save.heroes,[card.id]:{...save.heroes[card.id],level}}}),a=at(card.from),b=at(card.to);const gains=[['hp','Maximum health'],['stamina','Stamina'],['focus','Focus'],['armor','Armor'],['damage','Damage']].filter(([key])=>b[key]>a[key]).map(([key,label])=>({label,before:a[key],after:b[key],delta:b[key]-a[key]}));gains.push({label:'Skill points earned',before:0,after:card.to-card.from,delta:card.to-card.from});return gains;}
+export function levelGains(save,card){const at=level=>heroStats({...save,hero:card.id,heroes:{...save.heroes,[card.id]:{...save.heroes[card.id],level}}}),a=at(card.from),b=at(card.to);const gains=[['hp','Maximum health'],['stamina','Stamina'],['focus','Focus'],['armor','Armor'],['damage','Damage']].filter(([key])=>b[key]>a[key]).map(([key,label])=>({label,before:a[key],after:b[key],delta:b[key]-a[key]}));gains.push({label:'Skill points earned',before:0,after:earnedSkillPoints(card.to)-earnedSkillPoints(card.from),delta:earnedSkillPoints(card.to)-earnedSkillPoints(card.from)});return gains;}

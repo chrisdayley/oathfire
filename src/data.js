@@ -1,10 +1,11 @@
+import {rankLevels,abilityStats} from './ability-progression.js';
 import {furnaceDescriptions} from './furnace-fireball.js';
 import {decorateMissions} from './campaign.js';
 import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {trainedUnit,trainingCost} from './unit-progression.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-2.12.0-battle-plans';
+export const BUILD='oathfire-2.13.0-evolved-oaths';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',role:'Frontline tank',subtitle:'Protect the front line and strengthen nearby troops. Highest starting health and armor.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -128,3 +129,5 @@ const activeEffects={
  seedward:['A 4m grove heals your hero and soldiers for 4 HP/s for 4s.','Healing rises to 5 HP/s.','Healing rises to 6 HP/s and lasts 5s.']
 };
 for(const hero of Object.values(HEROES))for(const skill of hero.skills){if(activeEffects[skill.id])skill.effects=activeEffects[skill.id];if(skill.id==='guide')skill.effects=[...liveEffects.volley];}
+
+for(const hero of Object.values(HEROES))for(const skill of hero.skills)if(skill.active){skill.max=10;skill.rankLevels=rankLevels(skill.learnLevel);skill.effects=Array.from({length:10},(_,i)=>abilityStats(skill.id,i+1).map(([k,v])=>k+': '+v).join(' · '));}

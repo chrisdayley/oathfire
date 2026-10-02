@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Evolved Oaths — 2.13
+
+Ten ranks for all 23 active abilities, rising training costs and hero-level gates, and two rank-ten evolution paths per ability. Focused mobile training shows exact upgrades and previews. Existing progress is preserved. An independent visual review led to clearer fire effects, closer hero portraits, less intrusive combat notices, integrated distant scenery and corrected veteran troop colors.
+
+[Progression, evolution mechanics, review findings and validation](docs/evolved-oaths-2.13.md)
+
 ## Scouting, battle plans and wall troops — 2.12
 
 New enemies now feature prominently in their debut missions. Before launch, animated scouting reports explain their stats, behavior and counters. Choose two preparation perks and inspect your Command totals, then deploy a separate eight-soldier wall garrison with 75% extra range. Stormriders are expensive armored charge cavalry. Command grows through standards, the castle lodge, research, perks and high-tier gear. Victories have an animated, player-controlled transition before the saved report.
