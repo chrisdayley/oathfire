@@ -11,7 +11,7 @@ export class MusicDirector{
  prime(){for(const deck of this.decks){deck.audio.src=SILENCE;const token=deck.token;deck.audio.play().then(()=>{if(deck.token===token)deck.audio.pause();}).catch(()=>{});}}
  // Called synchronously by a trusted tap/key; also repairs an externally paused media deck.
  activate(){if(this.state==='unavailable')return this.retry();if(this.state==='ready'&&!this.paused&&this.decks[this.active].audio.paused)this.playActive();return this.ready;}
- playActive(){const serial=this.serial;this.decks[this.active].audio.play().catch(e=>{if(serial===this.serial&&!this.paused){this.state='unavailable';this.error=e.message;}});}
+ playActive(){if(this.decks[this.active].audio.ended)return;const serial=this.serial;this.decks[this.active].audio.play().catch(e=>{if(serial===this.serial&&!this.paused){this.state='unavailable';this.error=e.message;}});}
  retry(){if(this.state==='unavailable'){const cue=this.pendingCue||{track:this.track||cuePlan(this.scene)[0],seconds:this.decks[this.active].audio.currentTime||this.position||0};this.error=null;this.ready=this.start(cue.track,cue.seconds,true);}return this.ready;}
  async start(track,seconds=0,initial=false){
   this.pendingCue={track,seconds};const serial=++this.serial,index=initial?this.active:1-this.active,deck=this.decks[index],old=this.decks[this.active];deck.token=serial;deck.audio.pause();deck.gain.gain.cancelScheduledValues(this.ctx.currentTime);deck.gain.gain.setValueAtTime(0,this.ctx.currentTime);deck.audio.src=import.meta.env.BASE_URL+'music/recordings/'+track+'.m4a';deck.audio.loop=this.scene.id==='castle';this.state='loading';
