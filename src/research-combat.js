@@ -1,3 +1,4 @@
+import {standardIncome} from './regiments.js';
 import * as T from 'three';
 import {researchComplete,battleUnitStats,battleDefenseStats,WAR_BANDS,RESEARCH,commandIncome} from './research.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
@@ -8,7 +9,7 @@ export function finishResearch(g,ids){const b=g.battle,s=g.store.data;if(!b)retu
  if(ids.includes('windlass'))for(const t of g.world.towerObjects)if(['tower','ballista','cannon','mortar'].includes(t.id)&&t.cooldown>0)t.cooldown/=1.2;
  if(ids.includes('reinforcements'))b.reserveArchers=(b.reserveArchers||0)+2;if(ids.includes('rally'))b.command+=70;
  for(const id of ids)g.toast(RESEARCH[id].name+' ready · active this battle.');g.audio.play('upgrade');g.fx.ward(g.hero.pos,2,1);g.checkpoint();}
-export function tickResearch(g,dt){const b=g.battle;if(!b)return;if(b.command<220)b.command=Math.min(220,b.command+dt*commandIncome(b));if(researchComplete(b,'regeneration')&&!g.hero.dead)g.hero.hp=Math.min(g.hero.stats.hp,g.hero.hp+dt);
+export function tickResearch(g,dt){const b=g.battle;if(!b)return;b.standardIncome=standardIncome(g);if(b.command<220)b.command=Math.min(220,b.command+dt*commandIncome(b));if(researchComplete(b,'regeneration')&&!g.hero.dead)g.hero.hp=Math.min(g.hero.stats.hp,g.hero.hp+dt);
  if(researchComplete(b,'anchor')){g.hero.knock=null;g.hero.stun=0;}
  while(b.reserveArchers>0&&g.allies.filter(a=>!a.dead).length<24){g.spawnAlly('bow',{x:(b.reserveArchers-3)*1.2,y:0,z:-24});b.reserveArchers--;if(b.ledger)b.ledger.reinforcements++;}
 }
@@ -22,7 +23,7 @@ export function researchHit(g,t,source,opt,amount,armor){const b=g.battle,heroAt
  if(heroAttack&&researchComplete(b,'siegeHero')&&['brute','boss'].includes(t.type))amount+=10;
  if(t===g.hero&&researchComplete(b,'siegeHero')&&['brute','boss'].includes(source?.type))amount*=.5;
  if(t.team==='ally'&&t.unit==='shield'&&researchComplete(b,'infantry')&&(g.random||Math.random)()<.2){amount*=.1;g.fx.emit('spark',t.pos,8);g.audio.play('metal',.25);}
- if(source?.team==='ally'&&(source.defense||['bow','staff','crossbow'].includes(source.weapon))&&(t.slow>0||t.marked>0)&&researchComplete(b,'crossfire'))amount*=1.2;
+ if(source?.team==='ally'&&(source.defense||['bow','staff','crossbow'].includes(source.weapon))&&(t.slow>0||t.rimeTime>0||t.marked>0)&&researchComplete(b,'crossfire'))amount*=1.2;
  return {amount,armor};}
 export function researchOnHit(g,t,source,opt){if(source===g.hero&&!opt.secondary&&(opt.weapon||opt.projectile)&&researchComplete(g.battle,'impact')&&(g.random||Math.random)()<.05)t.stun=Math.max(t.stun||0,t.type==='boss'?1:5);
  if(t===g.hero&&t.hp<=0&&g.battle&&!g.battle.lastOathUsed&&researchComplete(g.battle,'lastOath')){g.battle.lastOathUsed=true;t.hp=Math.ceil(t.stats.hp*.3);t.invuln=3;g.fx.ward(t.pos,3,3);g.audio.play('sanctuary');g.toast('The last oath holds · one life saved.');g.checkpoint();}}

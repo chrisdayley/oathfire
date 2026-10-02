@@ -8,6 +8,14 @@ Three playable heroes; five weapon styles; quick and charged attacks; physical a
 
 Version 1.1 replaces the original visible character bodies with original adult-proportioned armor and undead designs. The world now uses scanned surfaces, image-based lighting, detailed foliage and masonry; the armory and new Hollow Host compendium show the animated models in a stone chamber. The original painted concept studies are art direction references, not screenshots of the shipped renderer. See [design and implementation](docs/design.md) and [QA evidence](docs/qa.md).
 
+## Active Oaths — 2.4
+
+**Character → Abilities** now lists the active techniques for your hero, separately from passive training. Select one to inspect its effects, learn or improve it with skill points, preview its casting animation, and equip it to either combat button. Every hero gains a new choice at level 2; later techniques unlock at levels 5, 8 (Ashwright and Veilranger), 10, 14 and 18. Level-up reveals explain each new active. Starter techniques are rank I for free; old saves keep their ranks and receive back the previously wasted first training point.
+
+All 15 regiments now gain tactical benefits through all ten ranks: range, squad size, armor penetration, push strength, charge speed, healing, repairs, auras, limited Command generation or elemental control. Inspection and Upgrade show the same values used by combat, with exact before/after comparisons. Shieldwards muster two soldiers at IV and three at VIII; Longbows remain one per recruit at every rank. Training starts at 320 Supplies and grows to 4,050 or more for the last rank; core stat gains are larger. Early mission waves grow from 7 to 12 to 17 enemies, rewarding active hero play.
+
+[Progression tables, economy and verification](docs/progression-2.4.md). Existing campaign saves are preserved. Testing includes 91 automated tests, all 23 active casts in the browser, real tactical effects, phone layouts, reloads and two reproducible active-versus-idle battle simulations.
+
 ## Royal Atelier — 2.3
 
 All three heroes now load editable Blender assets: fitted Warden armor, the Ashwright’s forge apron and ember lantern, and the Veilranger’s embroidered hood and split coat. Higher appearance ranks add different liveries, layered hip armor, clasps, runes and crest details. The Longbowman has ten construction stages, from leather recruit to armored royal archer. Equipped armor families and their forge states remain visible. [Inspect the actual animated models](https://chrisdayley.github.io/oathfire/art-studio.html).

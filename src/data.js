@@ -1,8 +1,9 @@
 import {decorateMissions} from './campaign.js';
 import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
+import {trainedUnit,trainingCost} from './unit-progression.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-2.3.0-royal-atelier';
+export const BUILD='oathfire-2.4.0-active-oaths';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',subtitle:'Iron, resolve, a line that holds.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -71,8 +72,8 @@ export const AFFIXES={sunder:{name:'Sundering',desc:'Heavy hits strip 20% armor 
 export const SERVICES=[{id:'forge',name:'Torren · Forge',x:-19,z:8,icon:'hammer',tab:'equipment',line:'Good steel deserves a second life.'},{id:'market',name:'Iona · Quartermaster',x:20,z:8,icon:'bag',tab:'shop',line:'A kingdom begins with someone coming home.'},{id:'troops',name:'Captain Rowan · Barracks',x:-18,z:-4,icon:'banner',tab:'troops',line:'Give them ground worth holding.'},{id:'defenses',name:'Nell · Engineer',x:19,z:-5,icon:'tower',tab:'defenses',line:'A good wall is a promise made of stone.'},{id:'campaign',name:'Sera · War table',x:0,z:17,icon:'map',tab:'campaign',line:'There is always another way around.'},{id:'hero',name:'Oath shrine',x:-10,z:23,icon:'sun',tab:'hero',line:'Choose what you will carry into the dark.'}];
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export function seeded(seed){let n=seed>>>0;return()=>{n+=0x6D2B79F5;let t=n;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
-export function unitStats(id,level){const u=UNITS[id],i=level-1,count=['shield','bow','pike'].includes(id)&&level>=7?2:1;return {count,hp:u.spec?.hp[i]||Math.round(u.hp*(1+i*.13+i*i*.007)),damage:u.spec?.damage[i]||Math.round(u.damage*(1+i*.10)),speed:u.speed,reach:u.reach,cost:Math.ceil((u.cost+Math.floor(i/3)*3)*(count===2?1.8:1)),armor:id==='shield'?10+level*2:id==='dawn'?24+level*2:4,attackInterval:['bow','crossbow','staff'].includes(u.weapon)?({marksman:2.8,pyre:2.7,frost:2.2}[id]||1.5):WEAPONS[u.weapon].speed};}
-export function unitCost(id,level){return UNITS[id].spec?.costs[level-1]||Math.round([80,110,150,210,280,370,490,640,840][level-1]*(UNITS[id].cost/35)**.4);}
+export function unitStats(id,level){const u=UNITS[id];return trainedUnit(id,u,level,WEAPONS[u.weapon]||WEAPONS.bow);}
+export function unitCost(id,level){return trainingCost(UNITS[id],level);}
 export function defenseStats(id,level){const u=DEFENSES[id];return id==='gate'?{hp:1100+level*130+level*level*15,damage:0,range:0}:{hp:u.hp[level-1],damage:u.damage[level-1],range:u.third[level-1]};}
 // Both the battlefield and inspection screens use these doctrine-adjusted values.
 export function defenseFiringStats(id,level,doctrine){const st=defenseStats(id,level);let interval=DEFENSES[id].interval||0;
@@ -108,3 +109,21 @@ for(const [id,h]of Object.entries(HEROES))for(const n of h.skills){if(liveEffect
 ARMY_SPEC.shield.effects=['Hold assigned ground with sword and shield.','More health and a reinforced shield.','Shoulder armor steadies the melee silhouette.','Bracers complete the blocking arm.','Adjacent shields take 15% less projectile damage while holding.','Heavier bracers accompany the stronger guard.','Veteran cloak and permanent durability increase.','A command pennant makes the formation visible at distance.','Winged armor and a longer weapon profile.','A crested war harness completes the regiment’s ten-rank progression.'];
 
 for(const [id,active]of [["ashwright","Quench Burst"],["ranger","Windstep"]]){const h=HEROES[id];h.skills.find(n=>n.id==="medic").effects=[12,20,26].map(v=>active+" heals the three most injured allied soldiers in command range for "+v+" health.");h.skills.find(n=>n.id==="presence").effects=[6,7,7.5,8,8.5].map(v=>"Your support techniques and command aura reach "+v+"m.");}
+
+// Active techniques unlock through hero levels, independently of passive trees.
+const techniqueLevels={step:1,rally:1,volley:2,tether:5,sunwall:10,march:14,reversal:18,fireball:1,quench:1,bulwark:2,mine:5,overdrive:8,forgefall:10,sanctuary:14,inferno:18,windstep:1,thorns:1,mark:2,seedward:5,guide:8,briarstorm:10,grove:14,verdant:18};
+for(const hero of Object.values(HEROES))for(const skill of hero.skills)if(SPELLS[skill.id]){
+ skill.active=true;skill.learnLevel=techniqueLevels[skill.id];skill.rankLevels=skill.max===1?[skill.learnLevel]:[skill.learnLevel,skill.learnLevel===1?2:skill.learnLevel+3,skill.learnLevel===1?6:skill.learnLevel+8];
+}
+const activeEffects={
+ fireball:['Hurl a 34-damage fireball with a 35% impact burst.','44 damage; impacts leave a 3-second ember field.','56 damage; impacts release three 16-damage fragments.'],
+ quench:['Heal yourself for 18 and nearby soldiers for 28. Slow enemies 35% for 3s within 4.6m.','Heal yourself for 28 and soldiers for 36. Splash radius grows to 5.2m.','Heal yourself for 36 and soldiers for 44. Splash radius grows to 5.8m.'],
+ bulwark:['Protect yourself: 30% less damage for 4s.','Also shelter soldiers within 6m.','Protection lasts 6s; three rune plates surround you.'],
+ overdrive:['All defenses fire 30% faster for 8s. Allies within 12m attack 18% faster for 8s.','Defenses are accelerated for 10s.','Defenses are accelerated for 12s.'],
+ mine:['Place one proximity mine for 14s. It explodes for 44 fire damage within 3m.','The mine deals 50 fire damage.','Place three mines in an arc, each dealing 56 fire damage.'],
+ windstep:['Dash 5m, protected during the step. 8s cooldown.','Cooldown falls to 6s; protection lasts 2s.','Dash 7m and empower your next weapon attack by 30%.'],
+ thorns:['Root one enemy for 2s and deal 21 damage.','Root two enemies for 2.5s and deal 24 damage each.','Root up to four enemies within 4m for 2.5s; deal 27 damage each.'],
+ mark:['Mark a target for 5s: it takes 20% more hero damage and 15% more allied damage.','The mark lasts 6.5s.','The mark lasts 8s.'],
+ seedward:['A 4m grove heals your hero and soldiers for 4 HP/s for 4s.','Healing rises to 5 HP/s.','Healing rises to 6 HP/s and lasts 5s.']
+};
+for(const hero of Object.values(HEROES))for(const skill of hero.skills){if(activeEffects[skill.id])skill.effects=activeEffects[skill.id];if(skill.id==='guide')skill.effects=[...liveEffects.volley];}

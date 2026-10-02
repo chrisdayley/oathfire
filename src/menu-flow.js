@@ -15,8 +15,8 @@ export function sigil(kind){return '<svg class="menu-sigil" viewBox="0 0 32 32" 
 export const sectionTabs=(ui,items)=>'<div class="detail-tabs" role="group" aria-label="Details">'+Object.entries(items).map(([id,label])=>'<button data-action="detail-section" data-id="'+id+'" class="'+(ui.detailTab===id?'active':'')+'" aria-pressed="'+(ui.detailTab===id)+'">'+label+'</button>').join('')+'</div>';
 const snapshot=ui=>Object.fromEntries(['screen','detailTab','unit','defense','item','inventoryFilter','battleCommand','detailKind','tree','selectedMission','enemy','researchFilter','researchId'].map(k=>[k,ui[k]]).concat([['tab',ui.g.menu],['scroll',$('menu-content').scrollTop]]));
 function refresh(ui,scroll=0){const grids=[...document.querySelectorAll('.research-grid,.field-roster-grid')].map(e=>({className:e.className,scroll:e.scrollTop}));ui.draw();ui.previewForTab();$('menu-content').scrollTop=scroll;if(ui.g.menu==='campaign')centerMap(ui);for(const old of grids){const grid=document.getElementsByClassName(old.className)[0];if(grid)grid.scrollTop=old.scroll;}}
-export function navigate(ui,tab,options={},push=true){if(push)ui.navStack.push(snapshot(ui));ui.g.menu=tab;ui.screen='list';ui.detailTab='overview';ui.previewRank=null;Object.assign(ui,options);refresh(ui);}
-export function openMenu(ui,tab){const g=ui.g;if(!g.store.data)return;g.checkpoint();g.input.enabled=false;g.input.clear();ui.navStack=[];ui.battleCommand=!!g.battle;ui.detailKind=null;ui.screen='list';ui.detailTab='overview';ui.previewRank=null;
+export function navigate(ui,tab,options={},push=true){if(push)ui.navStack.push(snapshot(ui));ui.g.menu=tab;ui.screen='list';ui.detailTab='overview';ui.abilityFocus=false;ui.previewRank=null;Object.assign(ui,options);refresh(ui);}
+export function openMenu(ui,tab){const g=ui.g;if(!g.store.data)return;g.checkpoint();g.input.enabled=false;g.input.clear();ui.navStack=[];ui.battleCommand=!!g.battle;ui.detailKind=null;ui.screen='list';ui.detailTab='overview';ui.abilityFocus=false;ui.previewRank=null;
  if(g.battle){ui.screen=tab==='pause'?'pause':tab==='research'?'research':tab==='battle-defenses'?'defenses':'root';tab='army';}else if(tab==='pause'||tab==='army')tab='home';
  g.menu=tab;if(tab==='equipment')ui.item=null;if(tab==='campaign')ui.selectedMission=nextMission(g.store.data).id;$('menu').hidden=false;$('hud').hidden=true;refresh(ui);}
 export function menuBack(ui){if(ui.navStack.length){const prior=ui.navStack.pop();ui.g.menu=prior.tab;Object.assign(ui,prior);ui.previewRank=null;refresh(ui,prior.scroll);}else if(ui.battleCommand&&ui.screen!=='root'){ui.screen='root';refresh(ui);}else if(ui.g.menu!=='home'&&!ui.battleCommand)navigate(ui,'home',{},false);else ui.close();}
@@ -56,7 +56,7 @@ export function menuAction(ui,action,id,value){switch(action){
  case 'navigate':navigate(ui,id,{battleCommand:false});return true;
  case 'battle-category':navigate(ui,'army',{battleCommand:true,screen:id});return true;
  case 'battle-settings':navigate(ui,'settings',{battleCommand:false});return true;
- case 'detail-section':ui.detailTab=id;refresh(ui);return true;
+ case 'detail-section':ui.detailTab=id;ui.abilityFocus=false;document.getElementById('menu-content').scrollTop=0;refresh(ui);return true;
  case 'inspect-object':ui.g.journey.mark(value);navigate(ui,ui.battleCommand?'army':value,{screen:'detail',detailKind:value,[value==='troops'?'unit':'defense']:id});return true;
  case 'equipment-slot':navigate(ui,'equipment',{screen:'inventory',inventoryFilter:id,item:heroData(ui.g.store.data).equipped[id]});return true;
  case 'item':ui.itemOnHero=false;navigate(ui,'equipment',{screen:'detail',item:id});return true;

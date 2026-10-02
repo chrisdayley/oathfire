@@ -9,13 +9,13 @@ test('Every soldier and rank exposes finite per-soldier values and an ability de
 });
 test('Inspection distinguishes slow marksmen, ordinary archers, armor and deployment costs',()=>{
  const bow=unitInspection('bow',1),marks=unitInspection('marksman',1),shield=unitInspection('shield',5),dawn=unitInspection('dawn',10);
- assert.equal(bow.attackInterval,1.5);assert.equal(marks.attackInterval,2.8);assert.equal(shield.armor,20);assert.equal(dawn.armor,44);assert.equal(shield.cost,25);assert.equal(shield.count,1);assert.equal(shield.abilities[0].unlock,5);
+ assert.equal(bow.attackInterval,1.5);assert.equal(marks.attackInterval,2.8);assert.equal(shield.armor,24);assert.equal(dawn.armor,44);assert.equal(shield.cost,45);assert.equal(shield.count,2);assert.equal(shield.abilities[1].unlock,5);
 });
 test('Healing and control descriptions expose their exact rank-scaled amounts and timers',()=>{
- assert.match(unitInspection('lantern',1).abilities[0].text,/14 health/);assert.match(unitInspection('lantern',10).abilities[0].text,/32 health/);
- assert.match(unitInspection('engineer',10).abilities[0].text,/58 gate health every 3 s/);
- assert.match(unitInspection('frost',1).abilities[0].text,/35% for 2.2 s/);assert.match(unitInspection('frost',10).abilities[0].text,/35% for 4 s/);
- assert.match(unitInspection('dawn',10).abilities[0].text,/32 health/);assert.deepEqual(unitInspection('pyre',1).abilities.map(a=>a.unlock),[1,5,9]);
+ assert.match(unitInspection('lantern',1).abilities[0].text,/14 health/);assert.match(unitInspection('lantern',10).abilities[0].text,/50 health/);
+ assert.match(unitInspection('engineer',10).abilities[0].text,/76 gate health every 2.1 s/);
+ assert.match(unitInspection('frost',1).abilities[0].text,/35% for 2.2 s/);assert.match(unitInspection('frost',10).abilities[0].text,/57.5% for 4.9 s/);
+ assert.match(unitInspection('dawn',10).abilities[0].text,/50 health/);assert.deepEqual(unitInspection('pyre',1).abilities.map(a=>a.unlock),[1,5,9]);
 });
 test('Doctrine previews and the battlefield share the same range, cadence and damage',()=>{
  const normal=defenseStats('tower',5),long=defenseFiringStats('tower',5,'longwatch'),fast=defenseFiringStats('tower',5,'suppression');

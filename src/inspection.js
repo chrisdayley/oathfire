@@ -5,25 +5,22 @@ const n=statNumber;
 const ability=(name,text,unlock=1)=>({name,text,unlock});
 export function unitInspection(id,rank,battle=null){
  const u=UNITS[id],s=battleUnitStats(id,rank,battle),abilities=[];
- if(id==='shield')abilities.push(ability('Linked shields','While Hold here is ordered, take 15% less projectile damage when another living Shieldward is within 2 m. This protection does not stack.',5));
- if(id==='bow')abilities.push(ability('Arrow fire','Physical arrows strike one enemy. Terrain and walls block shots; keep a clear line of fire.'));
- if(id==='pike')abilities.push(ability('Siege hunter','Deal 50% more damage to siege brutes and fallen captains: '+n(s.damage*1.5)+' damage per thrust before armor. Thrusts strike one target.'));
- if(id==='lantern')abilities.push(ability('Mending light','Every 3 s, heal the most wounded hero or soldier within 10 m for '+n((12+rank*2)*s.healFactor)+' health. Targets are chosen by missing health percentage.'));
- if(id==='breaker')abilities.push(ability('Armor breaker','Melee attacks ignore 55% of the target’s armor. Hammer sweeps can hit several enemies in reach.'));
- if(id==='crew')abilities.push(ability('Siegebreaker bolts','Bolts ignore 50% of armor and deal 35% more damage to siege brutes and fallen captains: '+n(s.damage*1.35)+' damage before armor.'));
- if(id==='rider')abilities.push(ability('Riding charge','Travel 6 m at more than 4 m/s to charge the next hit. It deals 60% extra damage ('+n(s.damage*1.6)+' before armor) and stuns for 0.7 s. Travel another 6 m to charge again.'));
- if(id==='giant')abilities.push(ability('Giant’s sweep','The hammer can strike several enemies across its forward arc. Its long reach helps clear a crowded front line.'));
- if(id==='banner')abilities.push(ability('Dawn standard','Allied soldiers within 9 m gain 15% damage and movement speed. The aura refreshes every 0.5 s, fades shortly after leaving, and does not stack with another standard.'));
- if(id==='engineer')abilities.push(ability('Field repairs','Restore '+(18+rank*4)+' gate health every 3 s while within 9 m of a damaged, standing gate. Engineers cannot rebuild a fallen gate. They fight enemies within 4 m.'));
- if(id==='assassin')abilities.push(ability('Backline hunter','Seek grave callers and archers across the field while advancing; engage within 36 m when holding or following. Melee strikes ignore 50% of the target’s armor.'));
- if(id==='pyre')abilities.push(
-  ability('Bursting fireball','A direct hit deals '+s.damage+' damage, then bursts within 1.6 m for another '+n(s.damage*.35)+' fire damage. The burst can hit the original target and nearby enemies.'),
-  ability('Lingering embers','Impacts leave a 2.1 m ember field for 3 s, dealing 3 fire damage per second before armor.',5),
-  ability('Splintering flame','Impacts release three smaller fireballs, each with 16 direct damage and its own impact burst.',9));
- if(id==='marksman')abilities.push(ability('Armor-piercing shot','Crossbow bolts ignore 70% of the target’s armor. Powerful single-target shots have a 2.8 s attack cycle.'));
- if(id==='frost')abilities.push(ability('Rime shard','Hits slow movement by 35% for '+n(2+rank*.2)+' s. Further hits refresh the duration; slow strength does not stack.'));
- if(id==='dawn')abilities.push(ability('Third-strike renewal','Every third landed hit heals the most wounded hero or soldier within 7 m for '+n((12+rank*2)*s.healFactor)+' health. The Sun sworn can heal itself.'));
- if(['shield','bow','pike'].includes(id))abilities.push(ability('Veteran muster','Deploy two soldiers at once at rank VII. Deployment costs 80% more Command; field capacity still counts both soldiers.',7));
+ if(s.healAmount)s.healAmount*=s.healFactor;
+ if(id==='shield')abilities.push(ability('Shield company','Recruit '+s.count+' soldier'+(s.count===1?'':'s')+' for '+s.cost+' Command. Rank IV musters two; VIII musters three. Each soldier counts toward the army limit.'),ability('Linked shields','While holding, take 15% less projectile damage with another Shieldward within 2m.',5));
+ if(id==='bow')abilities.push(ability('Longwatch arrows','Physical arrows reach '+n(s.reach)+'m. Every rank adds 1.5m. Cover blocks arrows; a clear firing lane matters.'));
+ if(id==='pike')abilities.push(ability('Siege hunter','Thrusts deal '+n(s.siegeBonus*100-100)+'% bonus damage to siege brutes and captains ('+n(s.damage*s.siegeBonus)+' before armor). Each thrust hits one target.'));
+ if(id==='lantern')abilities.push(ability('Mending light','Every '+n(s.healInterval)+' s, heal the most wounded hero or soldier within '+n(s.healRange)+' m for '+n(s.healAmount)+' health. Each rank improves healing, radius and cadence.'));
+ if(id==='breaker')abilities.push(ability('Armor breaker','Sweeps ignore '+n(s.armorPierce*100)+'% of armor and stagger for '+n(s.stagger)+' s. Captains suffer 30% of normal stagger.'));
+ if(id==='crew')abilities.push(ability('Driving bolts','Bolts push enemies at '+n(s.knockback)+' m/s, ignore 50% armor and deal '+n(s.siegeBonus*100-100)+'% bonus damage to siege brutes and captains. Captains receive 35% of the push; terrain blocks displacement.'));
+ if(id==='rider')abilities.push(ability('Riding charge','Travel '+n(s.chargeDistance)+' m above 4 m/s to charge. Your next hit deals '+n(s.chargeDamage)+'× damage and stuns for '+n(s.chargeStun)+' s (30% duration against captains). Travel again to recharge.'));
+ if(id==='giant')abilities.push(ability('Earthshaker sweep','Sweep enemies within '+n(s.reach)+'m. Hits stagger for '+n(s.stagger)+'s and push at '+n(s.knockback)+'m/s. Captains receive 30% stagger and 35% push.'));
+ if(id==='banner')abilities.push(ability('Dawn standard','Soldiers within '+n(s.auraRadius)+'m gain '+n(s.auraStrength*100)+'% damage and movement speed. Only the strongest standard or Rally bonus applies.'),ability('Forward command','Generate '+n(s.commandRate*60)+' Command per minute before Logistics while an enemy is within 24m. Only the strongest eligible standard generates Command; the 220 cap still applies.'));
+ if(id==='engineer')abilities.push(ability('Field repairs','Restore '+n(s.repairAmount)+' gate health every '+n(s.repairInterval)+' s within 9m. Cannot rebuild a fallen gate. Engineers fight enemies within 4m.'));
+ if(id==='assassin')abilities.push(ability('Backline hunter','Prioritize enemy archers, bombers and spellcasters. Ignore '+n(s.armorPierce*100)+'% armor and move at '+n(s.speed)+'m/s.'));
+ if(id==='pyre')abilities.push(ability('Bursting fireball','Direct hit: '+s.damage+'. The '+n(s.blastRadius)+'m impact burst adds '+n(s.damage*.35)+' damage to enemies, including the original target.'),ability('Lingering embers','Leave a 2.1m ember field for 3s, dealing '+n(s.burnDps)+' fire damage/s.',5),ability('Splintering flame','Release three 16-damage fragments, each with an impact burst.',9));
+ if(id==='marksman')abilities.push(ability('Armor-piercing shot','Bolts ignore '+n(s.armorPierce*100)+'% armor and reach '+n(s.reach)+'m. A powerful shot every '+n(s.attackInterval)+'s.'));
+ if(id==='frost')abilities.push(ability('Rime shard','Slow movement by '+n(s.slowStrength*100)+'% for '+n(s.slowDuration)+' s. Repeated hits refresh the slow; only the strongest slow applies.'));
+ if(id==='dawn')abilities.push(ability('Battle renewal','Every '+s.healEvery+' landed hits heal the most wounded hero or soldier within '+n(s.healRange)+'m for '+n(s.healAmount)+' health. Can heal itself; rank VII heals every second hit.'));
  const active=key=>researchComplete(battle,key);for(const [key,applies]of [['fastShot',['bow','marksman'].includes(id)],['mageFortune',['pyre','frost'].includes(id)],['infantry',id==='shield'],['veterans',WAR_BANDS.forge.includes(id)],['crossfire',['bow','staff','crossbow'].includes(u.weapon)]])if(applies&&active(key))abilities.push(ability('Battle research · '+RESEARCH[key].name,RESEARCH[key].description));
  return {...s,count:s.count,dps:s.damage/s.attackInterval,mitigation:100*(1-100/(100+s.armor*2)),abilities};
 }
