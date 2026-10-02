@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Hero physique and movement — 2.10
+
+All three heroes have stronger adult proportions with fitted armor. The Ashwright has textured, anatomically shaped arms with blended elbow weights. Walking and running use separate arm poses, shoulder counter-rotation, stable gait transitions, and weapon-aware carrying, including a two-handed hammer grip. Combat clips and collision dimensions stay compatible with existing campaigns.
+
+[Implementation and validation](docs/hero-motion-2.10.md)
+
 ## Regiment dossiers — 2.9
 
 The army menu now opens directly to a troop list, animated model, and combat dossier. Every unit shows its actual stats, tactical role, strengths and vulnerabilities. Upgrade previews show the next-rank model, exact stat changes, newly unlocked abilities, and cost before confirmation. Battle recruitment uses the same layout with current research and Command prices. Equipment names remain visible above Overview, Compare and Improve. Existing saves are preserved.

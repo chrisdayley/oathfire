@@ -1,0 +1,20 @@
+// Retarget CC0 MakeHuman muscular arm surfaces; preserve UVs and elbow skin weights.
+import fs from 'node:fs';import crypto from 'node:crypto';import * as T from 'three';
+const base='work/atelier/',sources=[['base.obj','8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c'],['male.target','70e228ba7164737dae664454394536fc5935fa48d333c1a97d77e2dc6eacc5f5'],['muscle.target','c171ff9cc95e96273beb3e3b1969a01988c2d4982ebc6fe04bf81cf72ee3b295']];
+for(const[file,sha]of sources)if(crypto.createHash('sha256').update(fs.readFileSync(base+file)).digest('hex')!==sha)throw Error('Anatomy source mismatch: '+file);
+const vertices=[],uv=[],faces=[];let group='';for(const line of fs.readFileSync(base+'base.obj','utf8').split('\n')){const a=line.trim().split(/\s+/);if(a[0]==='v')vertices.push(new T.Vector3(...a.slice(1).map(Number)));if(a[0]==='vt')uv.push(a.slice(1).map(Number));if(a[0]==='g')group=a[1];if(a[0]==='f'&&group==='body')faces.push(a.slice(1).map(x=>x.split('/').map(n=>Number(n)-1)));}
+for(const[file,factor]of [['male.target',.9],['muscle.target',.85]])for(const line of fs.readFileSync(base+file,'utf8').split('\n'))if(/^\d/.test(line)){const[i,x,y,z]=line.split(/\s+/).map(Number);vertices[i].addScaledVector(new T.Vector3(x,y,z),factor);}
+const rig=JSON.parse(fs.readFileSync(base+'default.mhskel')),weights=JSON.parse(fs.readFileSync(base+'default_weights.mhw')).weights;if(rig.license!=='CC0')throw Error('Unexpected skeleton license');
+const joint=(id,key)=>rig.joints[rig.bones[id][key]].reduce((v,i)=>v.add(vertices[i]),new T.Vector3()).multiplyScalar(1/rig.joints[rig.bones[id][key]].length);
+const rounded=a=>a.map(n=>+n.toFixed(6));
+const result={license:'CC0-1.0',source:'MakeHuman Community',muscle:.85,arms:{}};
+for(const side of ['L','R']){
+ const up=new Float32Array(vertices.length),low=new Float32Array(vertices.length);for(const id of ['upperarm01.','upperarm02.'])for(const [v,w]of weights[id+side])up[v]+=w;for(const id of ['lowerarm01.','lowerarm02.'])for(const[v,w]of weights[id+side])low[v]+=w;
+ const shoulder=joint('upperarm01.'+side,'head'),elbow=joint('lowerarm01.'+side,'head'),wrist=joint('lowerarm02.'+side,'tail');
+ const frame=(a,b,length)=>{const y=b.clone().sub(a).normalize(),z=new T.Vector3(0,0,-1);z.addScaledVector(y,-z.dot(y)).normalize();const x=y.clone().cross(z).normalize();return v=>{const d=v.clone().sub(a),radial=.137;return [d.dot(x)*radial,d.dot(y)*length/a.distanceTo(b),d.dot(z)*radial];};};
+ const upper=frame(shoulder,elbow,.305),lower=frame(elbow,wrist,.255),out={upper:[],lower:[],uv:[],blend:[],indices:[]},map=new Map();
+ for(const face of faces){if(!face.every(([v])=>up[v]+low[v]>.12&&upper(vertices[v])[1]>-.014)||face.reduce((n,[v])=>n+up[v]+low[v],0)/face.length<.54)continue;const ids=face.map(([vi,ti])=>{const key=vi+'/'+ti;if(!map.has(key)){map.set(key,map.size);out.upper.push(...rounded(upper(vertices[vi])));out.lower.push(...rounded(lower(vertices[vi])));out.uv.push(...rounded([uv[ti][0],1-uv[ti][1]]));out.blend.push(+Math.max(0,Math.min(1,low[vi]/(up[vi]+low[vi]))).toFixed(6));}return map.get(key);});for(let i=1;i<ids.length-1;i++)out.indices.push(ids[0],ids[i],ids[i+1]);}
+ result.arms[side.toLowerCase()]=out;console.log(side,map.size,'vertices',out.indices.length/3,'triangles');
+}
+fs.writeFileSync('public/models/hero-anatomy.json',JSON.stringify(result));
+const names=['base.obj','male.target','muscle.target','default.mhskel','default_weights.mhw'];fs.writeFileSync('public/licenses/hero-anatomy.json',JSON.stringify({license:'CC0-1.0',recipe:'scripts/build-hero-anatomy.mjs',sources:names.map(file=>({file,sha256:crypto.createHash('sha256').update(fs.readFileSync(base+file)).digest('hex'),source:'https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/'+({ 'base.obj':'3dobjs/base.obj','male.target':'targets/macrodetails/caucasian-male-young.target','muscle.target':'targets/macrodetails/universal-male-young-maxmuscle-averageweight.target','default.mhskel':'rigs/default.mhskel','default_weights.mhw':'rigs/default_weights.mhw'}[file])}))},null,2)+'\n');

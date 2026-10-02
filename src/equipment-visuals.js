@@ -27,7 +27,7 @@ export function decorateArmor(c,part){
  const s=armorStyle(c.armor),r=s.tier;c.equipmentAppearance={rarity:r,armor:s.kind,rank:s.rank,glowing:r>=5};if(r<2)return;
  const steel=material('steel',s.metal,{metalness:.86,roughness:s.roughness}),gold=material('steel',s.trim,{metalness:.8,roughness:.32}),dark=material('steel',0x182631,{roughness:.5}),gem=lightMaterial(s.glow||({ember:0xdd7c39,trail:0x2e8962,spellweave:0x8564b1}[s.kind]||0x638fa8),s.glow?2.0:0);
  c.materials.push(steel,gold,dark,gem);
- const chest=part('chest'),hips=part('hips'),head=part('head');chest.scale.z=c.design==='ashwright'?.95:.84;
+ const chest=part('chest'),hips=part('hips'),head=part('head');chest.scale.z*=c.design==='ashwright'?.95:.84;
  if(r>=2){
   for(const side of [-1,1]){
    line(chest,[[side*.025,-.14,.17],[side*.12,-.06,.187],[side*.195,.08,.145],[side*.155,.18,.115]],.006,gold);

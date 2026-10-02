@@ -1,3 +1,4 @@
+import {heroSkin,loadHeroAnatomy} from './hero-physique.js';
 import {armorStyle} from './equipment-style.js';
 import * as T from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -6,11 +7,11 @@ import {armorDefinition,armorKind} from './armor.js';
 
 const MODELS=new Map();
 export async function loadAtelier(){
- const loader=new GLTFLoader();
+ await loadHeroAnatomy();const loader=new GLTFLoader();
  await Promise.all(['warden','ashwright','ranger','bow'].map(async id=>{
   const {scene}=await loader.loadAsync(import.meta.env.BASE_URL+'models/atelier/'+id+'.glb');
   scene.updateMatrixWorld(true);const parts=[];
-  scene.traverse(o=>{if(!o.isMesh)return;const geometry=o.geometry.clone().applyMatrix4(o.matrixWorld);for(const key of Object.keys(geometry.attributes))if(!['position','normal','uv'].includes(key))geometry.deleteAttribute(key);if(!geometry.attributes.uv){const p=geometry.attributes.position,uv=new Float32Array(p.count*2);for(let i=0;i<p.count;i++){uv[i*2]=p.getX(i)*4;uv[i*2+1]=p.getY(i)*4;}geometry.setAttribute('uv',new T.BufferAttribute(uv,2));}geometry.userData.shared=true;parts.push({geometry,props:o.userData,name:o.name});});
+  scene.traverse(o=>{if(!o.isMesh)return;const geometry=o.geometry.clone().applyMatrix4(o.matrixWorld);for(const key of Object.keys(geometry.attributes))if(!['position','normal','uv'].includes(key))geometry.deleteAttribute(key);if(!geometry.attributes.uv){const p=geometry.attributes.position,uv=new Float32Array(p.count*2);for(let i=0;i<p.count;i++){uv[i*2]=p.getX(i)*4;uv[i*2+1]=p.getY(i)*4;}geometry.setAttribute('uv',new T.BufferAttribute(uv,2));}geometry.userData.shared=true;parts.push({geometry,props:o.userData,name:o.name.replaceAll('_',' ')});});
   MODELS.set(id,parts);
  }));
 }
@@ -31,18 +32,18 @@ export function attachAtelier(c,part,profile,palette,textile){
   dark:material('cloth',0x27272b,{roughness:.93,side:T.DoubleSide}),
   cloth:material('cloth',clothHex,{roughness:.89,side:T.DoubleSide}),
   mail:material('steel',0x899194,{map:textile('mail'),roughness:.70,metalness:.65,side:T.DoubleSide}),
-  skin:new T.MeshStandardMaterial({color:smith?0xb79c86:c.design==='ranger'?0xd0b7a3:0xd3b69d,map:texture('human-skin'),roughness:.94,side:T.DoubleSide}),
+  skin:heroSkin(texture('human-skin'),smith),
   hair:material('cloth',smith?0x615a53:0x2c211b,{roughness:.94}),
   eye:new T.MeshStandardMaterial({color:0x9d998d,roughness:.6}),
   iris:new T.MeshStandardMaterial({color:0x3a5046,roughness:.47}),
   ember:new T.MeshStandardMaterial({color:0xffbc55,emissive:0xe46b21,emissiveIntensity:1.5,roughness:.4})
  };
  if((!style&&hero||rank>=7)&&!smith&&signature&&ART.textures['royal-brocade']){mats.cloth.map=texture('royal-brocade');mats.cloth.color.setHex(style?clothHex:royal?0xd1a3ba:0xa6b1bc);}
- c.materials.push(...Object.values(mats));const groups=new Map();let pieces=0;
- for(const p of template){const u=p.props;if(rank<(u.minRank||1)||rank>(u.maxRank||10)||(u.minForge&&forge<u.minForge)||(u.armorKind&&u.armorKind!==kind))continue;
+ c.materials.push(...Object.values(mats));const groups=new Map();let pieces=0;c.anatomyMaterial=hero?mats.skin:null;
+ for(const p of template){const u=p.props;if(smith&&/^(Tailored sleeve|Forearm sleeve|Elbow joint)/.test(p.name))continue;if(rank<(u.minRank||1)||rank>(u.maxRank||10)||(u.minForge&&forge<u.minForge)||(u.armorKind&&u.armorKind!==kind))continue;
   if(style?.tier===0&&/engraved|Sun cabochon|Sun ray|Embroidered|Rolled pauldron rim|Overlapping shoulder lame|Royal|Earned rank seal/i.test(p.name))continue;
   if(!groups.has(u.socket))groups.set(u.socket,part(u.socket));
-  const mesh=new T.Mesh(p.geometry,mats[u.surface]);mesh.name=p.name;mesh.castShadow=mesh.receiveShadow=true;groups.get(u.socket).add(mesh);pieces++;
+  let geometry=p.geometry;if(hero&&p.name==='Soft neck'){geometry=p.geometry.clone();geometry.userData.shared=false;const pos=geometry.attributes.position,uv=geometry.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,.11+pos.getX(i)*.15,.58+pos.getY(i)*.12);}const mesh=new T.Mesh(geometry,hero&&p.name==='Soft neck'?mats.skin:mats[u.surface]);mesh.name=p.name;mesh.castShadow=mesh.receiveShadow=true;groups.get(u.socket).add(mesh);pieces++;
  }
  // Match each equipped armor family's fabric and plate treatment, retaining hero identity.
  if(kind==='spellweave'){mats.ivory.color.setHex(style?.cloth??armor.cloth);mats.ivory.metalness=.2;}
