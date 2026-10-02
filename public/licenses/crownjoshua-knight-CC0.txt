@@ -9,3 +9,7 @@ Full CC0 legal text is also bundled as polyhaven-CC0.txt.
 Oathfire 2.3 derives the Warden's fitted breastplate and helmet from this model.
 The pieces are resized, retargeted to Oathfire's skeleton, and assigned Oathfire materials.
 The source rig, original animations and full original character are not shipped as the hero.
+
+Oathfire 2.11 additionally derives shoulder plates, gauntlets, cuisses, knee cops,
+greaves and sabatons. Bone-local geometry is bundled in models/forged-harness.json.
+Rebuild recipe: scripts/extract-forged-harness.py. Materials and fit are original Oathfire work.

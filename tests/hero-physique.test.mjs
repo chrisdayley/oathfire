@@ -23,8 +23,8 @@ test('Physique changes widen armor and limbs without changing segment lengths or
  }
  const enemy={design:'warden',enemy:true},g=new T.Group();fitHeroPart(enemy,'chest',g);assert.deepEqual(g.scale.toArray(),[1,1,1]);assert.equal(heroPhysique(enemy),null);assert.equal(movementState(enemy,4.5,1/60),4.5);
 });
-test('Moving melee weapons are carried above the hand, while idle and troop poses stay compatible',()=>{
- for(const type of ['sword','hammer']){const c={design:'warden',weaponType:type};assert.ok(carryDirection(c,4.5).y>.5);assert.ok(carryDirection(c,0).y<0);assert.ok(carryDirection({...c,enemy:true},4.5).y<0);}
+test('Heroes brace melee weapons while idle and moving; troop poses stay compatible',()=>{
+ for(const type of ['sword','hammer']){const c={design:'warden',weaponType:type};assert.ok(carryDirection(c,4.5).y>.5);assert.ok(carryDirection(c,0).y>.5);assert.ok(carryDirection({...c,enemy:true},4.5).y<0);}
 });
 test('Muscle mesh contains continuous elbow weights, finite UVs, mirrored topology and valid triangles',()=>{
  const mesh=JSON.parse(fs.readFileSync(new URL('../public/models/hero-anatomy.json',import.meta.url)));

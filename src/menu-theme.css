@@ -42,3 +42,13 @@
 
 /* Final fortress is a separate campaign stop, between the last road and home. */
 #menu-content .atlas-node.enemy-fortress{background:linear-gradient(140deg,#4f233c,#1a1925);border-color:#e3948a;color:#f2c8b8;box-shadow:0 0 0 3px #37192488,0 4px 12px #0008}.atlas-node.enemy-fortress.selected{outline-color:#f3ce9b}.siege-map-objective{border-left:2px solid #ac726b;padding-left:12px;color:#f0caaa!important}.combat-counts button:disabled{opacity:1;cursor:default}.combat-summary-right>#combat-wave{line-height:1.4;max-width:100%}
+
+/* Inventory rows own their label space: generic vertical cards clipped labels
+   below their 75px flex-shrunk boxes on landscape phones. */
+#menu.equipment-menu .equipment-inventory .item{flex:0 0 auto;flex-direction:row;align-items:center;min-height:88px!important;height:auto;gap:12px;padding:10px 12px;overflow:visible}
+#menu.equipment-menu .equipment-inventory .weapon-thumb{width:44px;height:58px;flex:0 0 44px}
+#menu.equipment-menu .equipment-inventory .item-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px;align-items:flex-start}
+#menu.equipment-menu .equipment-inventory .inventory-name{display:block;font:600 15px/1.35 Cinzel,Georgia!important;color:#f6e6c6;white-space:normal;overflow-wrap:anywhere}
+#menu.equipment-menu .equipment-inventory .inventory-quality{display:block;font:600 12px/1.35 "Barlow Condensed",sans-serif!important;color:var(--item);margin:0}
+#menu.equipment-menu .equipment-inventory .item-copy em{display:block;margin:0;font-size:12px;line-height:1.35;color:#d4c4a9}
+@media(max-height:500px){#menu.equipment-menu .equipment-inventory .inventory-name{font-size:13px!important}#menu.equipment-menu .equipment-inventory .item{min-height:84px!important}}

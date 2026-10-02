@@ -25,7 +25,7 @@ try{
    c.update(1/60,{speed:4.5,charging:true});row.charge=c.current.paused&&c.motionWeight===0;
    c.attack(weapon,false,0,.65);for(let i=0;i<12;i++)c.update(1/60,{speed:4.5});row.attack=c.actionLock>0&&c.motionWeight===0;
    c.cast('fireball',2);for(let i=0;i<10;i++)c.update(1/60,{speed:4.5});row.cast=c.actionLock>0&&c.motionWeight===0;
-   for(let i=0;i<150;i++)c.update(1/60,{speed:0});row.stop=c.actionName==='Idle'&&c.motionWeight<.001;
+   for(let i=0;i<150;i++)c.update(1/60,{speed:0});row.stop=c.actionName==='Idle'&&c.motionWeight<.001;const rest=c.sockets.chest.getWorldQuaternion(c.root.quaternion.clone());for(let i=0;i<600;i++)c.update(1/60,{speed:0});row.idleDrift=rest.angleTo(c.sockets.chest.getWorldQuaternion(c.root.quaternion.clone()));
    row.anatomicalArms=c.body.filter(m=>m.name.startsWith('Anatomical muscular arm')).length;
    row.finite=c.body.every(m=>{m.skeleton.update();for(let i=0;i<m.geometry.attributes.position.count;i+=37){vec.fromBufferAttribute(m.geometry.attributes.position,i);m.applyBoneTransform(i,vec);if(!vec.toArray().every(Number.isFinite))return false;}return true;});
    results.push(row);c.dispose();
@@ -35,6 +35,7 @@ try{
  for(const r of report.rigs){
   const n=r.design+'/'+r.weapon;check(n+' has separate walk/run clips and bent elbows',r.gaits.walk.clip==='Walking_A'&&r.gaits.run.clip==='Running_A'&&r.gaits.run.maxBend<165&&r.gaits.run.minBend>20);
   check(n+' preserves jump, guard, charge, attack, cast and stop',r.jump&&r.guard&&r.charge&&r.attack&&r.cast&&r.stop&&r.finite);
+  check(n+' does not accumulate torso lean while idle',r.idleDrift<.06);
   check(n+' foot contacts remain attached to the gait',r.gaits.run.contacts>=3&&r.gaits.walk.contacts>=2);
   if(r.weapon==='hammer')check(n+' support hand follows the hammer grip',r.gaits.run.maxGripError<.065);
   if(r.design==='ashwright')check(n+' uses two skinned anatomical arms',r.anatomicalArms===2);

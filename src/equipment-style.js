@@ -4,10 +4,10 @@ export const EQUIPMENT_TIERS=[
  {name:'Common',rank:1,length:.92,width:.88,metal:0x737a79,trim:0x655e50,roughness:.88},
  {name:'Uncommon',rank:2,length:1,width:.98,metal:0x89938e,trim:0x92836a,roughness:.72},
  {name:'Rare',rank:4,length:1.08,width:1.08,metal:0xa4bbc8,trim:0xb9bdc4,roughness:.50},
- {name:'Epic',rank:6,length:1.17,width:1.18,metal:0x455477,trim:0xc5a87c,roughness:.42},
- {name:'Legendary',rank:8,length:1.30,width:1.32,metal:0x364651,trim:0xe3b65c,roughness:.33},
- {name:'Mythic',rank:9,length:1.50,width:1.47,metal:0x2b334e,trim:0xc3cced,roughness:.28,glow:0x70dfff},
- {name:'Godly',rank:10,length:1.72,width:1.62,metal:0xe4e6dc,trim:0xf4cb6b,roughness:.25,glow:0xffdc80}
+ {name:'Epic',rank:6,length:1.17,width:1.18,metal:0x7c88a6,trim:0xc5a87c,roughness:.42},
+ {name:'Legendary',rank:8,length:1.30,width:1.32,metal:0x99a6b6,trim:0xb18b51,roughness:.48},
+ {name:'Mythic',rank:9,length:1.50,width:1.47,metal:0x899bb1,trim:0xabb6c4,roughness:.42,glow:0x70dfff},
+ {name:'Godly',rank:10,length:1.72,width:1.62,metal:0xa6b3c0,trim:0xbd9960,roughness:.43,glow:0xffdc80}
 ];
 export const itemTier=i=>Math.max(0,Math.min(6,i?.rarity||0));
 export const equipmentStyle=i=>({...EQUIPMENT_TIERS[itemTier(i)],tier:itemTier(i)});

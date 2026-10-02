@@ -1,5 +1,13 @@
 # Oathfire: The Hollow March
 
+## Forged heroes and shorter sieges — 2.11
+
+Equipment lists now keep each item's name, rarity, level and main stat beside its icon, including on narrow phones. All three heroes gain more defined materials, anatomy and fitted armor; weapons gain forged edges, engraving and functional detail. Character menus include a full-screen Inspect view. An independent visual review approved the revised armor and weapon detail against the supplied Heroes & Castles 2 screenshot.
+
+Siege routes are half as long, with closer encounters, larger reinforcement groups and four repositioned camps. Existing suspended sieges migrate with their army, Command, health and castle damage intact.
+
+[Changes, independent review and validation](docs/forged-heroes-2.11.md)
+
 ## Hero physique and movement — 2.10
 
 All three heroes have stronger adult proportions with fitted armor. The Ashwright has textured, anatomically shaped arms with blended elbow weights. Walking and running use separate arm poses, shoulder counter-rotation, stable gait transitions, and weapon-aware carrying, including a two-handed hammer grip. Combat clips and collision dimensions stay compatible with existing campaigns.

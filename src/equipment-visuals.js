@@ -1,5 +1,5 @@
 import * as T from 'three';
-import {material} from './materials.js';
+import {heroSurface as material} from './hero-surfaces.js';
 import {armorStyle,equipmentStyle,equipmentMagic} from './equipment-style.js';
 
 const add=(g,geo,m,p=[0,0,0])=>{const o=new T.Mesh(geo,m);o.position.set(...p);o.castShadow=o.receiveShadow=true;g.add(o);return o;};
@@ -33,12 +33,12 @@ export function decorateArmor(c,part){
    line(chest,[[side*.025,-.14,.17],[side*.12,-.06,.187],[side*.195,.08,.145],[side*.155,.18,.115]],.006,gold);
    line(chest,[[side*.02,-.1,.18],[side*.10,-.04,.193],[side*.14,.08,.16]],.003,gold);
   }
-  jewel(chest,[0,.035,.21],.036,gem);
+  jewel(chest,[0,.035,.21],.023,gem);
  }
  if(r>=3){
   for(const side of [-1,1]){
    for(let j=0;j<r-1;j++){
-    const p=plate(hips,[[-.058,.025],[.058,.025],[.067,-.045],[0,-.095],[-.068,-.045]],[side*.145,-.025-j*.043,.16+j*.008],j%2?steel:gold,.009);p.rotation.y=side*.18;
+    const p=plate(hips,[[-.058,.025],[.058,.025],[.067,-.045],[0,-.095],[-.068,-.045]],[side*.145,-.025-j*.043,.16+j*.008],steel,.009);p.rotation.y=side*.18;
    }
    const fore=part('lowerarm.'+(side>0?'l':'r'));
    for(let j=0;j<3;j++)plate(fore,[[-.047,0],[0,-.025],[.047,0],[.035,.055],[-.035,.055]],[0,.035+j*.045,-.082],steel,.006);
@@ -52,9 +52,9 @@ export function decorateArmor(c,part){
   // Open, swept wing plates give the shoulders a royal silhouette without hiding the arms.
   for(const side of [-1,1]){
    const arm=part('upperarm.'+(side>0?'l':'r'));
-   for(let j=0;j<Math.min(5,r-1);j++){
-    const length=.13+j*.027+(r-4)*.018,x=side*(.02+j*.033),z=-.135+j*.018;
-    const fin=plate(arm,[[-.034,.07],[.027,.068],[.04,-length*.55],[.008,-length],[-.024,-length*.68]],[x,.008,z],j%2?steel:gold,.018);fin.rotation.z=-side*(.25+j*.10);
+   for(let j=0;j<Math.min(3,r-1);j++){
+    const length=.085+j*.017+(r-4)*.012,x=side*(.012+j*.027),z=-.12+j*.014;
+    const fin=plate(arm,[[-.034,.07],[.027,.068],[.04,-length*.55],[.008,-length],[-.024,-length*.68]],[x,.008,z],steel,.018);fin.rotation.z=-side*(.25+j*.10);
     line(arm,[[x,.073,z+.024],[x+side*.015,-length*.5,z+.024],[x,-length*.85,z+.024]],.0035,r>=5?gem:gold);
    }
    const shin=part('lowerleg.'+(side>0?'l':'r'));
@@ -73,14 +73,14 @@ export function decorateArmor(c,part){
    const wing=plate(head,[[-.023,0],[.005,.105],[.063,.17],[.054,.065],[.025,-.024]],[side*.11,.15,-.075],gold,.012);wing.scale.x=side;
    line(head,[[side*.12,.16,-.05],[side*.14,.25,-.05],[side*.17,.31,-.05]],.005,gem);
   }
-  jewel(chest,[0,.04,.235],.053,gem);
+  jewel(chest,[0,.04,.225],.028,gem);
  }
  if(r===6){
   // A broken solar nimbus is visible above the shoulders from both camera directions.
-  for(let i=0;i<6;i++){const a=i*Math.PI/3;arc(chest,[0,.30,-.25],.40,a+.09,a+.86,gold,.014);arc(chest,[0,.30,-.26],.435,a+.12,a+.83,gem,.006);}
+  for(let i=0;i<6;i++){const a=i*Math.PI/3;arc(chest,[0,.30,-.25],.29,a+.09,a+.86,gold,.014);arc(chest,[0,.30,-.26],.313,a+.12,a+.83,gem,.006);}
   for(const side of [-1,1])for(let j=0;j<3;j++){
-   const p=plate(chest,[[-.025,0],[.016,.16],[.035,.29],[.065,.22],[.025,-.035]],[side*(.23+j*.07),.17-j*.04,-.22],j%2?gold:steel,.012);p.rotation.z=-side*(.24+j*.18);
-   jewel(chest,[side*(.23+j*.07),.29-j*.035,-.205],.021,gem);
+   const p=plate(chest,[[-.025,0],[.016,.11],[.026,.19],[.046,.15],[.025,-.035]],[side*(.19+j*.05),.17-j*.04,-.22],j%2?gold:steel,.012);p.rotation.z=-side*(.24+j*.18);
+   jewel(chest,[side*(.19+j*.05),.29-j*.035,-.205],.021,gem);
   }
  }
  c.equipmentAppearance={rarity:r,armor:s.kind,rank:s.rank,glowing:r>=5};
@@ -103,37 +103,25 @@ export function decorateWeapon(g,item){
  }
  if(r>=3){
   if(type==='sword')for(const side of [-1,1]){
-   plate(g,[[0,0],[side*.12,.035],[side*.28,.19],[side*.21,.17],[side*.11,.09]],[side*.04,.16,0],gold,.027);
-   line(g,[[side*.012,.23,.04],[side*.042,.40,.04],[side*.031,.63,.04]],.005,gold);
+   line(g,[[side*.021,.27,.035],[side*.029,.38,.035],[side*.019,.62,.035]],.0025,gold);
+   for(let j=0;j<3;j++)rune(g,side*.024,.43+j*.09,.032,.009,gold);
   }
-  else if(type==='bow')for(const side of [-1,1])for(let j=0;j<r-1;j++){
-   plate(g,[[0,0],[.095,side*.035],[.035,side*.16],[-.02,side*.12]],[.22-j*.018,side*(.20+j*.085),.015],j%2?gold:steel,.014);
-  }
-  else if(type==='hammer')for(const side of [-1,1]){
-   plate(g,[[-.09,-.13],[0,-.18],[.09,-.13],[.095,.14],[0,.18],[-.095,.14]],[side*.23,.95,.215],gold,.014);
-   jewel(g,[side*.23,.96,.245],.065,glow);
-  }
-  else for(const side of [-1,1]){
-   line(g,[[0,tip-.23,0],[side*.17,tip-.06,0],[side*.22,tip+.16,0],[side*.12,tip+.25,0]],.015,gold);
-   jewel(g,[side*.17,tip+.02,.035],.035,glow);
-  }
+  else if(type==='bow')for(const side of [-1,1])line(g,[[.255,side*.15,.025],[.24,side*.35,.025],[.12,side*.57,.024]],.004,gold);
+  else if(type==='hammer')for(const side of [-1,1])for(const z of [-.16,.16])for(let j=0;j<3;j++)rune(g,side*(.08+j*.045),.941,z,.022,gold);
+  else for(const side of [-1,1])line(g,[[0,tip-.23,.015],[side*.09,tip-.06,.015],[side*.11,tip+.12,.015]],.006,gold);
  }
- if(r>=4){
-  if(type==='sword'){plate(g,[[-.07,.19],[-.088,.35],[-.063,.61],[0,.73],[.063,.61],[.088,.35],[.07,.19]],[0,0,-.012],steel,.03);line(g,[[0,.26,.038],[0,.72,.038],[0,.98,.031]],.007,color?glow:gold);}
-  else if(type==='hammer'){for(const side of [-1,1])for(let j=0;j<3;j++)plate(g,[[0,-.035],[side*.14,0],[0,.035]],[side*.32,.85+j*.10,0],steel,.035);}
-  else if(type==='bow')for(const side of [-1,1])jewel(g,[.19,side*.39,.05],.06,glow);
-  else arc(g,[0,tip,.02],.23,-2.6,2.6,gold,.012);
- }
+ if(r>=4&&type==='sword')for(const side of [-1,1])line(g,[[side*.018,.29,.038],[side*.026,.55,.038],[side*.010,.91,.03]],.003,color?glow:gold);
  if(r>=5){
   if(type==='sword')for(const side of [-1,1])line(g,[[side*.024,.27,.056],[side*.033,.50,.053],[side*.024,.87,.04],[0,1.11,.02]],.006,glow);
   else if(type==='bow')for(const side of [-1,1])line(g,[[.29,side*.17,.042],[.27,side*.38,.043],[.13,side*.64,.03],[.075,side*.83,.025]],.007,glow);
-  else if(type==='hammer')for(const side of [-1,1])line(g,[[side*.33,.83,.25],[side*.18,.94,.25],[side*.32,1.08,.25]],.009,glow);
+  else if(type==='hammer')for(const side of [-1,1])line(g,[[side*.19,.84,.161],[side*.09,.94,.161],[side*.19,1.04,.161]],.004,glow);
   else{line(g,[[0,.10,.045],[0,tip-.24,.045]],.008,glow);for(let j=0;j<3;j++)rune(g,0,tip-.4+j*.11,.05,.04,glow);}
  }
  if(r===6){
-  if(type==='sword')for(const side of [-1,1])for(let j=0;j<3;j++)plate(g,[[0,0],[side*.05,.02],[side*.13,.13],[side*.018,.095]],[side*.058,.27+j*.095,.015],gold,.021);
-  else if(type==='bow')for(const side of [-1,1])arc(g,[.15,side*.45,.04],.20,side>0?.4:3.5,side>0?2.7:5.8,glow,.006);
-  else{arc(g,[0,tip,.05],type==='hammer'?.24:.31,.12,Math.PI*1.92,gold,.014);arc(g,[0,tip,.05],type==='hammer'?.28:.35,.5,Math.PI*1.77,glow,.006);}
+  if(type==='sword'){for(const side of [-1,1]){plate(g,[[0,0],[side*.045,.018],[side*.068,.079],[side*.018,.063]],[side*.031,.20,.015],steel,.009);rune(g,side*.035,.32,.037,.016,glow);}}
+  else if(type==='bow')for(const side of [-1,1])arc(g,[.16,side*.43,.026],.085,side>0?.4:3.5,side>0?2.7:5.8,glow,.003);
+  else if(type==='staff'){arc(g,[0,tip,.015],.23,.12,Math.PI*1.92,gold,.007);arc(g,[0,tip,.018],.24,.5,Math.PI*1.77,glow,.003);}
+  else if(type==='hammer')for(const z of [-.17,.17]){arc(g,[0,.94,z],.045,0,Math.PI*2,gold,.004);rune(g,0,.94,z+.004,.036,glow);}
  }
  // Size changes are baked around the grip, keeping the hand socket and animation intact.
  stretchWeapon(g,s,type);
@@ -156,8 +144,8 @@ export function decorateWeapon(g,item){
 export function decorateShield(g,item){
  const s=equipmentStyle(item),r=s.tier;if(r<2)return;
  const gold=material('steel',s.trim,{metalness:.86,roughness:s.roughness}),glow=lightMaterial(equipmentMagic(item)[0]?.color||s.glow||s.trim,s.glow?2:0);
- for(const side of [-1,1])line(g,[[side*.25,.43,.095],[side*.27,.05,.095],[side*.16,-.30,.10],[0,-.54,.125]],.009,gold);
- if(r>=4)for(const side of [-1,1])for(let j=0;j<4;j++)plate(g,[[0,0],[side*.07,.06],[side*.11,.15],[side*.015,.10]],[side*.07,.1-j*.09,.13],gold,.009);
+ for(const side of [-1,1])line(g,[[side*.25,.43,.095],[side*.27,.05,.095],[side*.16,-.30,.10],[0,-.54,.125]],.006,gold);
+ if(r>=4)for(const side of [-1,1])for(let j=0;j<4;j++)plate(g,[[0,0],[side*.07,.06],[side*.11,.15],[side*.015,.10]],[side*.065,.1-j*.09,.13],gold,.004);
  if(r>=5){arc(g,[0,.075,.16],.11,0,Math.PI*2,glow,.007);for(let j=0;j<5;j++)rune(g,0,-.04-j*.06,.153,.023,glow);halo(g,[0,.06,.17],glow.color.getHex(),.45,.22);}
  g.userData.rarity=r;g.userData.glowing=r>=5;
 }

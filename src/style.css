@@ -34,3 +34,23 @@
 }
 
 @media (orientation:portrait) and (max-width:550px){#menu.equipment-menu{background:transparent}#menu.equipment-menu #menu-content{background:#211a15f7}}
+
+/* Keep the equipped silhouette clear of the mobile character caption/actions. */
+#menu.hero-menu #preview-caption{top:10px;left:14px;right:10px;max-width:none}
+#menu.hero-menu #preview-caption h2{font-size:20px;margin:3px 0}
+#menu.hero-menu #preview-caption p{margin:4px 0;font-size:11px}
+@media(max-height:500px){#menu.hero-menu #preview-caption{top:7px}#menu.hero-menu #preview-caption h2{font-size:16px}#menu.hero-menu #preview-caption small{font-size:8px}#menu.hero-menu #preview-caption p{display:none}#menu.hero-menu #preview-controls{bottom:8px;gap:5px}#menu.hero-menu #preview-controls button{font-size:10px;padding:7px 10px}}
+
+#menu.hero-menu #model-stage{width:44%}
+#menu.hero-menu #preview-caption{display:none}
+#menu.hero-inspect #menu-nav,#menu.hero-inspect #menu-content,#menu.hero-inspect #resources{display:none}
+#menu.hero-inspect #model-stage{width:100%;flex:1}
+#menu.hero-inspect #preview-controls{left:50%;transform:translateX(-50%);white-space:nowrap}
+#menu.hero-inspect header{height:48px;min-height:48px}
+#menu.hero-inspect header small{display:none}
+#menu.hero-inspect header h1{font-size:20px;margin:0}
+#menu.hero-inspect footer{display:none}
+@media(max-height:500px){#menu.hero-menu #preview-controls{display:flex}#menu.hero-inspect header{height:36px;min-height:36px}#menu.hero-inspect #close-menu{height:30px;min-height:30px;width:34px;font-size:22px}}
+#menu.hero-inspect{background:transparent!important}
+#menu.hero-inspect main{background:none}
+#menu.hero-inspect #close-menu{margin-left:auto}

@@ -1,3 +1,6 @@
+import {tailorHero} from './hero-tailoring.js';
+import {loadHeroHarness,attachHeroHarness,replaceHarnessPart} from './hero-harness.js';
+import {heroSurface} from './hero-surfaces.js';
 import {heroSkin,loadHeroAnatomy} from './hero-physique.js';
 import {armorStyle} from './equipment-style.js';
 import * as T from 'three';
@@ -7,7 +10,7 @@ import {armorDefinition,armorKind} from './armor.js';
 
 const MODELS=new Map();
 export async function loadAtelier(){
- await loadHeroAnatomy();const loader=new GLTFLoader();
+ await Promise.all([loadHeroAnatomy(),loadHeroHarness()]);const loader=new GLTFLoader();
  await Promise.all(['warden','ashwright','ranger','bow'].map(async id=>{
   const {scene}=await loader.loadAsync(import.meta.env.BASE_URL+'models/atelier/'+id+'.glb');
   scene.updateMatrixWorld(true);const parts=[];
@@ -25,12 +28,12 @@ export function attachAtelier(c,part,profile,palette,textile){
  const clothHex=style?.cloth??(hero&&signature?heroCloth:armor?.cloth??palette.cloth),trimHex=style?.trim??(hero&&signature?(royal?0xd6b16a:smith?0xb48853:palette.trim):armor?.trim??palette.trim),steelHex=style?.metal??(hero&&signature?(royal?0xc2c3b7:0x8c99a5):armor?.steel??palette.steel);
  const light=['trail','spellweave','dawn'].includes(kind);
  const mats={
-  steel:material(light?'leather':'steel',steelHex,{roughness:style?.roughness??(light?.84:.57),metalness:style?.tier===0?.35:light?.12:.82,envMapIntensity:.8,side:T.DoubleSide}),
-  ivory:material('steel',style?.metal??(signature?(royal?0xd4c9ad:0xb8b7aa):armor?.steel??0xb8b7aa),{roughness:.57,metalness:.62,side:T.DoubleSide}),
-  gold:material('steel',trimHex,{roughness:.56,metalness:.76,side:T.DoubleSide}),
-  leather:material('leather',smith?0x77604e:0x625142,{roughness:.83,side:T.DoubleSide}),
-  dark:material('cloth',0x27272b,{roughness:.93,side:T.DoubleSide}),
-  cloth:material('cloth',clothHex,{roughness:.89,side:T.DoubleSide}),
+  steel:heroSurface(light?'leather':'steel',steelHex,{roughness:Math.max(.48,style?.roughness??(light?.84:.57)),metalness:style?.tier===0?.35:light?.12:.82,envMapIntensity:.8,side:T.DoubleSide}),
+  ivory:heroSurface('steel',style?.metal??(signature?(royal?0xd4c9ad:0xb8b7aa):armor?.steel??0xb8b7aa),{roughness:.60,metalness:.78,side:T.DoubleSide}),
+  gold:heroSurface('steel',trimHex,{roughness:.58,metalness:.8,side:T.DoubleSide}),
+  leather:heroSurface('leather',smith?0x77604e:0x625142,{roughness:.83,side:T.DoubleSide}),
+  dark:heroSurface('cloth',0x27272b,{roughness:.93,side:T.DoubleSide}),
+  cloth:heroSurface('cloth',clothHex,{roughness:.89,side:T.DoubleSide}),
   mail:material('steel',0x899194,{map:textile('mail'),roughness:.70,metalness:.65,side:T.DoubleSide}),
   skin:heroSkin(texture('human-skin'),smith),
   hair:material('cloth',smith?0x615a53:0x2c211b,{roughness:.94}),
@@ -40,11 +43,12 @@ export function attachAtelier(c,part,profile,palette,textile){
  };
  if((!style&&hero||rank>=7)&&!smith&&signature&&ART.textures['royal-brocade']){mats.cloth.map=texture('royal-brocade');mats.cloth.color.setHex(style?clothHex:royal?0xd1a3ba:0xa6b1bc);}
  c.materials.push(...Object.values(mats));const groups=new Map();let pieces=0;c.anatomyMaterial=hero?mats.skin:null;
- for(const p of template){const u=p.props;if(smith&&/^(Tailored sleeve|Forearm sleeve|Elbow joint)/.test(p.name))continue;if(rank<(u.minRank||1)||rank>(u.maxRank||10)||(u.minForge&&forge<u.minForge)||(u.armorKind&&u.armorKind!==kind))continue;
+ for(const p of template){const u=p.props;if(replaceHarnessPart(c,p.name))continue;if(hero&&c.design!=='warden'&&/^(Forged shoulder cap|Overlapping shoulder lame|Rolled pauldron rim)/.test(p.name))continue;if(smith&&/^Forging tool pocket/.test(p.name))continue;if(smith&&/^(Tailored sleeve|Forearm sleeve|Elbow joint)/.test(p.name))continue;if(rank<(u.minRank||1)||rank>(u.maxRank||10)||(u.minForge&&forge<u.minForge)||(u.armorKind&&u.armorKind!==kind))continue;
   if(style?.tier===0&&/engraved|Sun cabochon|Sun ray|Embroidered|Rolled pauldron rim|Overlapping shoulder lame|Royal|Earned rank seal/i.test(p.name))continue;
   if(!groups.has(u.socket))groups.set(u.socket,part(u.socket));
-  let geometry=p.geometry;if(hero&&p.name==='Soft neck'){geometry=p.geometry.clone();geometry.userData.shared=false;const pos=geometry.attributes.position,uv=geometry.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,.11+pos.getX(i)*.15,.58+pos.getY(i)*.12);}const mesh=new T.Mesh(geometry,hero&&p.name==='Soft neck'?mats.skin:mats[u.surface]);mesh.name=p.name;mesh.castShadow=mesh.receiveShadow=true;groups.get(u.socket).add(mesh);pieces++;
+  let geometry=p.geometry;if(smith&&p.name==='Sculpted forge apron'){geometry=p.geometry.clone();geometry.userData.shared=false;const a=geometry.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i),y=a.getY(i);if(y<-.48&&Math.abs(x)<.035)a.setY(i,y+Math.max(0,1-Math.abs(x)/.035)*Math.min(.13,(-y-.48)*.5));}geometry.computeVertexNormals();}if(hero&&p.name==='Soft neck'){geometry=p.geometry.clone();geometry.userData.shared=false;const pos=geometry.attributes.position,uv=geometry.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,.11+pos.getX(i)*.15,.58+pos.getY(i)*.12);}const mesh=new T.Mesh(geometry,hero&&p.name==='Soft neck'?mats.skin:mats[u.surface]);mesh.name=p.name;mesh.castShadow=mesh.receiveShadow=true;groups.get(u.socket).add(mesh);pieces++;
  }
+ attachHeroHarness(c,part,mats,rank);tailorHero(c,part,mats,rank);
  // Match each equipped armor family's fabric and plate treatment, retaining hero identity.
  if(kind==='spellweave'){mats.ivory.color.setHex(style?.cloth??armor.cloth);mats.ivory.metalness=.2;}
  if(kind==='trail'){mats.ivory.color.setHex(style?.metal??armor.steel);mats.ivory.metalness=.05;}
