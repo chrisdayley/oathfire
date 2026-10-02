@@ -11,7 +11,7 @@ export function finishResearch(g,ids){const b=g.battle,s=g.store.data;if(!b)retu
  for(const id of ids)g.toast(RESEARCH[id].name+' ready · active this battle.');g.audio.play('upgrade');g.fx.ward(g.hero.pos,2,1);g.checkpoint();}
 export function tickResearch(g,dt){const b=g.battle;if(!b)return;b.standardIncome=standardIncome(g);if(b.command<220)b.command=Math.min(220,b.command+dt*commandIncome(b));if(researchComplete(b,'regeneration')&&!g.hero.dead)g.hero.hp=Math.min(g.hero.stats.hp,g.hero.hp+dt);
  if(researchComplete(b,'anchor')){g.hero.knock=null;g.hero.stun=0;}
- while(b.reserveArchers>0&&g.allies.filter(a=>!a.dead).length<24){g.spawnAlly('bow',{x:(b.reserveArchers-3)*1.2,y:0,z:-24});b.reserveArchers--;if(b.ledger)b.ledger.reinforcements++;}
+ while(b.reserveArchers>0&&g.allies.filter(a=>!a.dead).length<24){g.spawnAlly('bow',{x:(b.reserveArchers-3)*1.2,y:b.siege?g.world.height(0,-108):0,z:b.siege?-108:-24});b.reserveArchers--;if(b.ledger)b.ledger.reinforcements++;}
 }
 export function gateDemolition(g){const b=g.battle;if(!b||b.demolitionUsed||!researchComplete(b,'demolition'))return;b.demolitionUsed=true;const p=new T.Vector3(0,0,-20),owner={team:'ally',defense:'gate',pos:p,stats:{}};g.combat.burst(p,9,200,owner,'fire');for(const e of g.enemies)if(!e.dead&&dist(e.pos,p)<9)e.stun=Math.max(e.stun||0,e.type==='boss'?3:15);g.audio.play('shell',1.2);}
 export function researchRangedAttack(g,e,target){if(e.team!=='ally'||!g.battle)return;if(['bow','marksman'].includes(e.unit)&&researchComplete(g.battle,'fastShot')&&(g.random||Math.random)()<.25){e.cooldown=.35;g.fx.emit('spark',e.pos,4,{speed:1});}
@@ -20,7 +20,7 @@ export function researchRangedAttack(g,e,target){if(e.team!=='ally'||!g.battle)r
  for(let i=0;i<5;i++)g.combat.later(.15+i*.1,()=>{if(e.dead||!g.battle)return;const a=i*Math.PI*.8,origin=center.clone().add(new T.Vector3(Math.sin(a)*2,7+i*.3,Math.cos(a)*2));g.combat.shoot(e,null,{origin,direction:new T.Vector3(0,-1,0),damage:e.stats.damage*.4,type:ice?'frost':'fire',speed:14,rank:1,slow:ice?3:0,blast:{radius:2.3,damage:e.stats.damage*.2}});});}
 export function researchHit(g,t,source,opt,amount,armor){const b=g.battle,heroAttack=source===g.hero&&!opt.secondary&&(opt.weapon||opt.projectile);if(!b)return {amount,armor};
  if(heroAttack&&researchComplete(b,'imbue')){armor=0;g.fx.emit('arcane',t.pos,4,{speed:1});}
- if(heroAttack&&researchComplete(b,'siegeHero')&&['brute','boss'].includes(t.type))amount+=10;
+ if(heroAttack&&researchComplete(b,'siegeHero')&&(['brute','boss'].includes(t.type)||t.structure))amount+=10;
  if(t===g.hero&&researchComplete(b,'siegeHero')&&['brute','boss'].includes(source?.type))amount*=.5;
  if(t.team==='ally'&&t.unit==='shield'&&researchComplete(b,'infantry')&&(g.random||Math.random)()<.2){amount*=.1;g.fx.emit('spark',t.pos,8);g.audio.play('metal',.25);}
  if(source?.team==='ally'&&(source.defense||['bow','staff','crossbow'].includes(source.weapon))&&(t.slow>0||t.rimeTime>0||t.marked>0)&&researchComplete(b,'crossfire'))amount*=1.2;

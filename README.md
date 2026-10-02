@@ -4,9 +4,19 @@ A landscape mobile browser game combining direct 3D hero combat, battlefield arm
 
 **Play:** https://chrisdayley.github.io/oathfire/
 
-Three playable heroes; five weapon styles; quick and charged attacks; physical arrows, bolts and elemental magic; fifteen regiment types with ten ranks each; eight castle defenses with ten ranks; 24 main missions and eight optional rescues across six landscapes; a free-roam castle, vendors, hidden chests and a crypt puzzle.
+Three playable heroes; five weapon styles; quick and charged attacks; physical arrows, bolts and elemental magic; fifteen regiment types with ten ranks each; eight castle defenses with ten ranks; 24 main defenses, eight optional castle sieges and a required final fortress across six landscapes; a free-roam castle, vendors, hidden chests and a crypt puzzle.
 
 Version 1.1 replaces the original visible character bodies with original adult-proportioned armor and undead designs. The world now uses scanned surfaces, image-based lighting, detailed foliage and masonry; the armory and new Hollow Host compendium show the animated models in a stone chamber. The original painted concept studies are art direction references, not screenshots of the shipped renderer. See [design and implementation](docs/design.md) and [QA evidence](docs/qa.md).
+
+## Crownfall — 2.5
+
+The eight settlement rescues are now assaults on enemy castles. Breach the gate and destroy the dread keep to win; enemy armies keep spawning, with larger reinforcement groups at shorter intervals as time passes. The two gun bastions can be destroyed to remove their fire. The hero and troops damage fortifications with their actual attacks and projectiles, and the gate's collision and navigation footprint disappear when it falls. Siege troops and engineers have useful roles against masonry.
+
+After **The Door of Names**, the required **Obsidian Crown** siege opens. Destroying it sends the Hollow King to **Hearthwatch** for **The Last Dawn**, the sixth-wave final defense. The campaign only ends after that defense. Previously completed campaigns keep their ending and rescued territory.
+
+Original fortress geometry adds vaulted gates, layered basalt walls, crown spires, gun towers, chains, regional standards and lit windows. Hearthwatch gains a rose window with colored glass, a carved great-hall arch and gable, buttresses, copper roof ribs, window galleries and colored market drapes. Geometry uses existing credited PBR surfaces; no new downloads or licenses are required. These are real-time assets, not a claim of parity with the painted concepts.
+
+[Siege rules, save compatibility and QA](docs/siege-2.5.md).
 
 ## Active Oaths — 2.4
 
