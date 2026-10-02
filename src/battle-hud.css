@@ -17,3 +17,9 @@
 @media(max-height:500px){#hud.in-battle .army-button{height:49px}}
 
 #command-income-detail{pointer-events:auto;min-height:35px;padding:2px 6px;background:#241b16b8;border:1px solid #bf9f6f55;border-radius:2px;text-transform:none;letter-spacing:0;touch-action:manipulation}#command-income-detail span{font-weight:600;white-space:nowrap}#command-income-detail:focus-visible{outline:2px solid #ffe1a0}
+
+.combat-summary-right{width:245px}.combat-counts .menu-sigil{width:18px;flex-basis:18px}.combat-counts b{font-size:17px}#combat-wall-count[hidden]{display:none!important}
+@media(max-height:500px){.combat-summary-right{width:225px}.combat-counts{gap:4px}.combat-counts b{font-size:15px}.combat-counts .menu-sigil{width:15px;flex-basis:15px}.combat-counts button{padding:3px}}
+@media(max-width:720px) and (orientation:landscape){.combat-summary-right{width:210px}}
+.garrison-tabs{display:flex;gap:4px;padding:5px}.garrison-tabs button{flex:1;min-width:0;min-height:42px;font:600 13px "Barlow Condensed",sans-serif!important;padding:5px!important}.garrison-tabs button[aria-pressed=true]{color:#ffdf95!important;border-color:#d6b568!important;background:#6a482b!important}.gear-command-benefits{border-left:2px solid #c5a26b;padding:2px 12px;margin:12px 0}.gear-command-benefits p{margin:4px 0!important;color:#e9d99b!important}
+@media(orientation:portrait){.combat-summary-right{top:180px;width:245px}}

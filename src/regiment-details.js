@@ -10,7 +10,7 @@ export const UNIT_TACTICS={
  lantern:{role:'Combat healer',use:'Restores health to the most wounded nearby ally. Escort your frontline to keep its soldiers fighting.',strong:'Sustaining wounded heroes and infantry',weak:'Burst damage and isolated flankers'},
  breaker:{role:'Armor-breaking infantry',use:'Heavy hammer sweeps ignore armor and stagger enemies. Let faster troops pin targets in place.',strong:'Armored infantry and crowded melee',weak:'Long-range fire and mobile enemies'},
  crew:{role:'Siege crossbow',use:'Heavy bolts pierce armor, push enemies back and deal bonus damage to siege targets.',strong:'Siege brutes, captains and fortifications',weak:'Fast melee attackers at close range'},
- rider:{role:'Charging cavalry',use:'Build speed to land a powerful stunning charge. Reposition between charges to strike again.',strong:'Exposed archers, casters and flanks',weak:'Crowded fronts that stop the run-up'},
+ rider:{role:'Charging cavalry',use:'Armored horsemen move faster than infantry and ignore armor. Build speed for a stunning charge; reposition to charge again.',strong:'Exposed archers, casters and flanks',weak:'Crowded fronts that stop the run-up'},
  giant:{role:'Frontline crowd breaker',use:'A resilient giant sweeps several enemies at once, staggering and pushing them away.',strong:'Packed infantry and crowded breaches',weak:'Armor-piercing ranged focus fire'},
  banner:{role:'Command & army support',use:'Generates Command while alive. Nearby soldiers gain damage and speed; protect your standard behind the line.',strong:'Funding reinforcements; supporting groups',weak:'Assassins and concentrated ranged fire'},
  engineer:{role:'Repair & siege support',use:'Repairs your gate on defense. In sieges, advances with the army and deals 2.5× damage to fortifications.',strong:'Gate damage and enemy fortifications',weak:'Enemy infantry; cannot rebuild a fallen gate'},
@@ -22,8 +22,8 @@ export const UNIT_TACTICS={
 };
 export const formatStat=(value,suffix='',mult=1)=>Number((value*mult).toFixed(2))+suffix;
 const CORE=[['hp','Health',''],['damage','Damage / hit',''],['armor','Armor',''],['reach','Range',' m'],['attackInterval','Attack cycle',' s',1,-1],['speed','Movement',' m/s'],['count','Soldiers / recruit',''],['armorPierce','Armor ignored','%',100]];
-export function regimentStats(id,rank,battle=null){
- const stats=unitInspection(id,rank,battle);
+export function regimentStats(id,rank,battle=null,options={}){
+ const stats=unitInspection(id,rank,battle,options);
  const rows=[...CORE,...(TACTICAL_STATS[id]||[]).filter(([key])=>!CORE.some(([k])=>k===key))];
  return {stats,rows:rows.filter(([key])=>key!=='burnDps'||rank>=5).map(([key,label,suffix,mult=1,direction=1])=>({key,label,suffix,mult,direction,value:stats[key]||0,text:formatStat(stats[key]||0,suffix,mult)}))};
 }

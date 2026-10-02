@@ -1,5 +1,6 @@
+import {fieldCount,FIELD_LIMIT} from './wall-garrison.js';
 import {siegeRally} from './siege-rules.js';
-import {castleCommandBonus} from './command-economy.js';
+import {castleCommandBonus,commandCap} from './command-economy.js';
 import {standardIncome} from './regiments.js';
 import * as T from 'three';
 import {researchComplete,battleUnitStats,battleDefenseStats,WAR_BANDS,RESEARCH,commandIncome} from './research.js';
@@ -11,9 +12,9 @@ export function finishResearch(g,ids){const b=g.battle,s=g.store.data;if(!b)retu
  if(ids.includes('windlass'))for(const t of g.world.towerObjects)if(['tower','ballista','cannon','mortar'].includes(t.id)&&t.cooldown>0)t.cooldown/=1.2;
  if(ids.includes('reinforcements'))b.reserveArchers=(b.reserveArchers||0)+2;if(ids.includes('rally'))b.command+=70;
  for(const id of ids)g.toast(RESEARCH[id].name+' ready · active this battle.');g.audio.play('upgrade');g.fx.ward(g.hero.pos,2,1);g.checkpoint();}
-export function tickResearch(g,dt){const b=g.battle;if(!b)return;b.standardIncome=standardIncome(g);b.castleIncome=castleCommandBonus(g.store.data);if(b.command<220)b.command=Math.min(220,b.command+dt*commandIncome(b));if(researchComplete(b,'regeneration')&&!g.hero.dead)g.hero.hp=Math.min(g.hero.stats.hp,g.hero.hp+dt);
+export function tickResearch(g,dt){const b=g.battle;if(!b)return;b.standardIncome=standardIncome(g);b.castleIncome=castleCommandBonus(g.store.data);if(b.command<commandCap(b))b.command=Math.min(commandCap(b),b.command+dt*commandIncome(b));if(researchComplete(b,'regeneration')&&!g.hero.dead)g.hero.hp=Math.min(g.hero.stats.hp,g.hero.hp+dt);
  if(researchComplete(b,'anchor')){g.hero.knock=null;g.hero.stun=0;}
- while(b.reserveArchers>0&&g.allies.filter(a=>!a.dead).length<24){g.spawnAlly('bow',{x:(b.reserveArchers-3)*1.2,y:b.siege?g.world.height(0,siegeRally(b).z):0,z:b.siege?siegeRally(b).z:-24});b.reserveArchers--;if(b.ledger)b.ledger.reinforcements++;}
+ while(b.reserveArchers>0&&fieldCount(g.allies)<FIELD_LIMIT){g.spawnAlly('bow',{x:(b.reserveArchers-3)*1.2,y:b.siege?g.world.height(0,siegeRally(b).z):0,z:b.siege?siegeRally(b).z:-24});b.reserveArchers--;if(b.ledger)b.ledger.reinforcements++;}
 }
 export function gateDemolition(g){const b=g.battle;if(!b||b.demolitionUsed||!researchComplete(b,'demolition'))return;b.demolitionUsed=true;const p=new T.Vector3(0,0,-20),owner={team:'ally',defense:'gate',pos:p,stats:{}};g.combat.burst(p,9,200,owner,'fire');for(const e of g.enemies)if(!e.dead&&dist(e.pos,p)<9)e.stun=Math.max(e.stun||0,e.type==='boss'?3:15);g.audio.play('shell',1.2);}
 export function researchRangedAttack(g,e,target){if(e.team!=='ally'||!g.battle)return;if(['bow','marksman'].includes(e.unit)&&researchComplete(g.battle,'fastShot')&&(g.random||Math.random)()<.25){e.cooldown=.35;g.fx.emit('spark',e.pos,4,{speed:1});}

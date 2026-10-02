@@ -31,7 +31,19 @@ export function missionWon(s,m){return (m.kind==='settlement'?s.settlements||[]:
 export function missionUnlocked(s,m){if(missionWon(s,m))return true;if(m.kind==='settlement')return s.completed.includes(m.unlockMain);if(m.id===FINAL_FORTRESS)return s.completed.includes(22);if(m.id===23)return s.completed.includes(22)&&(s.fortresses||[]).includes(FINAL_FORTRESS);return m.id===0||s.completed.includes(m.id-1);}
 export function nextCampaignMission(s,missions){const next=missions.find(m=>m.kind==='main'&&!s.completed.includes(m.id))||missions[23];return next.id===23&&!(s.fortresses||[]).includes(FINAL_FORTRESS)&&!s.completed.includes(23)?missions[FINAL_FORTRESS]:next;}
 export function territoryIncome(s){return (s.settlements||[]).reduce((n,id)=>n+(SETTLEMENTS[id-MAIN_COUNT]?.income||0),0);}
-export function missionRoster(m,wave=1){const stage=m.kind==='settlement'?m.unlockMain+1:m.kind==='fortress'?23:m.id,unlocked=Object.entries(INTRO).filter(([id])=>Number(id)<=stage).map(([,type])=>type);const base=stage<6?7+Math.floor(stage*.5):stage<10?10+Math.floor((stage-6)*1.5):16+Math.floor((stage-10)*.65);let count=Math.min(58,Math.ceil(base*(1+(wave-1)*(stage<6?.65:.36))));const roster=[];for(let i=0;i<count;i++){let type=i%3===0?'hollow':unlocked[(i+Math.floor(i/3)+wave*3)%unlocked.length];if(type==='brute'&&roster.filter(t=>t==='brute').length>2)type='knight';if(['herald','mender','warpriest','mortar'].includes(type)&&roster.includes(type))type=i%2?'knight':'archer';roster.push(type);}if(m.introduced&&wave===1)roster[Math.min(3,roster.length-1)]=m.introduced;return roster;}
+export function missionRoster(m,wave=1){
+ const stage=m.kind==='settlement'?m.unlockMain+1:m.kind==='fortress'?23:m.id,unlocked=Object.entries(INTRO).filter(([id])=>Number(id)<=stage).map(([,type])=>type),latest=unlocked.at(-1);
+ const base=stage<6?7+Math.floor(stage*.5):stage<10?10+Math.floor((stage-6)*1.5):16+Math.floor((stage-10)*.65),count=Math.min(58,Math.ceil(base*(1+(wave-1)*(stage<6?.65:.36)))),roster=[];
+ const cap=type=>['herald','mender','warpriest','mortar'].includes(type)?2:type==='brute'?3:Infinity;let rotation=wave-1;
+ for(let i=0;i<count;i++){
+  let type=i%4===0?'hollow':i%4===1&&m.introduced?latest:unlocked[rotation++%unlocked.length];
+  if(roster.filter(t=>t===type).length>=cap(type)){const available=unlocked.filter(t=>roster.filter(v=>v===t).length<cap(t));type=available[(i+wave)%available.length]||'hollow';}
+  roster.push(type);
+ }
+ if(m.introduced)roster[Math.min(1,roster.length-1)]=m.introduced;
+ return roster;
+}
+export const waveReady=(mission,battle,alive)=>battle.wave<mission.waves&&battle.nextWave<=0&&alive<38&&(mission.id>=6||alive===0);
 export function rosterIntel(m){return [...new Set(missionRoster(m,1))].filter(t=>t!=='hollow').map(t=>ENEMY_INTEL[t]);}
 
 export const REGIONAL_LOOT={plain:['dawnfang','oathbell'],river:['tidecaller','stormlance'],forest:['briarthorn','pyrecrown'],quarry:['faultbreaker','emberbrand'],snow:['rimespire','starsong'],desert:['emberbrand','stormlance']};

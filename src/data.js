@@ -4,7 +4,7 @@ import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {trainedUnit,trainingCost} from './unit-progression.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-2.11.0-forged-heroes';
+export const BUILD='oathfire-2.12.0-battle-plans';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',role:'Frontline tank',subtitle:'Protect the front line and strengthen nearby troops. Highest starting health and armor.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -41,7 +41,7 @@ export const UNITS={
  lantern:{name:'Lanternkeepers',role:'Heal nearby soldiers',model:'Mage',weapon:'staff',cost:55,count:1,hp:84,damage:10,speed:3.2,reach:18,unlock:3,color:0xe9bc66},
  breaker:{name:'Ashbreakers',role:'Crush armored enemies',model:'Barbarian',weapon:'hammer',cost:65,count:1,hp:180,damage:34,speed:2.7,reach:2.8,unlock:5,color:0xa96b42},
  crew:{name:'Siege crew',role:'Heavy bolts against siege',model:'Knight',weapon:'crossbow',cost:80,count:1,hp:115,damage:54,speed:2.7,reach:30,unlock:6,color:0xb8a475},
- rider:{name:'Stormriders',role:'Fast flank and charge',model:'Rogue_Hooded',weapon:'spear',cost:90,count:1,hp:195,damage:26,speed:6.3,reach:3.4,unlock:8,color:0x658baf},
+ rider:{name:'Stormriders',role:'Elite cavalry · fast, armored, devastating charges',model:'Knight',weapon:'spear',cost:100,count:1,hp:230,damage:38,speed:6.3,reach:3.4,unlock:8,color:0x658baf},
  giant:{name:'Oathbound giant',role:'Break a crowded front',model:'Barbarian',weapon:'hammer',cost:120,count:1,hp:460,damage:62,speed:2.6,reach:4.4,unlock:11,color:0x8caa9b,scale:1.75},
  ...NEW_UNITS
 };
@@ -50,7 +50,7 @@ export const ENEMIES={
  runner:{name:'Raven runner',model:'Skeleton_Rogue',weapon:'sword',hp:46,damage:10,speed:4.4,range:1.9,xp:16,scale:.83},
  bomber:{name:'Cinder bomber',model:'Skeleton_Minion',weapon:'staff',hp:82,damage:23,speed:1.85,range:20,xp:25,mechanic:'bomb'},
  herald:{name:'War herald',model:'Skeleton_Warrior',weapon:'spear',hp:145,damage:10,speed:1.8,range:3,xp:34,mechanic:'aura'},
- longbow:{name:'Blackfeather hunter',model:'Skeleton_Rogue',weapon:'bow',hp:88,damage:24,speed:1.8,range:35,xp:28},
+ longbow:{name:'Blackfeather hunter',model:'Skeleton_Rogue',weapon:'bow',hp:88,damage:24,speed:1.8,range:48,xp:28},
  bulwark:{name:'Grave bulwark',model:'Skeleton_Warrior',weapon:'sword',hp:320,damage:21,speed:1.35,range:2.7,xp:42,armor:22,scale:1.2,mechanic:'shield'},
  mender:{name:'Bone mender',model:'Skeleton_Mage',weapon:'staff',hp:130,damage:10,speed:1.7,range:22,xp:40,mechanic:'heal'},
  reaver:{name:'Blood reaver',model:'Skeleton_Warrior',weapon:'hammer',hp:260,damage:28,speed:2.7,range:2.8,xp:44,armor:8,mechanic:'rage'},
@@ -69,7 +69,7 @@ export const MISSIONS=decorateMissions(locations);
 export const BIOMES={plain:{name:'Hearthwatch Fields',ground:0x6f8050,grass:0x708850,rock:0x858374,fog:0xa3b2a7,sky:0xc3cfc5,sun:0xffd395,water:0x537e7a},river:{name:'Reedwater Delta',ground:0x63816d,grass:0x76996f,rock:0x788784,fog:0x96afb1,sky:0xc1d3d2,sun:0xf4d5a2,water:0x4b9895},quarry:{name:'Sunken Quarry',ground:0x938579,grass:0x737b52,rock:0xb5a799,fog:0xafb8b5,sky:0xc0caca,sun:0xffd7a0,water:0x567f7d},forest:{name:'Thorn Abbey',ground:0x4e6550,grass:0x587a50,rock:0x6e7e76,fog:0x7e9a8e,sky:0xabc7b1,sun:0xf6d99b,water:0x477e73},snow:{name:'Frostmere',ground:0xc4d2d1,grass:0xa1bbbd,rock:0x91a8ad,fog:0xa7c3cf,sky:0xc6dce4,sun:0xffe3c3,water:0x669bac},desert:{name:'Crown of Ash',ground:0xb4a17b,grass:0x969466,rock:0x9b8d77,fog:0xbba998,sky:0xd3c0a2,sun:0xffc185,water:0x647f70}};
 export const RARITIES=[{name:'Common',color:'#b9c0b7',mult:1},{name:'Uncommon',color:'#92bf98',mult:1.09},{name:'Rare',color:'#80b8d2',mult:1.20},{name:'Epic',color:'#c6a0db',mult:1.34},{name:'Legendary',color:'#edc374',mult:1.52},{name:'Mythic',color:'#75d9ff',mult:1.75},{name:'Godly',color:'#ffe7a6',mult:2.05}];
 export const FORGE=[1,1.04,1.07,1.10,1.13,1.17,1.20,1.23,1.26,1.30,1.35];
-export const AFFIXES={sunder:{name:'Sundering',desc:'Heavy hits strip 20% armor for 4s.'},vampiric:{name:'Returning',desc:'Restore 2 health on a melee hit.'},swift:{name:'Quickened',desc:'Attack recovery is 10% faster.'},ember:{name:'Kindled',desc:'Weapon hits add a short fire burn.'},guard:{name:'Steadfast',desc:'Blocking consumes 20% less stamina.'},command:{name:'Captain’s',desc:'Nearby allies deal 8% more damage.'},vital:{name:'Enduring',desc:'+24 maximum health.'},focus:{name:'Runed',desc:'+15 maximum focus.'}};
+export const AFFIXES={muster:{name:'Mustering',minRarity:3,command:true,desc:'Start battles with additional Command. Scales with rarity and forging.'},logistic:{name:'Provisioned',minRarity:4,command:true,desc:'Generate extra Command each second. Scales with rarity and forging.'},bounty:{name:'Triumphant',minRarity:3,command:true,desc:'Hero kills award extra Command. Scales with rarity and forging.'},conquest:{name:'Conquering',minRarity:5,command:true,desc:'Hero kills of armored elites and bosses award a large Command bounty.'},reserves:{name:'Quartermaster’s',minRarity:4,command:true,desc:'Increase the amount of Command you can bank.'},sunder:{name:'Sundering',desc:'Heavy hits strip 20% armor for 4s.'},vampiric:{name:'Returning',desc:'Restore 2 health on a melee hit.'},swift:{name:'Quickened',desc:'Attack recovery is 10% faster.'},ember:{name:'Kindled',desc:'Weapon hits add a short fire burn.'},guard:{name:'Steadfast',desc:'Blocking consumes 20% less stamina.'},command:{name:'Captain’s',desc:'Nearby allies deal 8% more damage.'},vital:{name:'Enduring',desc:'+24 maximum health.'},focus:{name:'Runed',desc:'+15 maximum focus.'}};
 export const SERVICES=[{id:'forge',name:'Torren · Forge',x:-19,z:8,icon:'hammer',tab:'equipment',line:'Good steel deserves a second life.'},{id:'market',name:'Iona · Quartermaster',x:20,z:8,icon:'bag',tab:'shop',line:'A kingdom begins with someone coming home.'},{id:'troops',name:'Captain Rowan · Barracks',x:-18,z:-4,icon:'banner',tab:'troops',line:'Give them ground worth holding.'},{id:'defenses',name:'Nell · Engineer',x:19,z:-5,icon:'tower',tab:'defenses',line:'A good wall is a promise made of stone.'},{id:'campaign',name:'Sera · War table',x:0,z:17,icon:'map',tab:'campaign',line:'There is always another way around.'},{id:'hero',name:'Oath shrine',x:-10,z:23,icon:'sun',tab:'hero',line:'Choose what you will carry into the dark.'}];
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export function seeded(seed){let n=seed>>>0;return()=>{n+=0x6D2B79F5;let t=n;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}

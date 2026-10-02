@@ -1,3 +1,4 @@
+import {commandGear,planBonuses} from './battle-plan.js';
 // Permanent investment, separate from temporary battlefield research.
 export const LOGISTICS_RANKS=[
  {name:'Unbuilt',bonus:0},
@@ -18,7 +19,12 @@ export function upgradeLogistics(s){
 }
 export const STANDARD_LIMIT=3;
 export function commandBreakdown(b){
- const base=.6,castle=Math.max(0,Math.min(.52,b?.castleIncome||0)),standards=Math.max(0,Math.min(1.125,b?.standardIncome||0)),camp=b?.camp?.15:0;
+ const base=.75,castle=Math.max(0,Math.min(.52,b?.castleIncome||0)),standards=Math.max(0,Math.min(1.425,b?.standardIncome||0)),camp=b?.camp?.15:0;
  const multiplier=b?.research?.some(r=>r.id==='logistics'&&r.complete)?1.2:1;
- return {base,castle,standards,camp,multiplier,total:(base+castle+standards+camp)*multiplier};
+ const gear=Math.max(0,b?.commandGear?.income||0),plan=planBonuses(b?.perks).income;
+ return {base,castle,standards,camp,gear,plan,multiplier,total:(base+castle+standards+camp+gear+plan)*multiplier};
 }
+
+export const commandCap=b=>220+(b?.commandGear?.capacity||0);
+export const startingCommand=(s,base=55)=>base+planBonuses(s.battlePerks).start+commandGear(s).start;
+export const heroKillCommand=(b,type)=>2+planBonuses(b?.perks).kill+(b?.commandGear?.kill||0)+(['knight','brute','bulwark','reaver','mortar','warpriest','boss'].includes(type)?b?.commandGear?.elite||0:0);

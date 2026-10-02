@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Scouting, battle plans and wall troops — 2.12
+
+New enemies now feature prominently in their debut missions. Before launch, animated scouting reports explain their stats, behavior and counters. Choose two preparation perks and inspect your Command totals, then deploy a separate eight-soldier wall garrison with 75% extra range. Stormriders are expensive armored charge cavalry. Command grows through standards, the castle lodge, research, perks and high-tier gear. Victories have an animated, player-controlled transition before the saved report.
+
+[Mechanics, progression, sources and validation](docs/battle-preparation-2.12.md)
+
 ## Forged heroes and shorter sieges — 2.11
 
 Equipment lists now keep each item's name, rarity, level and main stat beside its icon, including on narrow phones. All three heroes gain more defined materials, anatomy and fitted armor; weapons gain forged edges, engraving and functional detail. Character menus include a full-screen Inspect view. An independent visual review approved the revised armor and weapon detail against the supplied Heroes & Castles 2 screenshot.

@@ -1,3 +1,4 @@
+import {FIELD_LIMIT,WALL_LIMIT,canGarrison,fieldCount,wallCount,isWallUnit} from './wall-garrison.js';
 import {UNITS,ROMAN} from './data.js';
 import {unitUnlocked,campaignCap,upgradeUnit} from './state.js';
 import {UNIT_TACTICS,regimentStats,regimentUpgrade} from './regiment-details.js';
@@ -5,9 +6,9 @@ import {UNIT_TACTICS,regimentStats,regimentUpgrade} from './regiment-details.js'
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const isRegimentMenu=ui=>!ui.battleCommand&&ui.g.menu==='troops'||ui.battleCommand&&(ui.screen==='troops'||ui.screen==='detail'&&ui.detailKind==='troops');
 export function renderRegimentList(ui){
- const s=ui.g.store.data;
- return '<button class="regiment-back" data-action="menu-back">‹ Back</button><div class="regiment-list-scroll" aria-label="Army units">'+Object.entries(UNITS).map(([id,u])=>{
-  const ready=unitUnlocked(s,id),st=regimentStats(id,s.units[id],ui.battleCommand?ui.g.battle:null).stats;
+ const s=ui.g.store.data,wall=ui.battleCommand&&ui.deployWall;
+ return (ui.battleCommand&&!ui.g.battle.siege?'<div class="garrison-tabs"><button data-action="regiment-deployment" data-id="field" aria-pressed="'+!wall+'">Field '+fieldCount(ui.g.allies)+'/24</button><button data-action="regiment-deployment" data-id="wall" aria-pressed="'+!!wall+'">Wall '+wallCount(ui.g.allies)+'/8</button></div>':'')+'<button class="regiment-back" data-action="menu-back">‹ Back</button><div class="regiment-list-scroll" aria-label="Army units">'+Object.entries(UNITS).filter(([id])=>!wall||canGarrison(id)).map(([id,u])=>{
+  const ready=unitUnlocked(s,id),st=regimentStats(id,s.units[id],ui.battleCommand?ui.g.battle:null,{wall}).stats;
   return '<button class="regiment-choice '+(ui.unit===id?'selected ':'')+(!ready?'locked':'')+'" data-action="regiment-select" data-id="'+id+'" aria-pressed="'+(ui.unit===id)+'"><b>'+u.name+'</b><span>'+(ready?'Rank '+ROMAN[s.units[id]-1]+' · ⚑ '+st.cost:u.unlock+' victories to unlock')+'</span></button>';
  }).join('')+'</div>';
 }
@@ -20,8 +21,8 @@ function upgradeBlock(ui,id,rank){
  return null;
 }
 export function renderRegiment(ui){
- const s=ui.g.store.data,id=ui.unit,u=UNITS[id],owned=s.units[id],rank=ui.previewRank||owned,battle=ui.battleCommand?ui.g.battle:null,{stats,rows}=regimentStats(id,rank,battle),t=UNIT_TACTICS[id],mode=ui.regimentMode||'stats',quote=mode==='upgrade'?regimentUpgrade(id,owned):null;
- const heading='<div class="regiment-heading"><small>'+t.role+(battle?' · BATTLE STATS':'')+'</small><h2>'+u.name+'</h2><div class="regiment-rank"><span class="rank-diamonds" aria-hidden="true">'+ROMAN.map((_,i)=>'<i class="'+(i<rank?'filled':'')+'"></i>').join('')+'</span><label>Rank <select id="regiment-rank" aria-label="Preview unit rank" '+(battle||mode==='upgrade'?'disabled':'')+'>'+ROMAN.map((r,i)=>'<option value="'+(i+1)+'" '+(rank===i+1?'selected':'')+'>'+r+(owned===i+1?' · owned':'')+'</option>').join('')+'</select></label></div></div>';
+ const s=ui.g.store.data,id=ui.unit,u=UNITS[id],owned=s.units[id],rank=ui.previewRank||owned,battle=ui.battleCommand?ui.g.battle:null,{stats,rows}=regimentStats(id,rank,battle,{wall:!!battle&&!!ui.deployWall}),t=UNIT_TACTICS[id],mode=ui.regimentMode||'stats',quote=mode==='upgrade'?regimentUpgrade(id,owned):null;
+ const heading='<div class="regiment-heading"><small>'+t.role+(battle?(ui.deployWall?' · WALL +'+(battle.perks?.includes('battlements')?90:75)+'% RANGE':' · FIELD TROOP'):'')+'</small><h2>'+u.name+'</h2><div class="regiment-rank"><span class="rank-diamonds" aria-hidden="true">'+ROMAN.map((_,i)=>'<i class="'+(i<rank?'filled':'')+'"></i>').join('')+'</span><label>Rank <select id="regiment-rank" aria-label="Preview unit rank" '+(battle||mode==='upgrade'?'disabled':'')+'>'+ROMAN.map((r,i)=>'<option value="'+(i+1)+'" '+(rank===i+1?'selected':'')+'>'+r+(owned===i+1?' · owned':'')+'</option>').join('')+'</select></label></div></div>';
  let body='',actions='';
  if(quote){
   ui.regimentQuote={id,rank:owned,cost:quote.cost};
@@ -35,9 +36,9 @@ export function renderRegiment(ui){
  }else{
   body=(rank!==owned?'<div class="regiment-preview-note">Preview rank '+ROMAN[rank-1]+' · Owned '+ROMAN[owned-1]+'</div>':'')+'<dl class="regiment-stats">'+rows.map(r=>'<div data-stat="'+r.key+'"><dt>'+r.label+'</dt><dd>'+r.text+'</dd></div>').join('')+'</dl><p class="regiment-purpose">'+t.use+'</p><div class="regiment-matchups"><p><b>'+(['lantern','banner','engineer','dawn'].includes(id)?'Best used for':'Strong against')+'</b> '+t.strong+'</p><p><b>Watch out for</b> '+t.weak+'</p></div>'+(!unitUnlocked(s,id)?'<p class="regiment-warning">Unlock after '+u.unlock+' campaign victories.</p>':'');
   if(battle){
-   const alive=ui.g.allies.filter(a=>!a.dead),field=alive.filter(a=>a.unit===id),blocked=!unitUnlocked(s,id)||battle.command<stats.cost||alive.length+stats.count>24;
-   body+='<p class="regiment-field">'+field.length+' on field · '+alive.length+' / 24 army slots · '+Math.floor(battle.command)+' Command available</p>';
-   actions=ui.button('regiment-abilities',null,'Abilities')+ui.button('recruit',id,!unitUnlocked(s,id)?'Locked':alive.length+stats.count>24?'Army full':battle.command<stats.cost?'Need ⚑ '+stats.cost:'Recruit · ⚑ '+stats.cost,blocked,true);
+   const wall=!!ui.deployWall,count=wall?wallCount(ui.g.allies):fieldCount(ui.g.allies),limit=wall?WALL_LIMIT:FIELD_LIMIT,field=ui.g.allies.filter(a=>!a.dead&&a.unit===id&&isWallUnit(a)===wall),blocked=!unitUnlocked(s,id)||battle.command<stats.cost||count+stats.count>limit;
+   body+='<p class="regiment-field">'+field.length+' deployed · '+count+' / '+limit+(wall?' wall slots · ':' field slots · ')+Math.floor(battle.command)+' Command available</p>';
+   actions=ui.button('regiment-abilities',null,'Abilities')+ui.button('recruit',id,!unitUnlocked(s,id)?'Locked':count+stats.count>limit?(wall?'Wall full':'Field full'):battle.command<stats.cost?'Need ⚑ '+stats.cost:(wall?'Garrison':'Recruit')+' · ⚑ '+stats.cost,blocked,true);
   }else{
    const blocked=upgradeBlock(ui,id,owned);
    actions=ui.button('regiment-abilities',null,'Abilities')+ui.button('regiment-upgrade',id,blocked||'Upgrade ›',!!blocked,true);
@@ -50,6 +51,7 @@ export function regimentAction(ui,action,id){
  if(!action.startsWith('regiment-'))return false;
  const s=ui.g.store.data;
  switch(action){
+  case 'regiment-deployment':ui.deployWall=id==='wall'&&!ui.g.battle?.siege;if(ui.deployWall&&!canGarrison(ui.unit))ui.unit='bow';ui.regimentMode='stats';break;
   case 'regiment-select':if(!UNITS[id])return true;ui.unit=id;ui.regimentMode='stats';ui.previewRank=null;ui.regimentQuote=null;ui.g.journey.mark('troops');break;
   case 'regiment-abilities':ui.regimentMode='abilities';break;
   case 'regiment-overview':ui.regimentMode='stats';break;
