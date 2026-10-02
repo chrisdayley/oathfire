@@ -1,20 +1,21 @@
+import {furnaceDescriptions} from './furnace-fireball.js';
 import {decorateMissions} from './campaign.js';
 import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {trainedUnit,trainingCost} from './unit-progression.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-2.7.0-long-march';
+export const BUILD='oathfire-2.7.1-hero-and-furnace';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
- warden:{name:'The Warden',subtitle:'Iron, resolve, a line that holds.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
- ashwright:{name:'The Ashwright',subtitle:'Give the darkness something to fear.',model:'Mage',weapon:'hammer',color:0xe7a255,hp:230,focus:110,armor:8,trees:{iron:'Siegewright',banner:'Runekeeper',ember:'Furnace'},starter:['fireball','quench']},
- ranger:{name:'The Veilranger',subtitle:'Find the path. Choose the moment.',model:'Rogue_Hooded',weapon:'bow',color:0x75a778,hp:235,focus:85,armor:10,trees:{iron:'Hunter',banner:'Wayfinder',ember:'Thorncaller'},starter:['windstep','thorns']}
+ warden:{name:'The Warden',role:'Frontline tank',subtitle:'Protect the front line and strengthen nearby troops. Highest starting health and armor.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
+ ashwright:{name:'The Ashwright',role:'Battle mage',subtitle:'Explosive fire magic, a heavy war hammer and healing. Highest starting magic.',model:'Mage',weapon:'hammer',color:0xe7a255,hp:230,focus:110,armor:8,trees:{iron:'Siegewright',banner:'Runekeeper',ember:'Furnace'},starter:['fireball','quench']},
+ ranger:{name:'The Veilranger',role:'Ranged skirmisher',subtitle:'Fight from range, root enemies and dodge attacks. Fastest movement.',model:'Rogue_Hooded',weapon:'bow',color:0x75a778,hp:235,focus:85,armor:10,trees:{iron:'Hunter',banner:'Wayfinder',ember:'Thorncaller'},starter:['windstep','thorns']}
 };
 // Other orders use the same explicit budget and gates, with their own active techniques.
 const altNames={ashwright:['Forged Body','Hammercraft','Runic Bulwark','Siegecraft','Iron Conductor','Forgefall','Rune Capacity','Quench Burst','Overdrive','Mender’s Rune','Living Furnace','Sanctuary','Furnace Lore','Furnace Fireball','Cinder Mine','Thermal Conduit','Hungry Flame','Inferno'],ranger:['Trail-Hardened','Bow Mastery','Hunter’s Mark','Crescent Cut','Patient Hunter','Briarstorm','Wayfinder','Windstep','Guiding Volley','Wild Remedy','Fleet Captain','Living Grove','Root Lore','Thornsnare','Seed Ward','Briar Surge','Wild Bargain','Verdant Reversal']};
 const altIds={ashwright:{step:'bulwark',rally:'quench',volley:'overdrive',sunwall:'forgefall',edge:'fireball',tether:'mine',march:'sanctuary',reversal:'inferno'},ranger:{step:'mark',rally:'windstep',volley:'guide',sunwall:'briarstorm',edge:'thorns',tether:'seedward',march:'grove',reversal:'verdant'}};
 const special={
- fireball:['Fireball inflicts 34 fire damage and a small impact burst.','Compress the cast: 44 damage and a 3-second ember patch.','Split near impact into three fragments, 22 damage each, with separate flame plumes.'],
+ fireball:furnaceDescriptions,
  quench:['A shattered flask heals 18 and slows nearby enemies 20% for 3s.','Heal 28 and clear burning; the splash widens.','Heal 36; three outward water jets slow enemies 35%.'],
  bulwark:['Raise a protective rune: 20% damage reduction for 4s.','A second plate grants 30% reduction.','Three plates shelter nearby allies for 6s.'],
  overdrive:['An allied defense fires 20% faster for 6s.','Gain 30% firing speed for 8s.','Nearby allies also gain 15% attack speed.'],
@@ -29,7 +30,7 @@ for(const id of ['ashwright','ranger'])HEROES[id].skills=WARDEN_SKILLS.map((s,i)
 export const WEAPONS={sword:{name:'Sword',damage:25,speed:.64,reach:2.65,heavy:1.9,icon:'sword'},spear:{name:'Spear',damage:23,speed:.72,reach:3.8,heavy:2.1,icon:'spear'},hammer:{name:'War hammer',damage:34,speed:.90,reach:2.75,heavy:2.3,icon:'hammer'},bow:{name:'Longbow',damage:23,speed:.82,reach:34,heavy:2,icon:'bow'},staff:{name:'Rune staff',damage:26,speed:.86,reach:28,heavy:1.85,icon:'fire'}};
 export const SPELLS={
  step:{name:'Shieldstep',icon:'shield',cost:16,cooldown:12,type:'stamina',desc:'Advance under guard. Higher ranks extend protection.'},rally:{name:'Rally',icon:'banner',cost:12,cooldown:20,desc:'Steady nearby allies. Training adds damage, healing and guard.'},volley:{name:'Signal volley',icon:'bow',cost:15,cooldown:18,desc:'Order allied archers to concentrate on your target.'},tether:{name:'Beacon tether',icon:'sun',cost:15,cooldown:18,desc:'Raise a protective ward around the ground ahead.'},
- fireball:{name:'Furnace fireball',icon:'fire',cost:17,cooldown:4.2,desc:'Cast living flame. Later ranks burn the ground and split on impact.'},quench:{name:'Quench burst',icon:'water',cost:22,cooldown:15,desc:'A healing splash that slows enemies and extinguishes fire.'},bulwark:{name:'Runic bulwark',icon:'shield',cost:20,cooldown:16,desc:'Raise protective stone-light plates.'},overdrive:{name:'Overdrive',icon:'gear',cost:22,cooldown:18,desc:'Empower an allied tower or siege engine.'},mine:{name:'Cinder mine',icon:'fire',cost:20,cooldown:12,desc:'A visible proximity trap.'},
+ fireball:{name:'Furnace fireball',icon:'fire',cost:17,cooldown:4.2,desc:'Hurl a furnace orb that explodes and leaves burning ground. Higher ranks enlarge the blast and weaken enemy armor.'},quench:{name:'Quench burst',icon:'water',cost:22,cooldown:15,desc:'A healing splash that slows enemies and extinguishes fire.'},bulwark:{name:'Runic bulwark',icon:'shield',cost:20,cooldown:16,desc:'Raise protective stone-light plates.'},overdrive:{name:'Overdrive',icon:'gear',cost:22,cooldown:18,desc:'Empower an allied tower or siege engine.'},mine:{name:'Cinder mine',icon:'fire',cost:20,cooldown:12,desc:'A visible proximity trap.'},
  windstep:{name:'Windstep',icon:'wind',cost:12,cooldown:8,type:'stamina',desc:'A quick directional step, with a trailing leaf wake.'},thorns:{name:'Thornsnare',icon:'leaf',cost:18,cooldown:8,desc:'Root enemies with growing thorn tendrils.'},mark:{name:'Hunter’s mark',icon:'eye',cost:12,cooldown:12,desc:'Expose a target for your weapon and allied archers.'},guide:{name:'Guiding volley',icon:'bow',cost:17,cooldown:18,desc:'Direct your archers toward a marked enemy.'},seedward:{name:'Seed ward',icon:'leaf',cost:22,cooldown:18,desc:'Grow a healing sanctuary for nearby allies.'}
 };
 for(const [id,name,icon] of [['sunwall','Sunwall','sun'],['march','Living standard','banner'],['reversal','Dawn reversal','fire'],['forgefall','Forgefall','hammer'],['sanctuary','Sanctuary','sun'],['inferno','Inferno','fire'],['briarstorm','Briarstorm','leaf'],['grove','Living grove','leaf'],['verdant','Verdant reversal','leaf']])SPELLS[id]={name,icon,cost:32,cooldown:30,desc:'A signature capstone technique. Only one capstone can be active.'};
@@ -116,7 +117,7 @@ for(const hero of Object.values(HEROES))for(const skill of hero.skills)if(SPELLS
  skill.active=true;skill.learnLevel=techniqueLevels[skill.id];skill.rankLevels=skill.max===1?[skill.learnLevel]:[skill.learnLevel,skill.learnLevel===1?2:skill.learnLevel+3,skill.learnLevel===1?6:skill.learnLevel+8];
 }
 const activeEffects={
- fireball:['Hurl a 34-damage fireball with a 35% impact burst.','44 damage; impacts leave a 3-second ember field.','56 damage; impacts release three 16-damage fragments.'],
+ fireball:furnaceDescriptions,
  quench:['Heal yourself for 18 and nearby soldiers for 28. Slow enemies 35% for 3s within 4.6m.','Heal yourself for 28 and soldiers for 36. Splash radius grows to 5.2m.','Heal yourself for 36 and soldiers for 44. Splash radius grows to 5.8m.'],
  bulwark:['Protect yourself: 30% less damage for 4s.','Also shelter soldiers within 6m.','Protection lasts 6s; three rune plates surround you.'],
  overdrive:['All defenses fire 30% faster for 8s. Allies within 12m attack 18% faster for 8s.','Defenses are accelerated for 10s.','Defenses are accelerated for 12s.'],

@@ -25,6 +25,7 @@ export class Foley{
  play(name,power=1,options={}){
   if(this.state!=='ready')return false;
   const spatial=soundPosition(this.listener,options.position),gain=spatial.gain*power,pan=spatial.pan;
+  if(name==='staff'){if(!this.limited('rune-bolt',.06))this.cue('rank-fire',{gain:gain*.42,pan,pitch:options.heavy?.98:1.4,priority:power>=.5?3:1,tag:'rune-bolt'});return true;}
   if(WEAPONS.has(name)||name==='bolt'){
    const weapon=name==='bolt'?'crossbow':name,heavy=options.heavy??power>1;
    if(!this.limited('swing-'+weapon+(power<.4?'army':''),power<.4?.10:.025))this.cue('swing-'+weapon+(heavy?'-heavy':''),{gain:gain*.48,pan,pitch:.97+(this.serial++%4)*.02,priority:power>=.5?3:1});return true;

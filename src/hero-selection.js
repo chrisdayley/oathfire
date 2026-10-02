@@ -1,0 +1,24 @@
+import {HEROES,WEAPONS} from './data.js';
+import {newSave,heroStats,equipped} from './state.js';
+import {Character} from './characters.js';
+
+const STARTER_SUMMARIES={step:'Dash forward and briefly reduce incoming damage.',rally:'Boost your damage and speed, and those of nearby troops.',fireball:'Explode on impact, then burn enemies standing in the flames.',quench:'Heal yourself and allies; slow foes and extinguish fire.',thorns:'Root an enemy in place and deal nature damage.',windstep:'Dodge forward with a burst of speed and brief protection.'};
+
+// An isolated starter loadout: browsing never changes the player's saved campaign.
+export class HeroSelection {
+ constructor(ui){
+  this.ui=ui;this.g=ui.g;this.el=document.createElement('section');this.el.id='hero-selection';this.el.hidden=true;this.el.setAttribute('role','dialog');this.el.setAttribute('aria-modal','true');this.el.setAttribute('aria-label','Choose your hero');document.body.append(this.el);
+  this.el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const id=b.dataset.hero;if(id){this.ui.titleHero=id;this.draw();this.el.querySelector('[data-hero="'+id+'"]').focus();}else if(b.id==='cancel-choice'){this.hide();document.getElementById('new-game').focus();}else if(b.id==='begin-oath')this.begin();else if(b.id==='hero-attack')this.model.attack(this.model.weaponType,false,0,.9);else if(b.id==='hero-cast'){const id=HEROES[this.ui.titleHero].starter[0];this.model.cast(id,1);this.g.audio.play(id,.5,{rank:1});}};
+  this.el.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();this.hide();document.getElementById('new-game').focus();}if(['ArrowLeft','ArrowRight'].includes(e.key)&&e.target.matches('[data-hero]')){e.preventDefault();const ids=Object.keys(HEROES),i=ids.indexOf(this.ui.titleHero);this.ui.titleHero=ids[(i+(e.key==='ArrowRight'?1:2))%ids.length];this.draw();this.el.querySelector('[data-hero="'+this.ui.titleHero+'"]').focus();}});
+ }
+ show(){this.g.input.clear();this.g.audio.unlock().catch(()=>{});document.getElementById('title-screen').hidden=true;this.el.hidden=false;this.draw();}
+ release(){if(this.model){this.model.dispose();if(this.ui.preview===this.model)this.ui.preview=null;this.model=null;}this.g.view.setPreview(null);}
+ hide(){this.release();this.el.hidden=true;document.getElementById('title-screen').hidden=this.g.mode!=='title';}
+ begin(){const id=this.ui.titleHero;this.hide();const go=()=>this.g.start(id);if(this.g.store.data){this.ui.confirm('Begin a new campaign?','This replaces your current campaign on this device. Export a backup from Settings to keep it.',go);document.getElementById('cancel-dialog').onclick=()=>{document.getElementById('dialog').hidden=true;this.show();};}else go();}
+ draw(){
+  this.release();const id=this.ui.titleHero,h=HEROES[id],s=newSave(id),stats=heroStats(s),abilities=h.starter.map(id=>h.skills.find(n=>n.id===id));
+  this.el.innerHTML='<header><h1>Choose your hero</h1><p>Switch heroes later at Hearthwatch.</p></header><main><div class="hero-selection-visual"><div id="hero-selection-stage" role="img" aria-label="'+h.name+' with starting equipment"></div><div class="hero-selection-controls"><button id="hero-attack">Preview attack</button><button id="hero-cast">Preview spell</button></div></div><article class="hero-selection-details"><nav aria-label="Heroes">'+Object.entries(HEROES).map(([key,v])=>'<button data-hero="'+key+'" aria-pressed="'+(key===id)+'" class="'+(key===id?'active':'')+'">'+v.name.replace('The ','')+'</button>').join('')+'</nav><div class="hero-selection-heading"><small>'+h.role+'</small><h2>'+h.name+'</h2><p>'+h.subtitle+'</p></div><div class="hero-start-stats">'+[['Health',stats.hp],['Armor',stats.armor],['Magic',stats.focus]].map(([k,v])=>'<div><b>'+v+'</b><span>'+k+'</span></div>').join('')+'</div><div class="hero-start-gear"><b>Starting weapon</b><span>'+WEAPONS[stats.weapon].name+(id==='warden'?' & shield':'')+'</span></div><div class="hero-start-abilities"><small>STARTING ABILITIES</small>'+abilities.map(a=>'<div><b>'+a.name+'</b><p>'+STARTER_SUMMARIES[a.id]||a.effects[0]+'</p></div>').join('')+'</div></article></main><footer><button id="cancel-choice">Back</button><span>Shared equipment · Separate skill trees</span><button id="begin-oath" class="primary">Begin as '+h.name.replace('The ','')+'</button></footer>';
+  this.model=new Character(h.model,{design:id,weapon:stats.weapon,rank:1,color:h.color,weaponItem:equipped(s),armor:equipped(s,'armor')});this.ui.preview=this.model;this.ui.previewSpin=false;this.g.view.setPreview(this.model.root,'hero');
+  const stage=this.el.querySelector('#hero-selection-stage');let drag=null;stage.onpointerdown=e=>{drag=e.clientX;stage.setPointerCapture(e.pointerId);};stage.onpointermove=e=>{if(drag===null)return;this.g.view.previewSpin-=(e.clientX-drag)*.008;drag=e.clientX;};stage.onpointerup=stage.onpointercancel=()=>{drag=null;};
+ }
+}

@@ -1,5 +1,13 @@
 # Oathfire: The Hollow March
 
+## Hero selection and Furnace Fireball — 2.7.1
+
+Character selection displays the actual animated starter hero, with weapon, health, armor, magic, role and starting abilities. Each preview can rotate, attack and cast. Music activates both recording players on a touch and recovers interrupted playback or a failed cue without changing the player's volume preferences.
+
+Ashwright's Furnace Fireball now has its own larger projectile, area explosion and burning ground from rank I. Rank II and III widen the field and weaken enemy armor. Ordinary rune-staff shots no longer inherit Fireball's learned effects, and use a separate casting sound. Existing campaigns keep their progress.
+
+See [damage values and verification](docs/hero-2.7.1.md).
+
 ## The Long March — 2.7
 
 Sieges now start at Hearthwatch, with 1.9 km between castle gates, four defended recruitment camps, stronger keeps, and pressure that increases with time and distance. Dawn standards generate passive Command anywhere; a five-rank Command lodge permanently improves income. Tap the HUD income rate for its breakdown. Reward reveals show the actual troop, equipment, or marked location on the campaign map. Existing saves migrate without resetting their earned progress.
