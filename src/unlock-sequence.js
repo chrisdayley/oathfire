@@ -39,7 +39,7 @@ export class UnlockSequence{
  if(card.kind==='research'){const r=RESEARCH[card.id];if(r.group==='defenses')card={kind:'defense',id:r.id==='payload'?'ballista':'gate'};else if(r.group==='troops')card={kind:'unit',id:({pike:'pike',spears:'pike',fastShot:'bow',infantry:'shield',veterans:'breaker',mageFortune:'pyre',runic:'lantern',wildPath:'rider',elite:'dawn',forgeRunes:'giant'})[card.id]||'shield'};}
  if(card.kind==='defense'){this.ui.defense=card.id;this.model=this.g.world.defenseModel(card.id,s.defenses[card.id]);this.ui.defensePreview=this.model;this.ui.defenseEffects=[];this.g.view.setPreview(this.model,['tower','gate','ballista'].includes(card.id)?card.id:'fortification');return;}
  if(card.kind==='unit'){const u=UNITS[card.id];role=card.id;rank=card.rank||s.units[role];weapon=u.weapon;color=u.color;armor=null;item=null;}
- this.ui.preview=new Character('Knight',{design:role,rank,weapon,color,armor,weaponItem:item,mounted:role==='rider'});this.g.view.setPreview(this.ui.preview.root,role==='rider'?'rider':['spear','staff'].includes(weapon)?'tallHero':'hero');
+ this.ui.preview=new Character('Knight',{design:role,rank,weapon,color,armor,shieldItem:card.kind==='unit'?null:equipped(s,'shield'),weaponItem:item,mounted:role==='rider'});this.g.view.setPreview(this.ui.preview.root,role==='rider'?'rider':['spear','staff'].includes(weapon)?'tallHero':'hero');
  }
  update(dt){if(this.el.hidden)return;this.time+=dt;const ease=1-Math.pow(1-Math.min(1,this.time/1.1),3);this.g.view.previewSpin=.2+(1-ease)*.8+(this.visualType==='item'?this.itemTurn+this.time*.16:0);if(!this.played&&this.time>.95){this.played=true;this.demo();}}
 }

@@ -1,7 +1,8 @@
+import {animateEquipment} from './equipment-visuals.js';
 import * as T from 'three';
 import {ItemPreview} from './item-preview.js';
 import {Character} from './characters.js';
-import {shield,mesh,cyl,mat} from './art.js';
+import {equipmentShield,mesh,cyl,mat} from './art.js';
 import {WEAPONS} from './data.js';
 
 export class LootPreview{
@@ -9,7 +10,7 @@ export class LootPreview{
   this.root=new T.Group();this.root.userData.itemId=item.id;this.itemId=item.id;this.inspection=true;
   if(WEAPONS[item.type]){this.delegate=new ItemPreview(item);this.root.add(this.delegate.root);return;}
   if(item.type==='armor')this.armor(item);
-  else if(item.type==='shield')this.root.add(shield(Math.min(10,4+Math.floor(item.plus/2)),item.rarity>=3?0x843b52:0x31596d));
+  else if(item.type==='shield')this.root.add(equipmentShield(item));
   else{const gold=mat(0xcbb079,.36,.8),stone=mat(0x84cfec,.22,.5,{emissive:0x307fa7,emissiveIntensity:.8});mesh(new T.TorusGeometry(.36,.033,8,48),gold,this.root,0,.3,0);mesh(new T.OctahedronGeometry(.25,1),stone,this.root,0,-.21,0);cyl(this.root,.10,.15,.1,[0,.01,0],gold,8);}
   this.root.updateMatrixWorld(true);const box=new T.Box3().setFromObject(this.root),size=box.getSize(new T.Vector3()),center=box.getCenter(new T.Vector3()),group=new T.Group();for(const child of [...this.root.children])group.add(child);this.root.add(group);const scale=1.8/Math.max(size.x,size.y,size.z);group.scale.setScalar(scale);group.position.copy(center).multiplyScalar(-scale);group.position.y+=1.03;
  }
@@ -27,6 +28,6 @@ export class LootPreview{
    }else{let b=o.parent;while(b&&!b.isBone)b=b.parent;if(b&&keep(b.name)){const g=o.geometry.clone();g.applyMatrix4(o.matrixWorld);this.root.add(new T.Mesh(g,o.material.clone()));}}
   });c.dispose();
  }
- update(){} attack(){}
+ update(dt=0){if(this.delegate)this.delegate.update(dt);else{this.phase=(this.phase||0)+dt;animateEquipment(this.root,this.phase);}} attack(){}
  dispose(){if(this.delegate){this.delegate.dispose();return;}this.root.traverse(o=>{o.geometry?.dispose();if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();});this.root.removeFromParent();}
 }

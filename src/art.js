@@ -1,3 +1,5 @@
+import {equipmentStyle,equipmentMagic} from './equipment-style.js';
+import {decorateWeapon,decorateShield} from './equipment-visuals.js';
 import {weaponPattern,DEFAULT_PATTERNS} from './weapon-patterns.js';
 import * as T from 'three';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -70,17 +72,17 @@ export function mergeStatic(group,chunkSize=0){
  const merged=new T.Group();for(const bin of bins.values()){const geometry=mergeGeometries(bin.geometries,false);if(!geometry)continue;geometry.computeBoundingSphere();const m=new T.Mesh(geometry,bin.material);m.castShadow=bin.shadow;m.receiveShadow=true;merged.add(m);for(const o of bin.meshes)o.removeFromParent();for(const g of bin.geometries)g.dispose();}return merged;
 }
 // Merge rigid pieces within a local attachment; bone-attached groups stay separate.
-export function compactRigid(group){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert(),bins=new Map();group.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||Array.isArray(o.material)||o.userData.keep)return;const key=o.material.uuid;if(!bins.has(key))bins.set(key,{material:o.material,meshes:[]});bins.get(key).meshes.push(o);});for(const {material,meshes}of bins.values()){if(meshes.length<2)continue;const geos=meshes.map(o=>{const g=o.geometry.clone();g.applyMatrix4(inverse.clone().multiply(o.matrixWorld));return g.index?g.toNonIndexed():g;});const geo=mergeGeometries(geos,false);if(geo){const m=new T.Mesh(geo,material);m.castShadow=true;m.receiveShadow=true;meshes.forEach(o=>o.removeFromParent());group.add(m);}geos.forEach(g=>g.dispose());}return group;}
+export function compactRigid(group){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert(),bins=new Map();group.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||Array.isArray(o.material)||o.userData.keep)return;const key=o.material.uuid;if(!bins.has(key))bins.set(key,{material:o.material,meshes:[]});bins.get(key).meshes.push(o);});for(const {material,meshes}of bins.values()){if(meshes.length<2)continue;const geos=meshes.map(o=>{const g=o.geometry.clone();g.applyMatrix4(inverse.clone().multiply(o.matrixWorld));if(g.index){const flat=g.toNonIndexed();g.dispose();return flat;}return g;});const geo=mergeGeometries(geos,false);if(geo){const m=new T.Mesh(geo,material);m.castShadow=true;m.receiveShadow=true;const old=new Set();meshes.forEach(o=>{if(!o.geometry.userData.shared)old.add(o.geometry);o.removeFromParent();});old.forEach(g=>g.dispose());group.add(m);}geos.forEach(g=>g.dispose());}return group;}
 
 // Named hero equipment uses the same geometry in the hand and on the inspection plinth.
 function equipmentWeapon(item,rank){
- const d=weaponPattern(item),g=new T.Group(),type=d.type,variant=d.shape,metal=material('steel',d.color,{roughness:.38,metalness:.85}),trim=material('steel',d.trim,{roughness:.42,metalness:.78}),dark=material('steel',0x263637,{roughness:.6}),wood=material('timber',variant===1?0x48523c:0x645547),leather=material('leather',0x383b32),glow=mat(d.glow||0xb9ae85,.3,.4,{emissive:d.glow||0,emissiveIntensity:d.glow?.65:0});
+ const d=weaponPattern(item),style=equipmentStyle(item),magic=equipmentMagic(item),aura=magic[0]?.color||style.glow,g=new T.Group(),type=d.type,variant=style.tier===0?0:d.shape,metal=material('steel',style.metal,{roughness:style.roughness,metalness:style.tier===0?.5:.85}),trim=material('steel',style.trim,{roughness:style.roughness,metalness:.78}),dark=material('steel',0x263637,{roughness:.6}),wood=material('timber',variant===1?0x48523c:0x645547),leather=material('leather',0x383b32),glow=mat(aura||style.trim,.3,.4,{emissive:aura||0,emissiveIntensity:aura?.8:0});
  const line=(a,b,r=.013,m=trim)=>beam(g,a,b,r,m,8);
  const gem=(x,y,z,r=.04)=>{const o=mesh(new T.OctahedronGeometry(r,0),glow,g,x,y,z);o.scale.y=1.5;return o;};
  if(type==='sword'){
   const shape=new T.Shape(),width=variant===1?.065:variant===2?.055:.043,tip=variant===2?1.27:1.15;
   shape.moveTo(-width,.16);shape.lineTo(-width,.90);shape.lineTo(variant===1?-.02:0,tip);if(variant===1){shape.lineTo(0,tip-.17);shape.lineTo(.02,tip);}shape.lineTo(width,.9);shape.lineTo(width,.16);shape.closePath();mesh(new T.ExtrudeGeometry(shape,{depth:.025,bevelEnabled:true,bevelSize:.008,bevelThickness:.007,bevelSegments:1,steps:1}),metal,g,0,0,-.0125);
-  cyl(g,.028,.034,.28,[0,-.015,0],leather,12);gem(0,-.19,0,.048);
+  cyl(g,.028,.034,.28,[0,-.015,0],leather,12);if(style.tier===0)cyl(g,.038,.038,.035,[0,-.18,0],metal,12);else gem(0,-.19,0,.048);
   for(const side of [-1,1]){line([0,.17,0],[side*.18,variant===1?.10:.21,0],.023);if(variant===2){line([side*.09,.19,0],[side*.23,.32,0],.015);line([side*.08,.2,0],[side*.18,.35,0],.011);}else if(variant===1)gem(side*.17,.10,0,.029);}
   line([0,.28,.027],[0,.97,.027],.005,variant?glow:dark);for(let n=0;n<(item.plus||0)+1;n++)line([-.025,.32+n*.055,.027],[.01,.34+n*.055,.027],.0025,trim);
  }else if(type==='spear'){
@@ -101,5 +103,7 @@ function equipmentWeapon(item,rank){
   if(variant===1)for(const side of [-1,1]){line([0,1.27,0],[side*.19,1.59,0],.025);gem(side*.14,1.68,0,.067);}if(variant===2){mesh(new T.TorusGeometry(.25,.008,5,32,Math.PI*1.6),metal,g,0,1.5,0).rotation.z=.6;gem(0,1.88,0,.04);}
  }
  if(type!=='sword')for(let j=0;j<=item.plus;j++)cyl(g,.043,.043,.015,[type==='bow'?.23:0,-.10+j*.027,0],trim,10);
- g.userData={type,itemId:item.id,pattern:item.weaponPattern||DEFAULT_PATTERNS[type],power:d.power||null,forge:item.plus};return g;
+ g.userData={type,itemId:item.id,pattern:item.weaponPattern||DEFAULT_PATTERNS[type],power:d.power||null,forge:item.plus};decorateWeapon(g,item);for(const child of g.children){if(type==='bow')child.position.x-=.23;else if(type==='hammer')child.position.y+=.24;else if(type==='staff')child.position.y+=.10;else if(type==='spear')child.position.y+=.05;}return g;
 }
+
+export function equipmentShield(item){const s=equipmentStyle(item),colors=[0x695b46,0x5b6458,0x315e89,0x563c75,0x233950,0x283854,0xe1deca],g=shield(s.rank,colors[s.tier]);g.userData={type:'shield',itemId:item.id,rarity:s.tier};decorateShield(g,item);return g;}

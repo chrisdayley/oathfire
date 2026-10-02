@@ -1,10 +1,12 @@
+import {armorStyle} from './equipment-style.js';
+import {decorateArmor} from './equipment-visuals.js';
 import {dressHost} from './host-atelier.js';
 import {buildLiving,textile} from './atelier.js';
 import {armorDefinition,armorKind} from './armor.js';
 import * as T from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {material} from './materials.js';
-import {mesh,box,cyl,beam,sunBadge,compactRigid,weapon,shield} from './art.js';
+import {mesh,box,cyl,beam,sunBadge,compactRigid,weapon,shield,equipmentShield} from './art.js';
 
 export const HOST_DESIGNS={
  runner:{name:'Raven Runner',subtitle:'Fast assault scout',description:'A hunched scavenger in a hooked raven mask, with ragged feather fins and curved claws. Slows and pikes interrupt its rush.',color:0x364348,base:'archer'},
@@ -52,7 +54,7 @@ export function adultPose(c){
 
 export function buildAppearance(c){
  const armor=c.armor?armorDefinition(c.armor):null,kind=c.armor?armorKind(c.armor):null,light=['trail','spellweave','dawn'].includes(kind),plus=c.armor?.plus||0;
- const variant=c.design,role=HOST_DESIGNS[variant]?.base||variant,rank=c.rank,undead=!!HOST_DESIGNS[variant],bare=role==='hollow'||role==='archer',caster=role==='mage',brute=role==='brute',royal=['bell','castellan','veyr'].includes(role),hood=(kind&&kind!=='hearth')?light:['ranger','bow','rider','archer','mage','marksman','assassin','frost','pyre','lantern'].includes(role);
+ const variant=c.design,role=HOST_DESIGNS[variant]?.base||variant,rank=c.armor&&!c.enemy?armorStyle(c.armor).rank:c.rank,undead=!!HOST_DESIGNS[variant],bare=role==='hollow'||role==='archer',caster=role==='mage',brute=role==='brute',royal=['bell','castellan','veyr'].includes(role),hood=(kind&&kind!=='hearth')?light:['ranger','bow','rider','archer','mage','marksman','assassin','frost','pyre','lantern'].includes(role);
  const charcoal=material('steel',undead?0x55594f:0x737e7c,{roughness:.72,metalness:.84});
  const steel=material(kind==='trail'?'leather':kind==='spellweave'?'cloth':'steel',armor?armor.steel:role==='castellan'?0x504038:role==='veyr'?0x65716d:undead?0x444c47:0x949f9e,{roughness:light?.85:.54,metalness:light?.18:.88});
  const brass=material('steel',armor?armor.trim:undead?0x9a7645:0xb59b60,{roughness:.52,metalness:.78});
@@ -239,7 +241,7 @@ export function buildAppearance(c){
  if(variant==='reaver')for(const side of [-1,1]){const fin=mesh(new T.ConeGeometry(.055,.4,4),brass,chest,side*.28,.25,-.01);fin.rotation.z=-side*.5;}
  if(variant==='mortar'){cyl(chest,.095,.13,.66,[.29,.22,-.13],charcoal,12).rotation.x=1.1;cyl(chest,.115,.115,.07,[.29,.40,.17],brass,12).rotation.x=1.1;}
  }
- if(undead)dressHost(c,part,role,{black,glow,bone:boneMat});
+ if(undead)dressHost(c,part,role,{black,glow,bone:boneMat});else decorateArmor(c,part);
  // Bake rigid armor and anatomical pieces into a few genuinely skinned draw calls.
  c.visual.updateMatrixWorld(true);const skeleton=new T.Skeleton(Object.values(c.sockets).filter(b=>b.isBone));skeleton.calculateInverses();
  const bins=new Map(),inverse=c.visual.matrixWorld.clone().invert();
@@ -251,10 +253,10 @@ export function buildAppearance(c){
 }geo.setAttribute('skinIndex',new T.Uint16BufferAttribute(indices,4));geo.setAttribute('skinWeight',new T.Float32BufferAttribute(weights,4));if(!bins.has(o.material))bins.set(o.material,[]);bins.get(o.material).push(geo);if(!o.geometry.userData.shared)o.geometry.dispose();});piece.group.removeFromParent();}
  c.body=[];for(const [mat,geos]of bins){const geometry=mergeGeometries(geos,false);if(!geometry)throw Error('Character mesh merge failed');geos.forEach(g=>g.dispose());const body=new T.SkinnedMesh(geometry,mat);body.name='Oathfire_'+role+'_'+mat.uuid.slice(0,6);body.castShadow=body.receiveShadow=true;body.frustumCulled=false;c.visual.add(body);body.bind(skeleton);c.body.push(body);}
  // Cloth silhouette is a tailored mantle, with a ragged hem for the Hollow Host.
- if(!bare&&!brute&&(undead||living.profile.cloak)){const height=kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.28:living?.profile.ranger?.91:1.02,width=kind==='marshal'?.70:royal?.68:rank>=8?.72:.61,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*29)*(.013+drop*.026)+Math.sin(drop*8+x*17)*.014+drop*.09));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cm=(living?.cloth||cloth).clone();if(!undead&&(rank>=6||living.profile.hero)){cm.map=textile('heraldry','#'+new T.Color(c.atelier.clothHex).getHexString(),'#'+new T.Color(c.atelier.trimHex).getHexString());cm.color.setHex(0xffffff);}c.materials.push(cm);const cape=mesh(geo,cm,bone(c,'chest'),0,-height*.5+.19,-.15);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
+ if(!bare&&!brute&&(undead||living.profile.cloak)){const height=c.armor?.rarity===0?.72:kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.28:living?.profile.ranger?.91:1.02,width=kind==='marshal'?.70:royal?.68:rank>=8?.72:.61,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*29)*(.013+drop*.026)+Math.sin(drop*8+x*17)*.014+drop*.09));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cm=(living?.cloth||cloth).clone();if(!undead&&(rank>=6||living.profile.hero&&(!c.armor||c.armor.rarity>=2))){cm.map=textile('heraldry','#'+new T.Color(c.atelier.clothHex).getHexString(),'#'+new T.Color(c.atelier.trimHex).getHexString());cm.color.setHex(0xffffff);}if(c.armor?.rarity>=5&&!undead){cm.emissive.setHex(armorStyle(c.armor).glow);cm.emissiveMap=textile('heraldry','#000000','#ffffff');cm.emissiveIntensity=.9;cm.userData.equipmentPulse=.9;}c.materials.push(cm);const cape=mesh(geo,cm,bone(c,'chest'),0,-height*.5+.19,-.15);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
  c.held=compactRigid(weapon(c.weaponType,rank,c.color,c.temper,c.design,c.weaponItem));c.held.rotation.y=Math.PI;c.heldRest=c.held.quaternion.clone();bone(c,'handslot.r').add(c.held);c.gear.push(c.held);
  if(['sword','spear'].includes(c.weaponType)&&!caster&&!brute&&role!=='bell'&&role!=='assassin'){
-  c.heldShield=compactRigid(shield(c.design==='warden'?Math.max(4,rank):rank,undead?0x343c38:(c.atelier?.clothHex||0x234b4d),undead?role:null));if(variant==='bulwark')c.heldShield.scale.set(1.35,1.45,1.15);c.heldShield.rotation.y=Math.PI;c.heldShield.rotation.z=-Math.PI/2;c.heldShield.position.set(0,-.02,.05);bone(c,'handslot.l').add(c.heldShield);c.gear.push(c.heldShield);
+  c.heldShield=compactRigid(c.shieldItem&&!undead?equipmentShield(c.shieldItem):shield(c.design==='warden'?Math.max(4,rank):rank,undead?0x343c38:(c.atelier?.clothHex||0x234b4d),undead?role:null));if(variant==='bulwark')c.heldShield.scale.set(1.35,1.45,1.15);c.heldShield.rotation.y=Math.PI;c.heldShield.rotation.z=-Math.PI/2;c.heldShield.position.set(0,-.02,.05);bone(c,'handslot.l').add(c.heldShield);c.gear.push(c.heldShield);
  }else c.heldShield=null;
  c.visual.userData.design=role;c.visual.userData.armorKind=kind;c.visual.userData.bodySource=c.atelier?.source||'original-oathfire-skinned-geometry';
 }

@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Exalted equipment — 2.8
+
+Armor and weapons visibly change with equipped rarity on all three heroes. Legendary gear gains ornate construction and rich liveries; Mythic and Godly gear add luminous details and oversized weapons. Magical weapon auras follow the actual rune, power or affix. Shields now use their equipped item, and the portrait armory has a full-width model stage. Existing saves and items are preserved.
+
+[Compare the actual gear models](https://chrisdayley.github.io/oathfire/art-studio.html?role=warden&rarity=6) · [Rules and validation](docs/equipment-2.8.md)
+
 ## Hero selection and Furnace Fireball — 2.7.1
 
 Character selection displays the actual animated starter hero, with weapon, health, armor, magic, role and starting abilities. Each preview can rotate, attack and cast. Music activates both recording players on a touch and recovers interrupted playback or a failed cue without changing the player's volume preferences.
