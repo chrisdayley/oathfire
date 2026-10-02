@@ -5,7 +5,7 @@ import * as T from 'three';
 import {MISSIONS,seeded} from './data.js';
 import {mesh,mat} from './art.js';
 import {missionRoster} from './campaign.js';
-import {isSiege,SIEGE_PARTS,SIEGE_NAMES,siegeConfig,newSiegeState,siegePressure,siegeInterval,siegePacket} from './siege-rules.js';
+import {isSiege,SIEGE_OUTPOSTS,SIEGE_GATE_Z,SIEGE_PARTS,SIEGE_NAMES,siegeConfig,newSiegeState,siegePressure,siegeInterval,siegePacket} from './siege-rules.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function attackPoint(target,from){
  if(!target.structure)return target.pos;
@@ -21,9 +21,9 @@ export function initializeSiege(g,saved){
  const state=g.battle.siege??=newSiegeState(m),c=siegeConfig(m);
  g.siegeTargets=SIEGE_PARTS.map(part=>{const p=g.world.enemyFortress.parts[part],t={id:'fortress-'+part,part,type:'fortification',structure:true,team:'enemy',pos:new T.Vector3(p.x,p.y,p.front),stats:{hp:c.hp[part],armor:part==='keep'?22:12,scale:1},hp:state.hp[part],dead:state.hp[part]<=0,model:p.model,phys:{collider:p.collider},nav:p.nav,cooldown:5+(part==='east'?3:0)};g.physics.meta.set(p.collider.handle,{kind:'enemy-fortification',entity:t});if(t.dead)collapse(g,t,false);return t;});
  g.battle.wave=state.pressure;g.battle.nextWave=60;
- if(!saved?.siege){g.battle.siege=newSiegeState(m);for(let i=0;i<c.initial;i++)spawnReinforcement(g,i,1);g.battle.siege.spawned=c.initial;}
+ if(!saved?.siege){g.battle.siege=newSiegeState(m);for(let i=0;i<c.initial;i++)spawnReinforcement(g,i,1,-112);g.battle.siege.spawned=c.initial;}
 }
-function spawnReinforcement(g,index,pressure){const m=MISSIONS[g.battle.id],roster=missionRoster(m,pressure),side=index%2?-1:1,x=side*(23+(index%3)*2.1),z=-135+(index%2)*2;const type=roster[(index+g.battle.siege.spawned)%roster.length];g.spawnEnemy(type,{x,y:g.world.height(x,z),z},{waveTier:Math.max(1,Math.min(6,pressure))});}
+function spawnReinforcement(g,index,pressure,atZ=null){const m=MISSIONS[g.battle.id],roster=missionRoster(m,pressure),side=index%2?-1:1,x=side*(23+(index%3)*2.1),front=SIEGE_OUTPOSTS.find((p,i)=>!g.battle.siege.outposts[i]&&p.z<g.hero.pos.z+50),z=(atZ??(front?front.z-65:SIEGE_GATE_Z+8))+(index%2)*2;const type=roster[(index+g.battle.siege.spawned)%roster.length];let spawn={x,z};const blocked=p=>g.world.nav.some(n=>Math.abs(p.x-n.x)<n.hx+.5&&Math.abs(p.z-n.z)<n.hz+.5);if(blocked(spawn)){search:for(let radius=3;radius<=24;radius+=3)for(let a=0;a<8;a++){const p={x:x+Math.cos(a*Math.PI/4)*radius,z:z+Math.sin(a*Math.PI/4)*radius};if(!blocked(p)){spawn=p;break search;}}}g.spawnEnemy(type,{...spawn,y:g.world.height(spawn.x,spawn.z)},{waveTier:Math.max(1,Math.min(6,pressure))});}
 function collapse(g,t,animate){
  if(t.phys?.collider){g.physics.remove(t.phys.collider);t.phys=null;}
  g.world.nav=g.world.nav.filter(n=>n!==t.nav);g.navGrid=null;
@@ -45,7 +45,15 @@ export function hitFortification(g,t,amount,source,opt){
 }
 export function tickSiege(g,dt){
  const b=g.battle,st=b.siege,m=MISSIONS[b.id],c=siegeConfig(m);
- const pressure=siegePressure(m,b.time,st.hp.gate===0);
+ // Dormant roadside garrisons activate before the leading soldier reaches them.
+ const lead=Math.min(g.hero.pos.z,...g.allies.filter(a=>!a.dead).map(a=>a.pos.z));
+ SIEGE_OUTPOSTS.forEach((p,i)=>{
+  if(!st.activated[i]&&lead<p.z+135){st.activated[i]=true;const n=Math.min(c.limit-g.enemies.filter(e=>!e.dead).length,c.initial+i+2);for(let j=0;j<n;j++)spawnReinforcement(g,j,Math.max(1,st.pressure),p.z-7);st.spawned+=Math.max(0,n);}
+  const flag=g.world.siegeCampFlags?.[i];if(flag&&!flag.userData.friendly&&st.outposts[i]){flag.userData.friendly=true;flag.traverse(o=>{if(o.isMesh&&o.material?.color&&o.geometry.type==='PlaneGeometry')o.material.color.setHex(0x247d91);});}
+ });
+ const campIndex=SIEGE_OUTPOSTS.findIndex((p,i)=>!st.outposts[i]&&distance(p,g.hero.pos)<13);
+ if(campIndex>=0){const p=SIEGE_OUTPOSTS[campIndex],safe=!g.enemies.some(e=>!e.dead&&distance(e.pos,p)<35);st.capture=safe?Math.min(6,st.capture+dt):0;if(st.capture>=6){st.outposts[campIndex]=true;st.activated[campIndex]=true;st.capture=0;for(const a of [g.hero,...g.allies])if(!a.dead&&distance(a.pos,p)<50)a.hp=Math.min(a.stats.hp,a.hp+a.stats.hp*.35);g.fx.ward(g.hero.pos,2,1);g.toast(p.name+' secured · nearby army healed 35% · recruit here.');g.audio.play('rally');g.checkpoint();}}else st.capture=0;
+ st.frontier=Math.min(st.frontier??g.hero.pos.z,lead);const pressure=Math.max(st.pressure,siegePressure(m,b.time,st.hp.gate===0,st.frontier));
  if(pressure>st.pressure){st.pressure=pressure;b.wave=pressure;g.toast('Enemy reinforcements intensify · pressure '+pressure+'/6');g.audio.play('rally',.4);}
  st.nextSpawn-=dt;
  if(st.nextSpawn<=0){const alive=g.enemies.filter(e=>!e.dead).length,n=Math.min(c.limit-alive,siegePacket(m,pressure));for(let i=0;i<n;i++)spawnReinforcement(g,st.packets*5+i,pressure);st.spawned+=Math.max(0,n);st.packets++;st.nextSpawn=siegeInterval(m,pressure)*(b.camp?1.2:1);}

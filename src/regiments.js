@@ -1,7 +1,8 @@
+import {STANDARD_LIMIT} from './command-economy.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export const regimentBonus=e=>1+Math.max(e.buff>0?.15:0,e.standardBonus||0);
 export const movementFactor=e=>1-Math.max(e.slow>0?.35:0,e.rimeTime>0?e.rimeStrength||0:0);
-export function standardIncome(g){return Math.max(0,...g.allies.filter(a=>!a.dead&&a.unit==='banner'&&g.enemies.some(e=>!e.dead&&dist(e.pos,a.pos)<24)).map(a=>a.stats.commandRate));}
+export function standardIncome(g){return g.allies.filter(a=>!a.dead&&a.unit==='banner').map(a=>a.stats.commandRate).sort((a,b)=>b-a).slice(0,STANDARD_LIMIT).reduce((sum,n)=>sum+n,0);}
 export function supportRegiment(g,e,dt){
  if(e.team!=='ally')return;
  const s=e.stats;

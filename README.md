@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## The Long March — 2.7
+
+Sieges now start at Hearthwatch, with 1.9 km between castle gates, four defended recruitment camps, stronger keeps, and pressure that increases with time and distance. Dawn standards generate passive Command anywhere; a five-rank Command lodge permanently improves income. Tap the HUD income rate for its breakdown. Reward reveals show the actual troop, equipment, or marked location on the campaign map. Existing saves migrate without resetting their earned progress.
+
+See [rules, migration and QA](docs/frontier-2.7.md).
+
 ## Living Horizons — 2.6
 
 Three original painted landscape panoramas replace the sparse horizon: golden Crownlands, snowy northern valleys and the Sunlands. Castle roofs now use curved slate courses, solid timber gables, glazed dormers and deep eaves. A terraced upper town and cathedral enlarge Hearthwatch's skyline. Animated windmills, circling birds, chimney smoke, painted woodland, tapered grass, pottery and gallery details add color and life. World geometry is merged in spatial sections and windmill sails are compacted into a few meshes. Existing campaign progress and siege rules remain unchanged.

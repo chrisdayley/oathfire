@@ -14,7 +14,7 @@ export function trainedUnit(id,u,rank,weapon){
   crew:{armorPierce:.5,knockback:1.6+i*.42,siegeBonus:1.35+i*.06},
   rider:{speed:6.3+i*.18,chargeDamage:1.6+i*.07,chargeStun:.7+i*.06,chargeDistance:6-i*.2},
   giant:{reach:4.4+i*.16,stagger:.3+i*.06,knockback:1.8+i*.3},
-  banner:{auraRadius:9+i*.5,auraStrength:.15+i*.015,commandRate:.04+i*.012},
+  banner:{auraRadius:9+i*.5,auraStrength:.15+i*.015,commandRate:.15+i*.025},
   engineer:{repairAmount:22+i*6,repairInterval:3-i*.1},
   assassin:{speed:5.4+i*.14,armorPierce:.5+i*.03},
   pyre:{blastRadius:1.6+i*.16,burnDps:3+i*.7},

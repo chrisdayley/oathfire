@@ -3,7 +3,7 @@ import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js'
 import {mesh,box,cyl,beam,sphere,mat,mergeStatic,sunBadge} from './art.js';
 import {worldMaterial,material} from './materials.js';
 import {windowArch} from './environment-design.js';
-import {siegeConfig} from './siege-rules.js';
+import {siegeConfig,SIEGE_OFFSET} from './siege-rules.js';
 
 const stone=(g,size,pos,m,r=.08)=>mesh(new RoundedBoxGeometry(...size,1,r),m,g,...pos);
 function arch(g,x,y,z,width,height,depth,m){
@@ -22,6 +22,15 @@ function banner(w,x,y,z,width,height,m,trim){
  for(let i=-1;i<=1;i++){beam(emblem,[i*width*.15,-.1,0],[i*width*.23,width*(i===0?.42:.28),0],.04,trim);}
 }
 export function buildEnemyFortress(w,mission){
+ const oldStatic=w.static,oldDynamic=w.dynamic,height=w.height,first=w.physics.fixed.length,navStart=w.nav.length;
+ const solid=new T.Group(),moving=new T.Group();solid.position.z=moving.position.z=SIEGE_OFFSET;oldStatic.add(solid);oldDynamic.add(moving);
+ w.static=solid;w.dynamic=moving;w.height=(x,z)=>height.call(w,x,z+SIEGE_OFFSET);
+ try{buildLocalFortress(w,mission);}finally{w.static=oldStatic;w.dynamic=oldDynamic;w.height=height;}
+ for(const c of w.physics.fixed.slice(first)){const p=c.translation();c.setTranslation({x:p.x,y:p.y,z:p.z+SIEGE_OFFSET});}
+ for(const n of w.nav.slice(navStart))n.z+=SIEGE_OFFSET;
+ for(const p of Object.values(w.enemyFortress.parts)){p.z+=SIEGE_OFFSET;p.front+=SIEGE_OFFSET;}
+}
+function buildLocalFortress(w,mission){
  const c=siegeConfig(mission),g=w.static,base=3,final=c.final;
  const m={stone:worldMaterial('stone',final?0x363b43:0x53535a,2.2),cap:worldMaterial('stone',0x85817e,1.3),iron:material('steel',0x292b36,{metalness:.72,roughness:.5}),dark:mat(0x10141c),roof:worldMaterial('stone',0x303340,1.1),bronze:material('steel',0x9c7154,{metalness:.65,roughness:.54}),cloth:material('cloth',final?0x572136:({snow:0x343969,forest:0x522c54,desert:0x823820,river:0x6b273b,quarry:0x4b315e}[mission.biome]||0x712d2b),{side:T.DoubleSide}),glass:mat(final?0xceb1ec:0xffbb77,.3,.25,{emissive:final?0x8d45c9:0xda501e,emissiveIntensity:1.5})};
  w.enemyFortress={parts:{},final};

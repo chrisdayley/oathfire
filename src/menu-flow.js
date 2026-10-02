@@ -1,3 +1,4 @@
+import {upgradeLogistics} from './command-economy.js';
 import {centerMap} from './campaign-ui.js';
 import {BATTLE_GLYPHS} from './battle-icons.js';
 import {fieldRoster} from './battle-roster.js';
@@ -47,6 +48,8 @@ function battlePage(ui){const g=ui.g,s=g.store.data,b=g.battle;if(ui.screen==='r
  return '<div class="pause-list">'+ui.button('resume',null,'Return to battle',false,true)+ui.button('battle-category','root','Battle command')+ui.button('battle-settings',null,'Sound & settings')+ui.button('help',null,'Combat controls')+ui.button('home',null,'Abandon battle & return')+ui.button('title',null,'Save & return to title')+'</div>';
 }
 export function menuAction(ui,action,id,value){switch(action){
+ case 'castle-logistics':navigate(ui,'defenses',{screen:'logistics',defense:'gate',battleCommand:false});return true;
+ case 'upgrade-logistics':ui.g.store.commit(upgradeLogistics);ui.g.audio.play('upgrade');refresh(ui);return true;
  case 'research-filter':ui.researchFilter=id;refresh(ui);return true;
  case 'research-inspect':ui.researchId=id;ui.researchFilter=Object.keys(RESEARCH).includes(id)&&ui.researchFilter!=='all'&&ui.researchFilter!==RESEARCH[id].group?'all':ui.researchFilter;refresh(ui);return true;
  case 'field-inspect':if(value==='troops')ui.unit=id;else ui.defense=id;refresh(ui);return true;

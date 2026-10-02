@@ -15,3 +15,5 @@
 /* Keep the two battle entry points aligned, including narrow phones. */
 #hud.in-battle .army-button{height:52px;flex-direction:column;flex-wrap:nowrap;gap:4px}#hud.in-battle .army-button .menu-sigil{display:none}#hud.in-battle .army-button span,#hud.in-battle .army-button small{margin:0}
 @media(max-height:500px){#hud.in-battle .army-button{height:49px}}
+
+#command-income-detail{pointer-events:auto;min-height:35px;padding:2px 6px;background:#241b16b8;border:1px solid #bf9f6f55;border-radius:2px;text-transform:none;letter-spacing:0;touch-action:manipulation}#command-income-detail span{font-weight:600;white-space:nowrap}#command-income-detail:focus-visible{outline:2px solid #ffe1a0}

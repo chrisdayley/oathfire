@@ -1,3 +1,4 @@
+import {LOGISTICS_RANKS,castleCommandBonus} from './command-economy.js';
 import {TACTICAL_STATS} from './unit-progression.js';
 import {rosterList,sectionTabs} from './menu-flow.js';
 import {fieldDefenseCost} from './field-command.js';
@@ -27,7 +28,8 @@ export function renderTroops(ui){
  return tabs+'<section class="inspection-detail" data-inspection="unit" data-type="'+id+'" data-rank="'+view+'">'+(section==='stats'?'<p class="inspection-note">Per soldier. Completed battle research is included; enemy armor and short-lived buffs are not.</p><div class="combat-stats">'+content+'</div>'+(ui.battleCommand?'<p class="field-status">On the field: '+field.length+' soldiers · '+Math.ceil(field.reduce((n,a)=>n+a.hp,0))+' / '+field.reduce((n,a)=>n+a.stats.hp,0)+' combined health.</p>':''):content)+'</section>';
 }
 export function renderDefenses(ui){
- if(ui.screen!=='detail')return rosterList(ui,'defenses');
+ if(ui.screen==='logistics')return logisticsPage(ui);
+ if(ui.screen!=='detail')return '<button class="campaign-banner" data-action="castle-logistics"><span><small>PERMANENT COMMAND INCOME</small><b>Command lodge · Rank '+(ui.g.store.data.castleLogistics||0)+'/5</b><small>+'+castleCommandBonus(ui.g.store.data).toFixed(2)+'/s in every battle</small></span><em>›</em></button>'+rosterList(ui,'defenses');
  const g=ui.g,s=g.store.data,id=ui.defense,d=DEFENSES[id],rank=s.defenses[id],view=ui.previewRank||rank,doctrine=s.doctrines[id],st=defenseInspection(id,view,doctrine,ui.battleCommand?g.battle:null),owned=defenseInspection(id,rank,doctrine),available=defenseUnlocked(s,id),healing=id==='sanctuary',section=ui.detailTab;
  const tabs=sectionTabs(ui,{overview:'Overview',stats:'Stats',abilities:'Abilities',...(!ui.battleCommand?{upgrade:'Upgrade',...(id!=='gate'?{emplacements:'Fit'}:{})}:{})});
  const core=id==='gate'?metric('hp','GATE HEALTH',st.hp)+(g.battle?metric('currentHp','CURRENT HEALTH',Math.ceil(g.battle.gate)):'')+metric('beacon','BEACON HEALTH',g.battle?Math.ceil(g.battle.core)+' / 650':650):metric('health','HEALTH','Protected')+metric('damage',healing?'HEALING':'DAMAGE',n(st.damage))+metric('range','RANGE',n(st.range)+' m',st.minRange?'Minimum '+st.minRange+' m':'');
@@ -40,3 +42,5 @@ export function renderDefenses(ui){
  return tabs+'<section class="inspection-detail" data-inspection="defense" data-type="'+id+'" data-rank="'+view+'">'+content+'</section>';
 }
 export function renderArmy(ui){return rosterList(ui,'troops',true);}
+
+function logisticsPage(ui){const s=ui.g.store.data,rank=s.castleLogistics||0,current=LOGISTICS_RANKS[rank],next=LOGISTICS_RANKS[rank+1],locked=next&&s.completed.length<next.unlock;return '<section class="inspection-detail"><small>CASTLE INFRASTRUCTURE · '+rank+' / 5</small><h2>Command lodge</h2><p>Permanent passive Command in every defense and siege. Requires no army slot or weapon emplacement.</p><div class="combat-stats overview-stats">'+metric('income','CASTLE INCOME','+'+current.bonus.toFixed(2)+'/s')+metric('base','TOTAL BEFORE TROOPS','+'+(.6+current.bonus).toFixed(2)+'/s')+'</div>'+(next?'<div class="rank-comparison"><h3>'+next.name+'</h3><div class="compare-row"><span>Castle income</span><b>+'+current.bonus.toFixed(2)+'/s → +'+next.bonus.toFixed(2)+'/s</b></div><div class="compare-row"><span>Permanent increase</span><b>+'+(next.bonus-current.bonus).toFixed(2)+'/s</b></div></div>'+ui.button('upgrade-logistics',null,locked?'Unlock after '+next.unlock+' victories':'Construct · '+next.cost+' Supplies',locked||!!ui.g.battle||s.supplies<next.cost,true):'<p>Fully constructed.</p>')+'<p class="inspection-note">Dawn standards and Field logistics research add to this income. The Command cap remains 220.</p></section>';}

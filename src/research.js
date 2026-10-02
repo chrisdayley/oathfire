@@ -1,3 +1,4 @@
+import {commandBreakdown} from './command-economy.js';
 import {unitStats,defenseFiringStats,UNITS} from './data.js';
 export const RESEARCH_LIMIT=4;
 export const WAR_BANDS={hearth:['shield','pike','banner','dawn'],wild:['bow','rider','assassin','frost'],forge:['breaker','crew','engineer','marksman','giant']};
@@ -52,4 +53,4 @@ export function battleUnitStats(id,rank,battle,{veteran=false}={}){const st={...
  if(has('wildPath')&&['rider','assassin'].includes(id))st.speed*=1.25;if(has('logistics'))st.cost=Math.ceil(st.cost*.9);st.hp=Math.round(st.hp*health);st.damage=rounded(st.damage*damage);return st;}
 export function battleDefenseStats(id,rank,doctrine,battle){const st=defenseFiringStats(id,rank,doctrine);if(id==='gate'){if(researchComplete(battle,'gate2'))st.hp=Math.round(st.hp*1.35);else if(researchComplete(battle,'gate'))st.hp=Math.round(st.hp*1.2);}if(['tower','ballista','cannon','mortar'].includes(id)&&researchComplete(battle,'windlass'))st.interval/=1.2;if(['ballista','cannon','mortar'].includes(id)&&researchComplete(battle,'payload'))st.damage=rounded(st.damage*1.25);if(['frost','storm','sanctuary'].includes(id)&&researchComplete(battle,'wards')){st.damage=rounded(st.damage*1.25);st.range=rounded(st.range*1.2);}return st;}
 export function battleHeroStats(base,battle,hero=null){const st={...base};if(researchComplete(battle,'heroHealth'))st.hp+=50;if(researchComplete(battle,'heroHealth2'))st.hp+=125;if(researchComplete(battle,'heroDamage'))st.damage+=5;if(researchComplete(battle,'heroDamage2'))st.damage+=10;if(researchComplete(battle,'anchor')&&(hero?.speed||0)<.3)st.armor+=15;return st;}
-export const commandIncome=b=> (.6+(b?.camp?.15:0)+Math.max(0,Math.min(.148,b?.standardIncome||0)))*(researchComplete(b,'logistics')?1.2:1);
+export const commandIncome=b=>commandBreakdown(b).total;

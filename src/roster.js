@@ -1,6 +1,6 @@
 // Original Oathfire roles. Unlock counts are distinct first victories, never replays.
 export const NEW_UNITS={
- banner:{name:'Dawn standard',role:'Raise an army damage and movement aura; earn Command close to enemies.',model:'Knight',weapon:'spear',cost:55,count:1,hp:155,damage:12,speed:3,reach:3.2,unlock:1,color:0xb29143,category:'Support'},
+ banner:{name:'Dawn standard',role:'Generate passive Command anywhere on the field; nearby allies gain damage and movement speed.',model:'Knight',weapon:'spear',cost:45,count:1,hp:155,damage:12,speed:3,reach:3.2,unlock:1,color:0xb29143,category:'Support'},
  engineer:{name:'Field engineers',role:'Repair the gate. Training improves repair strength and speed; a fallen gate cannot be rebuilt.',model:'Barbarian',weapon:'hammer',cost:65,count:1,hp:105,damage:14,speed:3.3,reach:2.6,unlock:2,color:0x806345,category:'Support'},
  assassin:{name:'Veil blades',role:'Hunt ranged enemies with fast movement and armor-piercing blades.',model:'Rogue_Hooded',weapon:'sword',cost:65,count:1,hp:82,damage:27,speed:5.4,reach:2.5,unlock:3,color:0x3c4b56,category:'Flank'},
  pyre:{name:'Cinder adepts',role:'Slow fireballs burst on impact. Keep them behind shields to burn tightly packed infantry.',model:'Mage',weapon:'staff',cost:75,count:1,hp:78,damage:28,speed:3,reach:23,unlock:4,color:0x844d32,category:'Ranged'},

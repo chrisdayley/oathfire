@@ -1,9 +1,13 @@
+import {rewardItem} from './reward-visuals.js';
+import {armorBenefits} from './armor.js';
+import {itemValue} from './state.js';
+import {RARITIES} from './data.js';
 import {UNITS,DEFENSES,MISSIONS,HEROES,SPELLS,unitStats,defenseStats} from './data.js';
 import {heroStats,skillPoints,campaignCap} from './state.js';
 import {RESEARCH,RESEARCH_LIMIT} from './research.js';
 export const UNIT_LESSONS={
  pike:['Stop the heavy charge','Pikes deal 50% extra damage to siege brutes and captains. Put them behind your shield line.'],
- banner:['Your army fights together','Soldiers within 9m gain 15% damage and speed. Near enemies, the strongest standard also earns Command.'],
+ banner:['Your army fights together','Soldiers within 9m gain 15% damage and speed. Up to three living standards generate Command anywhere. Training improves their income.'],
  engineer:['Keep the gate standing','Repairs the gate every 3 seconds within 9m. Deploy before it falls; a destroyed gate cannot be rebuilt in battle.'],
  lantern:['Bring the wounded home','Heals the most wounded nearby ally every 3 seconds. Protect these fragile healers behind your infantry.'],
  assassin:['Hunt their back line','Fast blades seek archers and spellcasters and ignore half their armor. Use them when your front line is secure.'],
@@ -23,18 +27,22 @@ export function createUnlockReview(save,before,report){
   for(const [id,d]of Object.entries(DEFENSES))if(d.unlock>before.completed&&d.unlock<=count)cards.push({kind:'defense',id});
   for(const [id,r]of Object.entries(RESEARCH))if(r.unlock>before.completed&&r.unlock<=count)cards.push({kind:'research',id});
   for(const m of MISSIONS)if(m.kind==='settlement'&&m.unlockMain===report.mission)cards.push({kind:'territory',id:String(m.id)});
+  if(report.mission<23)cards.push({kind:'territory',id:String(report.mission===22?32:report.mission+1)});
   if(count===1)cards.push({kind:'lesson',id:'equipment'},{kind:'lesson',id:'exploration'});
   if(count===5||count===10)cards.push({kind:'lesson',id:'ranks',rank:campaignCap(save)});
  }
+ if(report.win&&report.mission===32&&report.first)cards.push({kind:'territory',id:'23'});
+ const equipment=[...(report.items||[]),...(report.chests||[]).filter(c=>report.revealed?.includes(c.id)).flatMap(c=>c.rewards.items)];for(const item of equipment.slice(0,Math.max(0,20-cards.length)))cards.push({kind:'item',id:item.id});
  if(report.endLevel>report.stats.startLevel){cards.push({kind:'hero',id:save.hero,from:report.stats.startLevel,to:report.endLevel});for(const n of HEROES[save.hero].skills.filter(n=>n.active&&n.learnLevel>report.stats.startLevel&&n.learnLevel<=report.endLevel))cards.push({kind:'ability',id:n.id,hero:save.hero});}
  if(report.rescued&&report.first)cards.push({kind:'lesson',id:'tribute',mission:report.mission});
  return {version:1,cards,cursor:0,complete:false,started:false};
 }
 export function reviewCard(save,card){
+ if(card.kind==='item'){const i=rewardItem(save,card.id);return {eyebrow:RARITIES[i.rarity].name.toUpperCase()+' EQUIPMENT',title:i.name,subtitle:i.type==='armor'?'Body armor':i.type==='shield'?'Shield':i.type==='relic'?'Relic':'Weapon',text:i.type==='armor'?armorBenefits(i).join(' · '):'Equip this item in your shared armory. Forge upgrades improve its power.',stats:[['Item level',i.level],['Forge rank','+'+i.plus],[i.type==='armor'||i.type==='shield'?'Armor':'Power',itemValue(i)],['Rarity',RARITIES[i.rarity].name]],note:'Saved in your armory',tip:'Armory → select this item to compare, equip or improve it.',tab:'equipment'};}
  if(card.kind==='unit'){const u=UNITS[card.id],rank=save.units[card.id],s=unitStats(card.id,rank),lesson=UNIT_LESSONS[card.id]||[u.role,u.role];return {eyebrow:'NEW REGIMENT · RANK '+rank,title:u.name,subtitle:lesson[0],text:lesson[1],stats:[['Health',s.hp],['Damage',s.damage],['Armor',s.armor],['Reach',s.reach+'m']],note:s.count+' soldier'+(s.count===1?'':'s')+' · '+s.cost+' Command per squad',tip:'Recruit from COMMAND → Troops in battle. Train permanent ranks with Rowan in town.',tab:'troops'};}
  if(card.kind==='defense'){const d=DEFENSES[card.id],rank=save.defenses[card.id],s=defenseStats(card.id,rank);return {eyebrow:'NEW DEFENSE PLAN · RANK '+rank,title:d.name,subtitle:'A new way to hold the field',text:d.desc,stats:[['Health',s.hp],['Power',s.damage],['Range',s.range+'m'],['Fires every',d.interval+'s']],note:'Fits one of your four weapon emplacements',tip:'Visit Nell → Defenses to choose an emplacement. Supplies improve its permanent rank.',tab:'defenses'};}
  if(card.kind==='research'){const r=RESEARCH[card.id];return {eyebrow:'NEW COMBAT RESEARCH',title:r.name,subtitle:r.summary,text:({veterans:'New Forge soldiers have a 25% chance to become veterans: +50% health, +100% damage and +100% armor. Includes Ashbreakers, crew, engineers, marksmen and giants.',mageFortune:'Cinder adepts and Rime scholars gain 50% health and damage. Each shot has a 25% chance to call five elemental projectiles; 8-second cooldown per caster.'})[card.id]||r.description,stats:[['Research time',r.seconds+'s'],['Battle slots',RESEARCH_LIMIT],['Command cost','Free'],['Lasts','This battle']],note:'A tactical choice for each battle',tip:'In battle, open COMMAND → Research. Choose up to four projects; their bonuses end with the battle.',tab:'campaign'};}
- if(card.kind==='territory'){const m=MISSIONS[Number(card.id)];return {eyebrow:'A NEW RESCUE ON YOUR MAP',title:m.name,subtitle:m.title,text:m.story+' This optional expedition supports your main campaign.',stats:[['Tribute','+'+m.income],['Objective','Destroy keep'],['Suggested rank',m.recommended],['Rescue','Optional']],note:'After rescue: Supplies after every main-mission victory',tip:'Open War table → Campaign and select '+m.name+'. Prepare your army before traveling.',tab:'campaign'};}
+ if(card.kind==='territory'){const m=MISSIONS[Number(card.id)],optional=m.kind==='settlement';if(!optional)return {eyebrow:'A NEW MISSION ON YOUR MAP',title:m.name,subtitle:m.title,text:m.story,stats:[['Objective',m.mode==='siege'?'Destroy keep':'Defend'],['Reward',m.reward],['Suggested rank',m.recommended],['Campaign',m.mode==='siege'?'Final fortress':'Main mission']],note:'Available at the war table',tip:'War table → '+m.name+' → Read briefing.',tab:'campaign'};return {eyebrow:'A NEW RESCUE ON YOUR MAP',title:m.name,subtitle:m.title,text:m.story+' This optional expedition supports your main campaign.',stats:[['Tribute','+'+m.income],['Objective','Destroy keep'],['Suggested rank',m.recommended],['Rescue','Optional']],note:'After rescue: Supplies after every main-mission victory',tip:'Open War table → Campaign and select '+m.name+'. Prepare your army before traveling.',tab:'campaign'};}
  if(card.kind==='ability'){const n=HEROES[card.hero].skills.find(n=>n.id===card.id),spell=SPELLS[card.id];return {eyebrow:'NEW ACTIVE ABILITY · READY TO LEARN',title:n.name,subtitle:HEROES[card.hero].name,text:n.effects[0],stats:[['Hero level',n.learnLevel],['Learn cost',(n.cost||1)+' point'+((n.cost||1)>1?'s':'')],[spell.type||'Focus',spell.cost],['Recovery',spell.cooldown+'s']],note:'Learn with a skill point, then equip to a combat button.',tip:'Character → Abilities → '+n.name+'. Choose button 1 or 2 after learning.',tab:'hero'};}
  if(card.kind==='hero'){const gains=levelGains(save,card);return {eyebrow:'LEVEL UP',title:HEROES[card.id].name,from:card.from,to:card.to,stats:gains.map(g=>[g.label,g.after]),gains,learned:[],tab:'hero'};}
  const definitions={

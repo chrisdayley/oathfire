@@ -22,12 +22,12 @@ export class FootstepTracker{
  }
 }
 export function armorFoley(kind){return kind==='trail'?'leather':['spellweave','dawn'].includes(kind)?'cloth':'plate';}
-export function groundSurfaceAt(biome,x,y,z,kind='ground'){
+export function groundSurfaceAt(biome,x,y,z,kind='ground',minZ=-230){
  if(kind==='bridge')return 'wood';
  if(['crate','barrel','wood','furniture'].includes(kind))return 'wood';
  if(kind!=='ground')return 'stone';
  const waterX=biome==='river'?12+Math.sin(z*.045)*15:-85+Math.sin(z*.032)*9,waterY=biome==='river'?-1.3:-1.4,halfWidth=biome==='river'?6.5:8.5;
- if(z>=-230&&z<=-10&&Math.abs(x-waterX)<halfWidth&&y<waterY+.14)return 'water';
+ if(z>=minZ&&z<=-10&&Math.abs(x-waterX)<halfWidth&&y<waterY+.14)return 'water';
  if(Math.abs(x)<=33&&z>=-16.5&&z<=32.5&&y<.4)return 'stone';
  if(biome==='snow')return 'snow';
  if(biome==='quarry')return 'stone';
