@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Regiment dossiers — 2.9
+
+The army menu now opens directly to a troop list, animated model, and combat dossier. Every unit shows its actual stats, tactical role, strengths and vulnerabilities. Upgrade previews show the next-rank model, exact stat changes, newly unlocked abilities, and cost before confirmation. Battle recruitment uses the same layout with current research and Command prices. Equipment names remain visible above Overview, Compare and Improve. Existing saves are preserved.
+
+[Menu behavior and validation](docs/army-menu-2.9.md)
+
 ## Exalted equipment — 2.8
 
 Armor and weapons visibly change with equipped rarity on all three heroes. Legendary gear gains ornate construction and rich liveries; Mythic and Godly gear add luminous details and oversized weapons. Magical weapon auras follow the actual rune, power or affix. Shields now use their equipped item, and the portrait armory has a full-width model stage. Existing saves and items are preserved.

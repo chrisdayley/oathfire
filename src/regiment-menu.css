@@ -1,0 +1,113 @@
+/* One dedicated army screen: roster, live model, useful combat dossier. */
+#menu.regiment-menu{inset:0;width:100%;background:transparent;border:0;box-shadow:none;color:#ebe3d4}
+#menu.regiment-menu>header{height:52px;min-height:52px;padding:4px max(16px,env(safe-area-inset-right)) 4px max(16px,env(safe-area-inset-left));flex-wrap:nowrap;background:linear-gradient(90deg,#141b20fa,#283039f5);border-bottom:1px solid #a68b5866;gap:16px}
+#menu.regiment-menu>header>div>small{display:none}
+#menu.regiment-menu>header h1{font:20px Cinzel,Georgia;margin:0;color:#e4cf9f}
+#menu.regiment-menu #resources{margin-left:auto;font-size:17px;gap:18px}
+#menu.regiment-menu #resources small{display:inline;font-size:10px!important}
+#menu.regiment-menu #close-menu{width:44px;height:44px;min-height:44px;order:0;flex-shrink:0;font-size:30px}
+#menu.regiment-menu #menu-nav,#menu.regiment-menu>footer{display:none}
+#menu.regiment-menu>main{display:grid;grid-template-columns:minmax(175px,23%) minmax(180px,1fr) minmax(330px,38%);min-height:0;flex:1;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+#regiment-roster{min-height:0;display:flex;flex-direction:column;background:linear-gradient(100deg,#161c22f5,#20272ded);border-right:1px solid #a68b5844}
+#regiment-roster[hidden]{display:none}
+#regiment-roster button{border-radius:0;box-shadow:none;letter-spacing:0;text-transform:none}
+#regiment-roster .regiment-back{min-height:44px;padding:9px 18px;text-align:left;background:#0c101659;border:0;border-bottom:1px solid #a68b5833;font:15px 'Trebuchet MS',sans-serif;color:#dfcfae}
+.regiment-list-scroll{overflow:auto;min-height:0;flex:1;scrollbar-width:thin;scrollbar-color:#ae9666 #161b20;overscroll-behavior:contain}
+#regiment-roster .regiment-choice{width:100%;min-height:66px;padding:12px 16px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;text-align:left;border:0;border-bottom:1px solid #aab5bc14;border-left:3px solid transparent;background:transparent;color:#e6e4dd}
+.regiment-choice b{font:17px/1.2 Cinzel,Georgia;overflow-wrap:anywhere}
+.regiment-choice span{font:12px 'Trebuchet MS',sans-serif;color:#baad94}
+#regiment-roster .regiment-choice.selected{background:linear-gradient(90deg,#9c885b55,#4f596545);border-left-color:#f1d594;color:#fff4d6}
+#regiment-roster .regiment-choice.locked:not(.selected){color:#939796}
+#menu.regiment-menu #model-stage{width:100%;min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 45%,transparent 42%,#0b111333 100%)}
+#menu.regiment-menu #preview-caption{top:18px;left:14px;right:14px;text-align:center;pointer-events:none}
+#menu.regiment-menu #preview-caption h2,#menu.regiment-menu #preview-caption p{display:none}
+#menu.regiment-menu #preview-caption small{font:11px 'Trebuchet MS',sans-serif;letter-spacing:.12em;color:#ddc599;text-shadow:0 2px 3px #000}
+#menu.regiment-menu #preview-controls{left:8px;right:8px;bottom:12px;justify-content:center;align-items:center;flex-direction:row;flex-wrap:nowrap;gap:6px}
+#menu.regiment-menu #preview-controls button{min-height:44px;padding:7px 10px;font-size:12px;background:#1d242ccc;border-color:#a68b5855;color:#decfac}
+#menu.regiment-menu #menu-content{display:flex;min-width:0;min-height:0;padding:0;overflow:hidden;background:linear-gradient(110deg,#20262cf5,#141a20fa);border-left:1px solid #a68b5844}
+.regiment-sheet{display:flex;flex-direction:column;width:100%;min-height:0;padding:18px 22px 12px;box-sizing:border-box}
+.regiment-heading{flex-shrink:0;padding-bottom:13px;border-bottom:1px solid #ab925649}
+#menu .regiment-heading>small{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#c0b391}
+#menu .regiment-heading h2{font:24px/1.2 Cinzel,Georgia;color:#edd9a8;margin:7px 0 8px}
+.regiment-rank{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rank-diamonds{display:flex;gap:8px;padding:4px 2px}
+.rank-diamonds i{width:7px;height:7px;border:1px solid #8c836b;transform:rotate(45deg);background:#11171c}
+.rank-diamonds i.filled{background:#d1b779;box-shadow:0 0 5px #e5c66b35;border-color:#f4dc99}
+.regiment-rank label{font-size:12px;color:#c8b991;display:flex;align-items:center;gap:4px}
+#menu .regiment-rank select{background:#151c22;min-height:34px;height:34px;padding:4px;border:1px solid #ad94654d;border-radius:3px;font-size:12px;max-width:110px;color:#e9d6b0}
+.regiment-body{min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#9c8554 #171d23;overscroll-behavior:contain;padding:12px 1px 10px}
+.regiment-stats{margin:0 0 15px;display:grid;grid-template-columns:1fr 1fr;column-gap:20px}
+.regiment-stats>div{display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-bottom:1px solid #aeb8b818;min-height:32px;padding:5px 0;font:14px/1.3 'Trebuchet MS',sans-serif}
+.regiment-stats dt{color:#bdbeb7}
+.regiment-stats dd{margin:0;color:#f6e7c8;font-weight:bold;white-space:nowrap;font-variant-numeric:tabular-nums}
+#menu .regiment-purpose{font:15px/1.5 'Trebuchet MS',sans-serif;color:#e2ded2;margin:0 0 14px}
+#menu .regiment-matchups p{font:13px/1.45 'Trebuchet MS',sans-serif;color:#c4c8c4;margin:0 0 8px}
+.regiment-matchups b{color:#cdbc8e;font-weight:600;display:block}
+.regiment-actions{display:flex;gap:8px;margin-top:auto;padding-top:10px;border-top:1px solid #ab925644;flex-shrink:0}
+#menu .regiment-actions button{flex:1;min-width:0;min-height:44px;padding:10px 8px;font:14px 'Trebuchet MS',sans-serif;letter-spacing:0;background:linear-gradient(#303b45,#1b232b);border:1px solid #89816b;color:#ece0c7}
+#menu .regiment-actions button.primary{background:linear-gradient(#76603d,#3f3525);border-color:#c1a369;color:#fff0c9}
+#menu .regiment-actions button:disabled{opacity:.5}
+#menu .regiment-warning,#menu .regiment-preview-note,#menu .regiment-field{font:12px/1.4 'Trebuchet MS',sans-serif;color:#e3c692;margin:7px 0}
+.regiment-preview-note{padding:6px 8px;background:#9e834a1f;border:1px solid #b8a16b55}
+.regiment-abilities article{padding:0 0 14px;margin:0 0 14px;border-bottom:1px solid #ab925644}
+#menu .regiment-abilities h3,#menu .training-ability b{font:17px Cinzel,Georgia;color:#e6d3a1;margin:0 0 6px}
+#menu .regiment-abilities small{font-size:11px;color:#bfb893}
+#menu .regiment-abilities p,#menu .training-ability p{font:14px/1.5 'Trebuchet MS',sans-serif;color:#dedccf;margin:8px 0 0}
+.regiment-abilities article.locked{opacity:.65}
+.training-price{display:grid;grid-template-columns:1fr auto;gap:5px;margin:0 0 14px;padding:10px 12px;background:#b2914f15;border:1px solid #baa26755;font:14px 'Trebuchet MS',sans-serif;color:#e2d4ad}
+.training-price b{color:#f2d48e}
+#menu .training-price small{grid-column:1/-1;font-size:11px;color:#b7b7a8}
+.training-columns,.training-change{display:grid;grid-template-columns:1.2fr 1.2fr .9fr;gap:8px;align-items:center}
+.training-columns{font:10px 'Trebuchet MS',sans-serif;text-transform:uppercase;letter-spacing:.03em;color:#aea58e;padding-bottom:7px}
+.training-columns>*:not(:first-child),.training-change>*:not(:first-child){text-align:right}
+.training-change{padding:9px 0;border-bottom:1px solid #aeb8b818;font:13px/1.35 'Trebuchet MS',sans-serif;color:#d7d6cb}
+.training-change b{font-weight:400;color:#efe5c9;font-variant-numeric:tabular-nums}
+.training-change em{font-style:normal;color:#b8d599;font-variant-numeric:tabular-nums}
+.training-change.tradeoff em{color:#eeb69a}
+.training-ability{padding-top:14px}
+/* Keep the actual equipment name visible above the tabs, including while scrolling. */
+#menu.equipment-menu .armory-item-header{position:sticky;top:-20px;z-index:2;background:#211d18f7;padding:10px 12px 4px;border-bottom:1px solid #9c834855;margin-bottom:12px;box-shadow:0 5px 10px #0002}
+#menu.equipment-menu .equipment-name{font:22px/1.25 Cinzel,Georgia;overflow-wrap:anywhere;display:block;margin:5px 0 4px;letter-spacing:0}
+.equipment-name span{white-space:nowrap;color:#d2bd91}
+#menu.equipment-menu .armory-item-header .item-status{font-size:9px!important;margin:0}
+#menu.equipment-menu .armory-item-header .item-quality{margin:4px 0 6px}
+@media(max-height:600px){
+ #menu.regiment-menu>header{height:44px;min-height:44px;padding-top:0;padding-bottom:0}
+ #menu.regiment-menu>header h1{font-size:17px}
+ #menu.regiment-menu>main{grid-template-columns:minmax(150px,22%) minmax(175px,1fr) minmax(315px,41%)}
+ #regiment-roster .regiment-choice{min-height:54px;padding:8px 10px;gap:3px}
+ .regiment-choice b{font-size:14px}.regiment-choice span{font-size:10px}
+ .regiment-sheet{padding:9px 13px 7px}.regiment-heading{padding-bottom:5px}
+ #menu .regiment-heading h2{font-size:19px;margin:3px 0 2px}
+ #menu .regiment-heading>small{font-size:9px}.regiment-rank{height:28px}
+ #menu .regiment-rank select{height:28px;min-height:28px;font-size:11px}
+ .rank-diamonds{gap:7px}.rank-diamonds i{width:6px;height:6px}
+ .regiment-body{padding:7px 1px}.regiment-stats{margin-bottom:8px;column-gap:14px}
+ .regiment-stats>div{font-size:12px;min-height:22px;padding:3px 0;gap:5px}
+ #menu .regiment-purpose{font-size:12px;line-height:1.4;margin-bottom:8px}
+ #menu .regiment-matchups p{font-size:11px;line-height:1.4;margin-bottom:5px}.regiment-matchups b{display:inline;margin-right:3px}
+ .regiment-actions{padding-top:6px;gap:6px}#menu .regiment-actions button{font-size:12px;padding:7px;min-height:40px}
+ #menu.regiment-menu #preview-caption{top:12px}#menu.regiment-menu #preview-caption small{font-size:9px}
+ #menu.regiment-menu #preview-controls{bottom:7px}#menu.regiment-menu #preview-controls button{font-size:11px;padding:7px}
+ .training-price{margin-bottom:8px;padding:7px 9px;font-size:12px}.training-change{font-size:11px;padding:6px 0}.training-columns{font-size:9px;gap:6px}.training-ability{padding-top:8px}
+ #menu .training-ability b{font-size:14px}#menu .training-ability p{font-size:12px;margin-top:4px}
+ #menu.equipment-menu .armory-item-header{top:-14px;padding-top:7px}#menu.equipment-menu .equipment-name{font-size:18px}
+}
+@media(max-width:720px) and (orientation:landscape){
+ #menu.regiment-menu>main{grid-template-columns:148px minmax(160px,1fr) 310px}
+ #menu.regiment-menu #resources{font-size:14px;gap:10px}#menu.regiment-menu #resources small{display:none}
+ .regiment-sheet{padding:8px 10px 6px}.regiment-stats{column-gap:10px}
+ #menu.regiment-menu #preview-controls{gap:4px}#menu.regiment-menu #preview-controls button{padding:6px;font-size:10px}
+}
+@media(orientation:portrait){
+ #menu.regiment-menu>main{grid-template-columns:40% 60%;grid-template-rows:minmax(230px,40%) minmax(0,1fr)}
+ #regiment-roster{grid-column:1;grid-row:1}.regiment-choice b{font-size:13px}
+ #regiment-roster .regiment-choice{min-height:54px;padding:8px 9px;gap:3px}.regiment-choice span{font-size:10px}
+ #menu.regiment-menu #model-stage{grid-column:2;grid-row:1}
+ #menu.regiment-menu #menu-content{grid-column:1/-1;grid-row:2;border-left:0;border-top:1px solid #a68b5866}
+ .regiment-sheet{padding:10px 16px}.regiment-heading{padding-bottom:5px}#menu .regiment-heading h2{font-size:21px;margin:4px 0}
+ .regiment-body{padding:8px 0}.regiment-stats{margin-bottom:10px;column-gap:18px}.regiment-stats>div{min-height:26px;padding:3px 0;font-size:13px}
+ #menu .regiment-purpose{font-size:13px;margin-bottom:8px}#menu .regiment-matchups p{font-size:12px;margin-bottom:5px}.regiment-matchups b{display:inline}
+ #menu.regiment-menu #resources{font-size:13px;gap:10px}#menu.regiment-menu #resources small{display:none}
+ #menu.equipment-menu .armory-item-header{top:-12px}.training-change{padding:7px 0;font-size:12px}
+}

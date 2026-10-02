@@ -1,5 +1,7 @@
 # Command & Keep — mobile interface revision
 
+**Current army menu:** [Regiment dossiers 2.9](army-menu-2.9.md) supersedes the older troop roster and tab flow below. Defense and keep navigation retain their existing structure.
+
 ## Reference research
 
 The [Heroes & Castles 2 screenshot gallery](https://minireview.io/action/heroes-and-castles-2-premium) shows a dedicated battlefield HUD with Units and Research entry points, compact resource counters, heraldic lettering and framed buttons. Its [developer-published store listing](https://apps.apple.com/us/app/heroes-and-castles-2/id993873900) establishes the live hero/army/castle combination. The battlefield HUD screenshot was visually inspected; the exact original expanded recruitment popup was not reliably recovered. Oathfire's new Troops/Defenses hierarchy follows Chris's requested flow rather than claiming to reproduce that popup.
