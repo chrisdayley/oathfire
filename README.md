@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## People of Hearthwatch — 2.16
+
+All interface screens respect camera cutouts and the home indicator, with a landscape safety margin for touch browsers that report no inset. The pause menu now opens character progression. Town services require visiting Torren, Rowan, Nell, Iona or Sera. The Town guide, tutorial, reward choices and preparation links mark their locations rather than remotely opening upgrades or missions.
+
+[Phone layout, town flow and validation](docs/people-of-hearthwatch-2.16.md)
+
 ## The marching host — 2.15
 
 Castle-focused enemies retaliate when attacked. Defensive waves now deliver reinforcements for 72–120 seconds, building into larger, stronger final packets and waiting for all survivors to fall. All three heroes receive fitted helmets, longer embroidered capes, more natural proportions and rarity-dependent armor coverage: Legendary sleeves, Mythic/Godly full plate.

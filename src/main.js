@@ -14,3 +14,5 @@ game.init().catch(error=>{console.error(error);document.getElementById('load-tex
 if(import.meta.env.PROD&&'serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(import.meta.env.BASE_URL+'sw.js').catch(e=>console.warn('Offline cache unavailable',e.message)));
 
 import './ability-ui.css';
+
+import './safe-area.css';
