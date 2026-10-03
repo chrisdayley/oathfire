@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Daily town rewards — 2.18.1
+
+Every campaign day pays Supplies from each town still held, after victories, defeats and withdrawals. New conquests begin paying immediately; lost towns stop paying that day. Battle reports itemize the payment by town, and the map shows each town’s daily rate and the total collected. Existing saved rewards are not collected again.
+
+[Daily income rules and validation](docs/daily-town-rewards-2.18.1.md)
+
 ## The living campaign — 2.18
 
 A mission advances one campaign day. Hearthwatch has its own 24-assault defense track, separate from the illustrated territory map. Eight town sieges, invasion deadlines, playable relief battles and temporary garrison protection make territorial control matter. Battle rewards end with an animated full-screen map report. Finish all defenses, hold every town and defeat the Hollow King at the Obsidian Crown to win.
