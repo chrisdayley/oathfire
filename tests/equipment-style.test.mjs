@@ -24,7 +24,7 @@ test('Mythic and Godly are late-game drops while all seven tiers remain obtainab
  const result=lootRoll(s,0,()=>.999,'armor');assert.equal(result.rarity,6);assert.ok(itemValue(result)>itemValue({...result,rarity:4}));
 });
 test('The final fortress and final defense guarantee Mythic and Godly on first victory only',()=>{
- const s=newSave();s.completed=Array.from({length:23},(_,i)=>i);const fortress=Object.values(MISSIONS).find(m=>m.kind==='fortress');assert.ok(fortress);let result=completeMission(s,fortress.id);assert.equal(result.item.rarity,5);result=completeMission(s,23);assert.equal(result.item.rarity,6);assert.equal(result.first,true);validateSave(s);
+ const s=newSave();s.completed=Array.from({length:23},(_,i)=>i);const fortress=Object.values(MISSIONS).find(m=>m.kind==='fortress');assert.ok(fortress);let result=completeMission(s,23);assert.equal(result.item.rarity,6);s.settlements=Array.from({length:8},(_,i)=>24+i);result=completeMission(s,fortress.id);assert.equal(result.item.rarity,5);assert.equal(result.first,true);validateSave(s);
 });
 test('Exalted equipped items and recovered chest contents survive save validation unchanged',()=>{
  const s=newSave();for(const rarity of [5,6])for(const type of ['sword','armor','shield']){const i=makeItem(type,rarity,20,()=>.4);s.inventory.push(i);equipItem(s,i.id);}const saved=structuredClone(s);validateSave(saved);assert.deepEqual(saved.inventory,s.inventory);assert.equal(equipped(saved,'armor').rarity,6);

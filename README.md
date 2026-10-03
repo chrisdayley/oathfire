@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## The living campaign — 2.18
+
+A mission advances one campaign day. Hearthwatch has its own 24-assault defense track, separate from the illustrated territory map. Eight town sieges, invasion deadlines, playable relief battles and temporary garrison protection make territorial control matter. Battle rewards end with an animated full-screen map report. Finish all defenses, hold every town and defeat the Hollow King at the Obsidian Crown to win.
+
+[Campaign rules, reference research and validation](docs/living-campaign-2.18.md)
+
 ## Reedwater — 2.17
 
 Flowing water follows a continuous riverbed with wet banks, reeds, shore stones and walkable shallows. Valley obstacles now remain visible to enemy navigation below world height zero, resolving stranded reinforcements. Wave status distinguishes enemies left from intermission seconds. Recruitment prices now separate cheap infantry from costly specialists and elites.

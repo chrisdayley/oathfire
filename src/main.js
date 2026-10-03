@@ -16,3 +16,5 @@ if(import.meta.env.PROD&&'serviceWorker' in navigator)window.addEventListener('l
 import './ability-ui.css';
 
 import './safe-area.css';
+
+import "./war-map.css";

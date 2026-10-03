@@ -5,7 +5,7 @@ import * as T from 'three';
 import {MISSIONS,seeded} from './data.js';
 import {mesh,mat} from './art.js';
 import {missionRoster} from './campaign.js';
-import {isSiege,SIEGE_OUTPOSTS,SIEGE_GATE_Z,SIEGE_PARTS,SIEGE_NAMES,siegeConfig,newSiegeState,siegePressure,siegeInterval,siegePacket} from './siege-rules.js';
+import {isSiege,siegeWon,SIEGE_OUTPOSTS,SIEGE_GATE_Z,SIEGE_PARTS,SIEGE_NAMES,siegeConfig,newSiegeState,siegePressure,siegeInterval,siegePacket} from './siege-rules.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function attackPoint(target,from){
  if(!target.structure)return target.pos;
@@ -41,7 +41,7 @@ export function hitFortification(g,t,amount,source,opt){
  let armor=t.stats.armor*(1-(opt.pierce||source?.stats?.armorPierce||0));({amount,armor}=researchHit(g,t,source,opt,amount,armor));if(t.marked>0)bonus*=source===g.hero?1.2:1.15;if(source?.team==='ally'&&distance(source.pos,g.hero.pos)<g.heroStats().supportRadius)bonus*=1+g.heroStats().allyBonus;const damage=Math.min(t.hp,Math.max(1,Math.round(amount*bonus*100/(100+armor*2))));
  recordDamage(g.battle,t,source,g.hero,damage);t.hp=Math.max(0,t.hp-damage);st.hp[t.part]=t.hp;st.damage+=damage;st[source===g.hero?'heroDamage':'armyDamage']+=damage;g.combat.stats.hits++;
  if(distance(g.hero.pos,t.pos)<45){g.fx.damageText(t.pos.clone().add(new T.Vector3(0,2,0)),damage,'#edbe7f');g.fx.emit(opt.fire?'fire':'spark',t.pos.clone().add(new T.Vector3(0,1.3,0)),opt.heavy?18:7,{speed:2});if(!opt.silent)g.audio.impact({element:'stone',weapon:opt.weapon||source?.weapon,position:t.pos,heavy:!!opt.heavy,hero:source===g.hero});}
- if(source===g.hero&&!opt.secondary)triggerWeaponPower(g,t,opt);if(t.hp===0&&!t.dead){t.dead=true;st.destroyed++;collapse(g,t,true);g.toast(t.part==='gate'?'Gate breached! Push through and destroy the dread keep.':t.part==='keep'?'The keep is destroyed. The city is free.':SIEGE_NAMES[t.part]+' destroyed · its guns are silent.');g.checkpoint();if(t.part==='keep')g.combat.later(.9,()=>{if(g.battle?.siege?.hp.keep===0&&!g.hero.dead)g.victory();});}
+ if(source===g.hero&&!opt.secondary)triggerWeaponPower(g,t,opt);if(t.hp===0&&!t.dead){t.dead=true;st.destroyed++;collapse(g,t,true);g.toast(t.part==='gate'?'Gate breached! Push through and destroy the dread keep.':t.part==='keep'?(MISSIONS[g.battle.id].id===32&&!st.bossDefeated?'The keep falls. Defeat the Hollow King to end the war.':'The keep is destroyed. The city is free.'):SIEGE_NAMES[t.part]+' destroyed · its guns are silent.');g.checkpoint();if(t.part==='keep')g.combat.later(.9,()=>{if(g.battle?.siege&&siegeWon(MISSIONS[g.battle.id],g.battle.siege)&&!g.hero.dead)g.victory();});}
 }
 export function tickSiege(g,dt){
  const b=g.battle,st=b.siege,m=MISSIONS[b.id],c=siegeConfig(m);
@@ -58,6 +58,10 @@ export function tickSiege(g,dt){
  st.nextSpawn-=dt;
  if(st.nextSpawn<=0){const alive=g.enemies.filter(e=>!e.dead).length,n=Math.min(c.limit-alive,siegePacket(m,pressure));for(let i=0;i<n;i++)spawnReinforcement(g,st.packets*5+i,pressure);st.spawned+=Math.max(0,n);st.packets++;st.nextSpawn=siegeInterval(m,pressure)*(b.camp?1.2:1);}
  for(const t of g.siegeTargets){if(t.marked>0)t.marked=Math.max(0,t.marked-dt);if(t.dead||!['west','east'].includes(t.part))continue;t.cooldown-=dt;if(t.cooldown>0)continue;const targets=[g.hero,...g.allies].filter(a=>!a.dead&&distance(a.pos,t.pos)<48).sort((a,b)=>distance(a.pos,t.pos)-distance(b.pos,t.pos)),target=targets[0];if(!target)continue;t.cooldown=c.final?3.4:5;const origin=t.pos.clone().add(new T.Vector3(0,8.8,1));g.fx.emit('fire',origin,12,{speed:2});g.audio.play('bolt',.4,{position:origin});g.combat.shoot(t,target,{damage:c.damage,type:c.final?'grave':'bolt',speed:24,origin,rank:3});}
- // Destroying the core is the only victory condition, including after save/resume.
- if(st.hp.keep===0&&!g.hero.dead)g.victory();
+ // The King emerges at the breach; keep destruction alone cannot end his battle.
+ if(c.final&&st.hp.gate===0&&!st.bossSpawned){
+  const p={x:0,z:SIEGE_GATE_Z-10};g.spawnEnemy('boss',{...p,y:g.world.height(p.x,p.z)},{waveTier:6});st.bossSpawned=true;b.bossTheme=true;g.audio.updateMusic(g);g.toast('The Hollow King emerges! Defeat him AND destroy the keep.');g.checkpoint();
+ }
+ if(c.final&&st.bossSpawned&&!st.bossDefeated&&!g.enemies.some(e=>e.type==='boss'&&!e.dead)){st.bossDefeated=true;g.toast('The Hollow King falls. Finish the keep to end the war.');g.checkpoint();}
+ if(siegeWon(m,st)&&!g.hero.dead)g.victory();
 }

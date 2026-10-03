@@ -26,11 +26,12 @@ export function siegeConfig(m){
 export function siegePressure(m,time,gateBroken=false,frontier=-Infinity){const c=siegeConfig(m),roadCap=frontier<SIEGE_GATE_Z+120?6:Math.min(5,2+Math.floor(Math.max(0,-frontier-175)/200));return Math.min(6,roadCap+(gateBroken?1:0),1+Math.floor(Math.max(0,time)/c.stepSeconds)+(gateBroken?1:0));}
 export function siegeInterval(m,pressure){const c=siegeConfig(m);return Math.max(c.minimum,c.interval-(pressure-1)*(c.final?2:3));}
 export function siegePacket(m,pressure){return (siegeConfig(m).final?4:3)+(pressure-1);}
-export function newSiegeState(m){const c=siegeConfig(m);return {version:3,frontier:-27,outposts:[false,false,false,false],activated:[false,false,false,false],capture:0,hp:{...c.hp},nextSpawn:5,pressure:1,spawned:0,packets:0,damage:0,heroDamage:0,armyDamage:0,destroyed:0};}
+export function newSiegeState(m){const c=siegeConfig(m);return {version:3,bossSpawned:false,bossDefeated:false,frontier:-27,outposts:[false,false,false,false],activated:[false,false,false,false],capture:0,hp:{...c.hp},nextSpawn:5,pressure:1,spawned:0,packets:0,damage:0,heroDamage:0,armyDamage:0,destroyed:0};}
 export function validateSiegeState(value,m){
  if(value===undefined)return; // A suspended pre-siege settlement is migrated on resume.
  if(!isSiege(m)||![1,2,3].includes(value?.version))throw Error('Invalid siege checkpoint.');
  if(value.version>=2){if(value.frontier!==undefined&&(!Number.isFinite(value.frontier)||value.frontier< -2400||value.frontier>55))throw Error('Invalid siege frontier.');for(const key of ['outposts','activated'])if(!Array.isArray(value[key])||value[key].length!==4||value[key].some(v=>typeof v!=='boolean'))throw Error('Invalid siege road progress.');if(!Number.isFinite(value.capture)||value.capture<0||value.capture>6)throw Error('Invalid camp capture.');}
+ for(const k of ['bossSpawned','bossDefeated'])if(value[k]!==undefined&&typeof value[k]!=='boolean')throw Error('Invalid fortress commander.');if(value.bossDefeated&&!value.bossSpawned)throw Error('Invalid commander victory.');
  const c=siegeConfig(m);
  for(const part of SIEGE_PARTS)if(!Number.isFinite(value.hp?.[part])||value.hp[part]<0||value.hp[part]>c.hp[part])throw Error('Invalid fortress health.');
  for(const k of ['spawned','packets','destroyed','pressure'])if(!Number.isInteger(value[k])||value[k]<0||value[k]>1e7)throw Error('Invalid siege progress.');
@@ -52,3 +53,5 @@ export function migrateSiegeCheckpoint(saved,m){
  if(legacy){st.outposts=[true,true,true,true];st.activated=[true,true,true,true];st.capture=0;}
  st.version=3;return next;
 }
+
+export const siegeWon=(m,st)=>st?.hp.keep===0&&(m.id!==FINAL_FORTRESS||st.bossSpawned&&st.bossDefeated);

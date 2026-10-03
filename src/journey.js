@@ -1,3 +1,4 @@
+import {warUrgency} from './campaign-ui.js';
 import {serviceFor,canUseService} from './town-services.js';
 import {EXTRA_LOCATIONS,SETTLEMENTS,MAIN_COUNT,nextCampaignMission} from './campaign.js';
 import * as T from 'three';
@@ -27,7 +28,7 @@ export const CHAPTERS=[
  ['Sera','No more borrowed souls.','At the Crown of Ash, Veyr brings his last army. Hold our beacon through five waves and defeat the marshal. We came to open the door, not to claim his throne.','Grave callers now cast slowing frost bolts. Commit your strongest regiments and protect the beacon while Veyr is on the field.','Veyr hears the voices leave of their own accord. The crown falls from his hands. Hearthwatch’s ember burns on—not as a prison, but as a light a traveler may choose to follow.']
 ].map(([speaker,title,brief,tactics,aftermath])=>({speaker,title,brief,tactics,aftermath}));
 for(const [name,biome,title,story] of EXTRA_LOCATIONS)CHAPTERS.push({speaker:'Sera',title,brief:story,tactics:'Study the enemy counters at the war table. Veteran support troops, armor piercing weapons and trained defenses matter on these fronts.',aftermath:name==='The Last Dawn'?'The Hollow King falls. Each rescued city lights a fire of its own. The voices choose their journeys, and Hearthwatch opens its gates.':'The beacon at '+name+' burns freely. The rescued voices reveal the road ahead.'});
-for(const city of SETTLEMENTS)CHAPTERS.push({speaker:'Iona',title:city.title,brief:city.story+' This optional rescue strengthens the kingdom without advancing the main story.',tactics:'Break the gate, then destroy the dread keep. The two bastions fire until destroyed. Charged attacks deal 25% extra siege damage. Reinforcements accelerate as time passes; keep moving. Once rescued, this settlement sends '+city.income+' Supplies after each main-mission victory, including replays.',aftermath:city.name+' is free. Its people pledge supplies to each successful campaign expedition.'});
+for(const city of SETTLEMENTS)CHAPTERS.push({speaker:'Iona',title:city.title,brief:city.story+' Liberate all eight towns to reach the final fortress. Captured towns can be invaded; watch the map deadlines.',tactics:'Break the gate, then destroy the dread keep. The two bastions fire until destroyed. Charged attacks deal 25% extra siege damage. Reinforcements accelerate as time passes; keep moving. Once rescued, this settlement sends '+city.income+' Supplies after each main-mission victory, including replays.',aftermath:city.name+' is free. Its people pledge supplies to each successful campaign expedition.'});
 export const TRAINING=[
  {id:'move',title:'Find your feet',text:'Walk 8m with the left stick or WASD. Drag the open screen (right mouse on desktop) to turn the camera.',target:[-10,-8],action:'Practice in the yard'},
  {id:'look',title:'Look around',text:'Drag an empty part of the screen to turn the camera. On desktop, hold the right mouse button while dragging.',action:'Camera practice'},
@@ -52,7 +53,7 @@ export class Journey{
  observe(dt){const g=this.g,s=g.store.data;if(!s||!g.hero)return;const p=g.hero.pos;if(!g.battle&&this.lastPos){const d=p.distanceTo(this.lastPos);if(d<1&&g.hero.speed>.5)s.guide.distance+=d;if(s.guide.distance>=8)this.mark('move');}this.lastPos=p.clone();if(this.lastYaw===null)this.lastYaw=g.view.yaw;if(Math.abs(g.view.yaw-this.lastYaw)>.25)this.mark('look');}
  act(){const t=this.step(),g=this.g;if(!t)return;if(t.tab)g.ui.open(t.tab);else if(t.id==='mission')g.ui.guideTo('campaign');else if(t.id==='victory')g.ui.help();else g.toast(t.text);}
  render(){const g=this.g,s=g.store.data;if(!s)return;const t=this.step(),card=$('journey-card'),visible=g.mode==='play'&&!g.menu&&!g.ui.modal;
- card.hidden=!visible||!t;$('mission-shortcut').hidden=!visible||!!g.battle;$('mission-shortcut').textContent='Find Sera · '+(s.completed.length?'Next mission':'First defense');
+ card.hidden=!visible||!t;$('mission-shortcut').hidden=!visible||!!g.battle;$('mission-shortcut').textContent='Find Sera · '+warUrgency(s);
  if(t){const service=serviceFor(t.tab),near=service&&canUseService(g,t.tab);const key=t.id+g.battle?.id+near;if(this.lastCard!==key){this.lastCard=key;$('journey-title').textContent=t.title;$('journey-text').textContent=t.text;$('journey-count').textContent=t.post?'BETWEEN BATTLES · PREPARE YOUR NEXT OATH':'FIELD TRAINING · '+(TRAINING.indexOf(t)+1)+' / '+TRAINING.length;$('journey-action').textContent=near?'Speak to '+service.name.split(' · ')[0]:t.action;}}
  const target=t?.target||(!g.battle?[0,17]:null),way=$('journey-waypoint');way.hidden=!visible||!target;if(target){const v=new T.Vector3(target[0],2.8,target[1]),d=Math.round(Math.hypot(target[0]-g.hero.pos.x,target[1]-g.hero.pos.z));const camera=g.view.camera,local=v.clone().applyMatrix4(camera.matrixWorldInverse);v.project(camera);const off=local.z>0||Math.abs(v.x)>.88||Math.abs(v.y)>.8;let x=(v.x+1)*innerWidth/2,y=(1-v.y)*innerHeight/2;if(local.z>0){x=innerWidth-x;y=innerHeight*.42;}const safe=$('ui-safe-area').getBoundingClientRect();x=Math.max(12,Math.min(safe.width-190,x-safe.left));y=Math.max(90,Math.min(safe.height-155,y-safe.top));way.style.left=x+'px';way.style.top=y+'px';way.textContent=(off?(local.z>0||Math.abs(v.x)>.88?(local.x<0?'← ':'→ '):v.y>0?'↑ ':'↓ '):'◇ ')+(t?.waypoint|| (t?.target?t.id==='mission'?'Sera · War table':t.id==='troops'?'Rowan · Barracks':t.id==='defenses'?'Nell · Engineer':'Training yard':'Sera · War table'))+' · '+d+'m';}
  }
@@ -61,3 +62,35 @@ export class Journey{
 CHAPTERS[32]={speaker:'Sera',title:'Break the throne of the dead',brief:'Every road has led here. The Obsidian Crown commands the Hollow Host. Take its gate and shatter the keep. The king will have no throne to hide behind.',tactics:'Bring a trained Oathbound giant or siege crew and a healer. Use Follow to bring your army through the breach. Destroy bastions to silence their guns. Capture the four road camps to advance recruitment and recover health. Pressure grows with time and your advance; breaching the gate raises it again; push for the keep.',aftermath:'The crown breaks. From its ruins, the Hollow King rises and turns toward Hearthwatch. Return home, prepare your strongest army, and hold the final dawn.'};
 CHAPTERS[22].aftermath='The Door of Names stands open. Beyond it lies the Obsidian Crown, the final fortress. Break its keep to draw the Hollow King into the open.';
 CHAPTERS[23].tactics='This is the last defense of Hearthwatch. Six waves build toward the Hollow King himself. Reinforce your gate, train your defenses, and defeat the king before the beacon falls.';
+
+// The defense track takes place at one home castle. Names identify the attacking host.
+const DEFENSE_STORY=[
+ 'Refugee families are reaching our gates. Hold the outer field while the last carts enter Hearthwatch.',
+ 'The Reedwater watch warns of bowmen crossing the ford toward our castle. Protect the gate and give the survivors shelter.',
+ 'Swift raiders from the quarry have followed the masons home. Stop their flankers before they reach the beacon.',
+ 'The abbey’s fallen knights are marching on Hearthwatch. Break their armored line and protect the book of names.',
+ 'The Bell Knight comes to silence our beacon. Defeat his escort and break the bell at our walls.',
+ 'The foundry sends bomb carriers against our gate. Keep moving and hunt their throwing crews.',
+ 'War heralds lead the river host to Hearthwatch. Their banners strengthen the dead; take the heralds down first.',
+ 'Frostmere’s archers have joined the Host. Their long arrows threaten our ramparts and the people behind them.',
+ 'Siege brutes advance from the downs. Bring armor piercing support to keep their hammers off our gate.',
+ 'The Ash Castellan has brought his siege army to our home. Defeat him before the beacon falls.',
+ 'Shielded bulwarks march from Blackroot. Flank their formation while the town guards hold the center.',
+ 'The ancient stone has reached Hearthwatch. Guard the beacon while Sera reads the first oath.',
+ 'Bone menders accompany the Glasswater host. Hunt the healers before their army can overwhelm the gate.',
+ 'The frozen wardens have come to shelter at Hearthwatch. Hold through the attack while they renew the beacon oath.',
+ 'Marshal Veyr comes to claim our ember. Hold the walls and defeat him; no voice will belong to his crown again.',
+ 'The orchard’s dead carry memories of a deeper king. Keep Hearthwatch safe while Sera follows those voices.',
+ 'Blood reavers pursue the astronomers to our castle. Finish wounded reavers before their fury spreads.',
+ 'A refugee fleet reaches our coast. Keep Hearthwatch’s gate open against the army following them.',
+ 'Ash mortars set up outside Hearthwatch. Reach the siege crews before they batter our walls apart.',
+ 'The Glass Regent brings his reflections to our gate. Defeat him and free the winter cities from his hold.',
+ 'Mirror wraiths have found our ember. Watch their landing rings and keep them away from our defenders.',
+ 'The Host’s oldest siege machines approach Hearthwatch. Protect the first oath through six waves.',
+ 'Hollow warpriests lead the penultimate assault. Their protection keeps the dead fighting; silence them first.',
+ 'The King’s Hand leads the last great attack on Hearthwatch. Defeat his six waves, then storm the Obsidian Crown.'
+];
+for(let i=0;i<24;i++){CHAPTERS[i].brief=DEFENSE_STORY[i];CHAPTERS[i].title='Hearthwatch · Assault '+(i+1);CHAPTERS[i].aftermath=i===23?'The King’s Hand falls. Hearthwatch has endured every assault. Free the remaining towns, defeat their invading armies, and carry the last battle to the Hollow King’s castle.':'Hearthwatch endures assault '+(i+1)+'. The survivors bring new allies and intelligence. Sera updates the map; the next enemy army is already gathering.';}
+CHAPTERS[23].tactics='The King’s Hand leads the final wave. Protect the beacon, keep a reserve of Command, and use armor piercing troops against his escort.';
+CHAPTERS[32]={speaker:'Sera',title:'End the Hollow March',brief:'Hearthwatch has endured every assault and the eight towns stand together. The Hollow King waits at the Obsidian Crown. Breach his gate, defeat the king himself, and destroy his keep.',tactics:'The king emerges when the gate falls. Silence the bastions before engaging him. Bring healers, trained siege crews and armor piercing weapons. Neither the king nor the keep may survive.',aftermath:'The Hollow King falls at his broken throne. Every town is free. The voices choose their own paths, and the roads finally lead home.'};
+for(let i=0;i<8;i++){const town=SETTLEMENTS[i];CHAPTERS[33+i]={speaker:'Rowan',title:'Save '+town.name,brief:'An invading army is closing on '+town.name+'. Intercept the Host at the town’s gate and defeat every wave. If the deadline expires, the town and its tribute are lost until you retake its castle.',tactics:'Destroy the attacking force while the town beacon survives. Your trained defenses and regiments support the relief force. The enemy strength is tied to this region, not to how many times it has been invaded.',aftermath:town.name+' is safe. Its garrison has four days of protection from new invasion warnings, and its tribute continues.'};}

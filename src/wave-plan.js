@@ -3,8 +3,9 @@ import {missionRoster} from './campaign.js';
 export const DEFENSE_FIELD_LIMIT=58;
 const heavies=new Set(['knight','brute','bulwark','reaver','mortar','warpriest']);
 export function createAssault(mission,wave,camp=false){
+ const stage=mission.kind==='relief'?mission.unlockMain+1:mission.id;
  const original=missionRoster(mission,wave),total=Math.max(18,Math.ceil(original.length*1.75))-(camp?2:0);
- const duration=Math.min(120,72+(wave-1)*9+mission.id*1.4),packets=Math.min(11,7+Math.floor((wave-1)/2)+Math.floor(mission.id/8));
+ const duration=Math.min(120,72+(wave-1)*9+stage*1.4),packets=Math.min(11,7+Math.floor((wave-1)/2)+Math.floor(stage/8));
  // Reuse the unlocked roster, shifting heavily armored enemies toward the tail.
  const roster=Array.from({length:total},(_,i)=>original[i%original.length]);
  roster.sort((a,b)=>Number(heavies.has(a))-Number(heavies.has(b)));
@@ -17,7 +18,7 @@ export function createAssault(mission,wave,camp=false){
  const entries=[];let index=0,seed=(mission.seed+wave*811)>>>0;
  const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
  for(let packet=0;packet<packets;packet++){
-  const phase=packet/(packets-1),at=duration*Math.pow(phase,.78),width=24+Math.min(20,mission.id*2);
+  const phase=packet/(packets-1),at=duration*Math.pow(phase,.78),width=24+Math.min(20,stage*2);
   for(let i=0;i<sizes[packet];i++)entries.push({at,type:roster[index++],x:((packet+i)%3-1)*width+(rand()-.5)*12,z:-78-rand()*20,assaultBoost:1+phase*.18});
  }
  if(mission.boss&&wave===mission.waves)entries.push({at:duration,type:'boss',x:0,z:-104,assaultBoost:1.18});
