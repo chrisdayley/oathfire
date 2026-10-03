@@ -6,7 +6,7 @@ const up=new T.Vector3(0,1,0),still=new T.Vector3();
 export function tickWallSoldier(g,e,dt){
  e.speed=0;e.velocity.set(0,0,0);e.knock=null;g.physics.move(e.phys,still,dt);
  const origin=e.pos.clone().add(new T.Vector3(0,1.6,-1.3));
- const target=g.enemies.filter(t=>!t.dead&&Math.hypot(t.pos.x-e.pos.x,t.pos.z-e.pos.z)<e.stats.reach&&g.physics.lineClear(origin,t.pos.clone().addScaledVector(up,1.05))).sort((a,b)=>a.pos.distanceToSquared(e.pos)-b.pos.distanceToSquared(e.pos))[0];
+ const target=g.enemies.filter(t=>!t.dead&&Math.hypot(t.pos.x-e.pos.x,t.pos.z-e.pos.z)<e.stats.reach&&g.physics.lineClear(origin,t.pos.clone().addScaledVector(up,1.05))).sort((a,b)=>Number(b.marked>0)-Number(a.marked>0)||a.pos.distanceToSquared(e.pos)-b.pos.distanceToSquared(e.pos))[0];
  if(!target||e.cooldown>0||e.stun>0)return;
  e.facing=Math.atan2(target.pos.x-e.pos.x,target.pos.z-e.pos.z);e.character.root.rotation.y=e.facing;
  e.cooldown=e.stats.attackInterval/(e.haste>0?1.18:1);e.character.attack(e.weapon,false,0,.75);

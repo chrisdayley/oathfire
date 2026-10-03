@@ -5,7 +5,7 @@ export const ARMORS={
  bastion:{name:'Bastion harness',role:'Hold the line',base:19,steel:0x53626c,cloth:0x192839,trim:0xb7afb0,lore:'Layered siege plate. Built for the moment the gate gives way.',bonuses:{stamina:14,guardReduction:.16,speed:-.04}},
  trail:{name:'Wayfarer leathers',role:'Mobile skirmisher',base:8,steel:0x66533b,cloth:0x30493b,trim:0x94825a,lore:'Weathered leather, quiet buckles and the green mantle of the old border scouts.',bonuses:{speed:.08,staminaRecovery:.25}},
  spellweave:{name:'Starwoven vestments',role:'Sustained spellcasting',base:6,steel:0x687787,cloth:0x292b50,trim:0xa8bacb,lore:'Silver channels carry a little of the beacon’s light back to its bearer.',bonuses:{focus:20,focusRecovery:.30}},
- ember:{name:'Cinderforged mail',role:'Fire and charged strikes',base:14,steel:0x494543,cloth:0x512c23,trim:0xb67c48,lore:'Tempered in the ruins of Emberfall. The seams remember the furnace.',bonuses:{fireResistance:.25,heavyBonus:.12}},
+ ember:{name:'Cinderforged mail',role:'Fire and charged strikes',base:14,steel:0x494543,cloth:0x512c23,trim:0xb67c48,lore:'Tempered in the ruins of Emberfall. As the Ashwright, enemies killed while burning leave an ember for 6 seconds. Approach it to recover 12 health.',bonuses:{fireResistance:.25,heavyBonus:.12}},
  dawn:{name:'Dawnkeeper mantle',role:'Health and recovery',base:10,steel:0xb8b9aa,cloth:0xb4aa85,trim:0xbda161,lore:'A pale mantle worn by the healers who stayed behind when the road fell.',bonuses:{hp:24,healing:.20}},
  marshal:{name:'Marchwarden cuirass',role:'Command your army',base:11,steel:0x666758,cloth:0x552c36,trim:0xc0a16a,lore:'Its crimson standard tells the scattered living where to rally.',bonuses:{supportRadius:2,allyBonus:.10}}
 };

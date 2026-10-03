@@ -1,3 +1,4 @@
+import {tickSiegeObjectives} from './siege-objectives.js';
 import {recordDamage} from './battle-record.js';
 import {researchHit} from './research-combat.js';
 import {triggerWeaponPower} from './weapon-powers.js';
@@ -44,7 +45,7 @@ export function hitFortification(g,t,amount,source,opt){
  if(source===g.hero&&!opt.secondary)triggerWeaponPower(g,t,opt);if(t.hp===0&&!t.dead){t.dead=true;st.destroyed++;collapse(g,t,true);g.toast(t.part==='gate'?'Gate breached! Push through and destroy the dread keep.':t.part==='keep'?(MISSIONS[g.battle.id].id===32&&!st.bossDefeated?'The keep falls. Defeat the Hollow King to end the war.':'The keep is destroyed. The city is free.'):SIEGE_NAMES[t.part]+' destroyed · its guns are silent.');g.checkpoint();if(t.part==='keep')g.combat.later(.9,()=>{if(g.battle?.siege&&siegeWon(MISSIONS[g.battle.id],g.battle.siege)&&!g.hero.dead)g.victory();});}
 }
 export function tickSiege(g,dt){
- const b=g.battle,st=b.siege,m=MISSIONS[b.id],c=siegeConfig(m);
+ const b=g.battle,st=b.siege,m=MISSIONS[b.id],c=siegeConfig(m);tickSiegeObjectives(g,dt);
  // Dormant roadside garrisons activate before the leading soldier reaches them.
  const lead=Math.min(g.hero.pos.z,...g.allies.filter(a=>!a.dead).map(a=>a.pos.z));
  SIEGE_OUTPOSTS.forEach((p,i)=>{
@@ -56,7 +57,7 @@ export function tickSiege(g,dt){
  st.frontier=Math.min(st.frontier??g.hero.pos.z,lead);const pressure=Math.max(st.pressure,siegePressure(m,b.time,st.hp.gate===0,st.frontier));
  if(pressure>st.pressure){st.pressure=pressure;b.wave=pressure;g.toast('Enemy reinforcements intensify · pressure '+pressure+'/6');g.audio.play('rally',.4);}
  st.nextSpawn-=dt;
- if(st.nextSpawn<=0){const alive=g.enemies.filter(e=>!e.dead).length,n=Math.min(c.limit-alive,siegePacket(m,pressure));for(let i=0;i<n;i++)spawnReinforcement(g,st.packets*5+i,pressure);st.spawned+=Math.max(0,n);st.packets++;st.nextSpawn=siegeInterval(m,pressure)*(b.camp?1.2:1);}
+ if(st.nextSpawn<=0){const alive=g.enemies.filter(e=>!e.dead).length,n=Math.min(c.limit-alive,siegePacket(m,pressure));for(let i=0;i<n;i++)spawnReinforcement(g,st.packets*5+i,pressure);st.spawned+=Math.max(0,n);st.packets++;st.nextSpawn=siegeInterval(m,pressure)*(b.camp?1.2:1)*(st.routes?.signal?1.3:1);}
  for(const t of g.siegeTargets){if(t.marked>0)t.marked=Math.max(0,t.marked-dt);if(t.dead||!['west','east'].includes(t.part))continue;t.cooldown-=dt;if(t.cooldown>0)continue;const targets=[g.hero,...g.allies].filter(a=>!a.dead&&distance(a.pos,t.pos)<48).sort((a,b)=>distance(a.pos,t.pos)-distance(b.pos,t.pos)),target=targets[0];if(!target)continue;t.cooldown=c.final?3.4:5;const origin=t.pos.clone().add(new T.Vector3(0,8.8,1));g.fx.emit('fire',origin,12,{speed:2});g.audio.play('bolt',.4,{position:origin});g.combat.shoot(t,target,{damage:c.damage,type:c.final?'grave':'bolt',speed:24,origin,rank:3});}
  // The King emerges at the breach; keep destruction alone cannot end his battle.
  if(c.final&&st.hp.gate===0&&!st.bossSpawned){

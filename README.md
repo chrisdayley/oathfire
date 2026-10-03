@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## The turning tide — 2.20
+
+Warned battlefield threats, interruptible attacks, perfect-guard counters and hero/army combinations give the player more ways to turn a battle. Siege flanks can silence artillery, establish a forward infirmary or delay enemy reinforcements. Every rescued region adds a permanent, themed improvement to Hearthwatch, returning residents and a short NPC homecoming.
+
+[Gameplay rules, save compatibility and validation](docs/turning-tide-2.20.md)
+
 ## Earned battle strategy — 2.19
 
 Perks and research now begin locked. Home-defense milestones, castle construction and holding specific towns earn your strategic choices. Unlock cards explain newly earned options; the map and upgrade previews show what you can gain. Suspended battles retain their existing bonuses.

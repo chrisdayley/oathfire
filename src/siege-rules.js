@@ -1,3 +1,4 @@
+import {ROUTES,routeState,validateFrontline} from './frontline-rules.js';
 // Save-safe rules shared by combat, the map, reports and regression tests.
 export const FINAL_FORTRESS=32;
 export const isSiege=m=>m?.mode==='siege';
@@ -14,7 +15,7 @@ export const SIEGE_OUTPOSTS=[
  {name:'Highland redoubt',x:-18,z:-592},
  {name:'Crownward camp',x:16,z:-804}
 ];
-export function siegeRally(b){const n=b?.siege?.outposts?.lastIndexOf(true)??-1;return n<0?SIEGE_RALLY:{x:SIEGE_OUTPOSTS[n].x,y:0,z:SIEGE_OUTPOSTS[n].z+8};}
+export function siegeRally(b){const n=b?.siege?.outposts?.lastIndexOf(true)??-1;const camp=n<0?SIEGE_RALLY:{x:SIEGE_OUTPOSTS[n].x,y:0,z:SIEGE_OUTPOSTS[n].z+8};return b?.siege?.routes?.infirmary&&camp.z>ROUTES[1].z?{x:ROUTES[1].x,y:0,z:ROUTES[1].z+8}:camp;}
 export function siegeMarchFactor(g,e){return g.battle?.siege&&!e.attacking&&!e.charging&&!e.guarding&&e.pos.z< -35&&e.pos.z>SIEGE_GATE_Z+90&&!g.enemies.some(n=>!n.dead&&Math.hypot(n.pos.x-e.pos.x,n.pos.z-e.pos.z)<60)?1.65*(e===g.hero?1:Math.max(1,(g.hero.stats.speed||5)/e.stats.speed)):1;}
 export function siegeConfig(m){
  const final=m.id===FINAL_FORTRESS,stage=final?23:m.unlockMain||0;
@@ -26,9 +27,9 @@ export function siegeConfig(m){
 export function siegePressure(m,time,gateBroken=false,frontier=-Infinity){const c=siegeConfig(m),roadCap=frontier<SIEGE_GATE_Z+120?6:Math.min(5,2+Math.floor(Math.max(0,-frontier-175)/200));return Math.min(6,roadCap+(gateBroken?1:0),1+Math.floor(Math.max(0,time)/c.stepSeconds)+(gateBroken?1:0));}
 export function siegeInterval(m,pressure){const c=siegeConfig(m);return Math.max(c.minimum,c.interval-(pressure-1)*(c.final?2:3));}
 export function siegePacket(m,pressure){return (siegeConfig(m).final?4:3)+(pressure-1);}
-export function newSiegeState(m){const c=siegeConfig(m);return {version:3,bossSpawned:false,bossDefeated:false,frontier:-27,outposts:[false,false,false,false],activated:[false,false,false,false],capture:0,hp:{...c.hp},nextSpawn:5,pressure:1,spawned:0,packets:0,damage:0,heroDamage:0,armyDamage:0,destroyed:0};}
+export function newSiegeState(m){const c=siegeConfig(m);return {version:3,routes:routeState(),bossSpawned:false,bossDefeated:false,frontier:-27,outposts:[false,false,false,false],activated:[false,false,false,false],capture:0,hp:{...c.hp},nextSpawn:5,pressure:1,spawned:0,packets:0,damage:0,heroDamage:0,armyDamage:0,destroyed:0};}
 export function validateSiegeState(value,m){
- if(value===undefined)return; // A suspended pre-siege settlement is migrated on resume.
+ if(value===undefined)return;validateFrontline({siege:value}); // A suspended pre-siege settlement is migrated on resume.
  if(!isSiege(m)||![1,2,3].includes(value?.version))throw Error('Invalid siege checkpoint.');
  if(value.version>=2){if(value.frontier!==undefined&&(!Number.isFinite(value.frontier)||value.frontier< -2400||value.frontier>55))throw Error('Invalid siege frontier.');for(const key of ['outposts','activated'])if(!Array.isArray(value[key])||value[key].length!==4||value[key].some(v=>typeof v!=='boolean'))throw Error('Invalid siege road progress.');if(!Number.isFinite(value.capture)||value.capture<0||value.capture>6)throw Error('Invalid camp capture.');}
  for(const k of ['bossSpawned','bossDefeated'])if(value[k]!==undefined&&typeof value[k]!=='boolean')throw Error('Invalid fortress commander.');if(value.bossDefeated&&!value.bossSpawned)throw Error('Invalid commander victory.');

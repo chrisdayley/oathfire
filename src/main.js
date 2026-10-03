@@ -18,3 +18,5 @@ import './ability-ui.css';
 import './safe-area.css';
 
 import "./war-map.css";
+
+import './frontline.css';
