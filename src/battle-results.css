@@ -18,3 +18,5 @@
 @media(prefers-reduced-motion:reduce){#victory-transition::before,#victory-transition::after,#victory-transition *{animation:none!important}.triumph-particle{display:none}}
 
 .daily-income{margin:8px 0;border:1px solid #c8ab6555;background:#bd963411;border-radius:3px;color:#ded5ba}.daily-income summary{padding:12px;cursor:pointer;font-size:12px;min-height:44px}.daily-income summary b{color:#f1d28f;margin-left:8px;white-space:nowrap}.daily-income[open] summary{border-bottom:1px solid #c8ab6533}.income-towns{padding:5px 12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 20px}.income-towns>div{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:4px 0}.income-towns b{color:#f1d28f}.daily-income>small{display:block;padding:5px 12px 10px;font-size:10px;color:#beb9aa}@media(max-height:600px){.income-towns{grid-template-columns:1fr}}
+
+.research-requirement{border-left:2px solid #d3ad6e;padding:8px 10px;color:#edca8c!important;background:#c49c4b14;font-size:13px!important}

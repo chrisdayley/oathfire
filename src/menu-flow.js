@@ -1,3 +1,5 @@
+import {strategySnapshot} from './strategy-progression.js';
+import {announceStrategyUnlocks} from './strategy-ui.js';
 import {serviceFor,canUseService,guideToService} from './town-services.js';
 import {SERVICES} from './data.js';
 import {canGarrison,fieldCount} from './wall-garrison.js';
@@ -55,7 +57,7 @@ function battlePage(ui){const g=ui.g,s=g.store.data,b=g.battle;if(ui.screen==='r
 export function menuAction(ui,action,id,value){if(regimentAction(ui,action,id))return true;switch(action){
  case 'find-service':guideToService(ui,id);return true;
  case 'castle-logistics':navigate(ui,'defenses',{screen:'logistics',defense:'gate',battleCommand:false});return true;
- case 'upgrade-logistics':ui.g.store.commit(upgradeLogistics);ui.g.audio.play('upgrade');refresh(ui);return true;
+ case 'upgrade-logistics':{const before=strategySnapshot(ui.g.store.data);ui.g.store.commit(upgradeLogistics);ui.g.audio.play('upgrade');refresh(ui);announceStrategyUnlocks(ui,before);return true;}
  case 'research-filter':ui.researchFilter=id;refresh(ui);return true;
  case 'research-inspect':ui.researchId=id;ui.researchFilter=Object.keys(RESEARCH).includes(id)&&ui.researchFilter!=='all'&&ui.researchFilter!==RESEARCH[id].group?'all':ui.researchFilter;refresh(ui);return true;
  case 'field-inspect':if(value==='troops')ui.unit=id;else ui.defense=id;refresh(ui);return true;

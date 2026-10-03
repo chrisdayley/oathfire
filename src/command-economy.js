@@ -1,3 +1,4 @@
+import {perkUnlocked} from './strategy-progression.js';
 import {commandGear,planBonuses} from './battle-plan.js';
 // Permanent investment, separate from temporary battlefield research.
 export const LOGISTICS_RANKS=[
@@ -26,5 +27,5 @@ export function commandBreakdown(b){
 }
 
 export const commandCap=b=>220+(b?.commandGear?.capacity||0);
-export const startingCommand=(s,base=55)=>base+planBonuses(s.battlePerks).start+commandGear(s).start;
+export const startingCommand=(s,base=55)=>base+planBonuses(s.battlePerks?.filter(id=>perkUnlocked(s,id))).start+commandGear(s).start;
 export const heroKillCommand=(b,type)=>2+planBonuses(b?.perks).kill+(b?.commandGear?.kill||0)+(['knight','brute','bulwark','reaver','mortar','warpriest','boss'].includes(type)?b?.commandGear?.elite||0:0);

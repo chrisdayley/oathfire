@@ -10,7 +10,7 @@ The [community research catalog](https://heroesandcastles2.fandom.com/wiki/Resea
 
 ## Rules
 
-Research costs battle time and one of four slots, with no Command or permanent-currency payment. All chosen projects run concurrently while gameplay advances. Menus pause them. Canceling unfinished work frees its slot and discards its progress. Completed work remains committed through the battle. Reclaiming castles unlocks later options.
+Research costs battle time and one of four slots, with no Command or permanent-currency payment. All chosen projects run concurrently while gameplay advances. Menus pause them. Canceling unfinished work frees its slot and discards its progress. Completed work remains committed through the battle. Updated in 2.19: all options start locked and require named towns or castle construction plus campaign milestones. See [earned strategy](earned-strategy-2.19.md).
 
 Thirty-three choices include adaptations of all 24 cataloged reference options and nine Oathfire additions. The source of truth for names, times, unlocks and exact effects is `src/research.js`; the selected in-game pane displays the complete description. Runtime effects live in `src/research-combat.js`.
 

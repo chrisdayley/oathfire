@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Earned battle strategy — 2.19
+
+Perks and research now begin locked. Home-defense milestones, castle construction and holding specific towns earn your strategic choices. Unlock cards explain newly earned options; the map and upgrade previews show what you can gain. Suspended battles retain their existing bonuses.
+
+[Perk requirements, research unlocks, reference evidence and validation](docs/earned-strategy-2.19.md)
+
 ## Daily town rewards — 2.18.1
 
 Every campaign day pays Supplies from each town still held, after victories, defeats and withdrawals. New conquests begin paying immediately; lost towns stop paying that day. Battle reports itemize the payment by town, and the map shows each town’s daily rate and the total collected. Existing saved rewards are not collected again.
