@@ -1,3 +1,5 @@
+import {sack,burlap} from './market-craft.js';
+import {limePlaster,slate as roofSlate} from './building-materials.js';
 import {craftedRoof} from './architecture.js';
 import {castleReserved} from './siege-rules.js';
 import * as T from 'three';
@@ -12,7 +14,7 @@ import {seeded} from './data.js';
 // both Rapier colliders and navigation footprints, preserving the wide combat lanes.
 export function livingWorld(w){
  const r=seeded(w.seed+61283),g=w.static,m=w.materials;
- const slate=worldMaterial('stone',0x394957,1.1),ochre=worldMaterial('stone',0xc4ac83,2),rose=worldMaterial('stone',0xa58373,2),white=worldMaterial('stone',0xe0d4b3,2),red=material('cloth',0x813f39),blue=material('cloth',0x354c79),copper=material('steel',0xa67945,{metalness:.55,roughness:.55});
+ const slate=roofSlate(0x394957),ochre=limePlaster(0xb6a180),rose=limePlaster(0xa58373),white=limePlaster(0xc7bba0),red=material('cloth',0x813f39),blue=material('cloth',0x354c79),copper=material('steel',0xa67945,{metalness:.55,roughness:.55});
  const terraceMat=worldMaterial('soil',0x747956,12);
  const roofMats=[slate,worldMaterial('stone',0x734e3e,1.2),worldMaterial('stone',0x56604f,1.2)];
  function house(x,y,z,size=1,variant=0,solid=false){
@@ -53,23 +55,10 @@ export function livingWorld(w){
  for(const [x,z]of [[-53,-73],[-43,-73]]){const y=w.height(x,z);w.solid([1.8,.8,1.1],[x,y+.4,z],m.wood,'supply-crate');for(const dx of [-.65,.65])box(g,[.07,.84,1.15],[x+dx,y+.42,z],m.iron);}
  // Flower beds and handcarts break up the paved courtyard at its edges.
  for(const [x,z]of [[-14,-2],[14,-2],[-16,12],[16,13]]){const soil=worldMaterial('soil',0x635344,1);w.solid([2.8,.35,1.1],[x,.175,z],m.cap,'flower-bed');box(g,[2.58,.04,.89],[x,.37,z],soil);for(let j=0;j<35;j++){const xx=x+(r()-.5)*2.5,zz=z+(r()-.5)*.8,h=.5+r()*.45;beam(g,[xx,.38,zz],[xx,h,zz],.009,plantMats[0]);const fl=mesh(flowerGeo,j%3===0?red:j%3===1?plantMats[2]:plantMats[3],g,xx,h-.34,zz);fl.scale.setScalar(1.4);}}
- for(const [x,z]of [[-17,16],[18,20]]){w.solid([1.8,.75,2.6],[x,.65,z],m.wood,'handcart');for(const side of [-1,1]){const wheel=mesh(new T.TorusGeometry(.48,.075,6,16),m.wood,g,x+side*1.04,.48,z+.3);wheel.rotation.y=Math.PI/2;for(let i=0;i<8;i++){const a=i*Math.PI/4;beam(g,[x+side*1.04,.48,z+.3],[x+side*1.04,.48+Math.sin(a)*.47,z+.3+Math.cos(a)*.47],.022,m.wood);}beam(g,[x+side*.7,.65,z-1.2],[x+side*.7,.8,z-3],.06,m.wood);}for(let i=0;i<4;i++){const sack=mesh(new T.SphereGeometry(1,10,6),i%2?red:ochre,g,x+(i%2-.5)*.6,1.12,z+Math.floor(i/2)*.7-.4);sack.scale.set(.34,.45,.39);}}
- // Battlements are individually dressed with uneven mortar courses, cut corner
- // stones, brighter shutters, hanging lamps and overlapping slate shingles.
- const shades=[white,ochre,rose,m.cap,m.stoneDark];
- for(const side of [-1,1])for(let row=0;row<10;row++)for(let i=0;i<10;i++){
-  const x=side*(7.7+i*2.40+(row%2)*.8),y=.3+row*.48,z=-15.46;if(Math.abs(x)>31)continue;
-  const b=box(g,[1.00+r()*1.15,.35+r()*.055,.09+r()*.05],[x,y,z],shades[Math.floor(r()*5)]);b.rotation.z=(r()-.5)*.014;
- }
+ for(const [x,z]of [[-17,16],[18,20]]){w.solid([1.8,.75,2.6],[x,.65,z],m.wood,'handcart');for(const side of [-1,1]){const wheel=mesh(new T.TorusGeometry(.48,.075,6,16),m.wood,g,x+side*1.04,.48,z+.3);wheel.rotation.y=Math.PI/2;for(let i=0;i<8;i++){const a=i*Math.PI/4;beam(g,[x+side*1.04,.48,z+.3],[x+side*1.04,.48+Math.sin(a)*.47,z+.3+Math.cos(a)*.47],.022,m.wood);}beam(g,[x+side*.7,.65,z-1.2],[x+side*.7,.8,z-3],.06,m.wood);}const bag=burlap();for(let i=0;i<4;i++)sack(g,[x+(i%2-.5)*.6,1.04,z+Math.floor(i/2)*.7-.4],bag,.83);}
  for(const [x,z,width]of [[-24,12,10.8],[25,13,9.8],[-25,25,7.8],[25,26,7.8]]){
   for(const dx of [-width*.28,width*.28]){for(const xx of [-.60,.60]){box(g,[.28,1.04,.15],[x+dx+xx,5.15,z-3.08],x<0?red:blue);for(const yy of [4.77,5.43])box(g,[.30,.06,.18],[x+dx+xx,yy,z-3.09],m.iron);}box(g,[1.85,.21,.54],[x+dx,4.35,z-3.05],m.wood);for(let j=0;j<12;j++){const fl=mesh(new T.IcosahedronGeometry(.07,0),j%2?red:plantMats[2],g,x+dx-.65+j*.12,4.60+r()*.12,z-3.11);beam(g,[fl.position.x,4.4,z-3.11],fl.position.toArray(),.008,plantMats[0]);}}
   for(const sign of [-1,1]){const xx=x+sign*(width/2-.3);beam(g,[xx,2.7,z-3],[xx,2.7,z-3.8],.045,m.iron);beam(g,[xx,2.7,z-3.8],[xx,2.25,z-3.8],.018,m.iron);const glass=material('cloth',0xffc772,{emissive:0xff913d,emissiveIntensity:.9});box(g,[.24,.38,.24],[xx,2.08,z-3.8],glass);for(const dx of [-.14,.14])for(const dz of [-.14,.14])beam(g,[xx+dx,1.85,z-3.8+dz],[xx+dx,2.32,z-3.8+dz],.015,m.iron);cyl(g,0,.25,.21,[xx,2.43,z-3.8],m.iron,4);}
- }
- // Colorful striped drapes, baskets of produce, pottery and lumber at market edges.
- for(const [x,z]of [[-21.5,3.3],[22,3.8],[-22,19],[23,20]]){
-  for(let i=0;i<7;i++){const cloth=mesh(new T.PlaneGeometry(.46,3.75,1,10),x<0?red:blue,g,x-2.85+i*.96,3.105,z);cloth.rotation.x=-Math.PI/2;const a=cloth.geometry.attributes.position;for(let j=0;j<a.count;j++)a.setZ(j,-Math.cos((x-2.85+i*.96-x)*Math.PI/6.8)*.27+(a.getY(j)+1.9)*.12+.006);cloth.geometry.computeVertexNormals();}
-  for(let j=0;j<5;j++){const xx=x-1.15+j*.54;for(let k=0;k<9;k++){const fruit=mesh(new T.IcosahedronGeometry(.075,1),j%2?red:plantMats[1],g,xx+(k%3-.5)*.095,1.25+Math.floor(k/3)*.034,z+.28+(k%2)*.11);}}
-  for(const dx of [-2.5,2.5]){const xx=x+dx;w.solid([.6,.75,.6],[xx,.375,z+.5],m.wood,'market-crate');for(let j=0;j<5;j++)box(g,[.65,.07,.04],[xx,.08+j*.14,z+.17],m.iron);const pot=cyl(g,.20,.28,.42,[xx,.99,z+.5],rose,12);cyl(g,.21,.21,.05,[xx,1.22,z+.5],m.dark,12);}
  }
  for(const x of [-29,29])for(let i=0;i<9;i++){const log=cyl(g,.14,.16,1.5,[x+(i%3)*.26,.18+Math.floor(i/3)*.24,10],m.wood,8);log.rotation.x=Math.PI/2;}
  w.root.userData.dressing={villages:36,abbey:true,viaduct:true,mill:true,plants:4700,revision:2};

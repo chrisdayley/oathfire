@@ -1,3 +1,4 @@
+import {cutStone,oak,slate} from './building-materials.js';
 import * as T from 'three';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {courtyardProp} from './courtyard-assets.js';
@@ -7,16 +8,10 @@ import {seeded} from './data.js';
 
 // The forge → market → gate route is built over the existing walkable physics plan.
 export function royalCourtyard(w){
- const g=w.static,m=w.materials,r=seeded(1937),stone=worldMaterial('stone',0xc3ae8a,2.1,{roughness:.96}),darkStone=worldMaterial('stone',0x7b7b65,1.7),wood=worldMaterial('timber',0x8e7550,1.4),iron=material('steel',0x313b3b,{roughness:.78}),brick=worldMaterial('stone',0x977851,1.2),tile=worldMaterial('stone',0x374759,.7),cream=material('cloth',0xcbb798,{side:T.DoubleSide}),wine=material('cloth',0x692d38,{side:T.DoubleSide});
+ const g=w.static,m=w.materials,r=seeded(1937),stone=cutStone(0xb8ab95),darkStone=cutStone(0x898575),wood=oak(),iron=material('steel',0x313b3b,{roughness:.78}),brick=cutStone(0x937659),tile=slate(0x4d5865),cream=material('cloth',0xcbb798,{side:T.DoubleSide}),wine=material('cloth',0x692d38,{side:T.DoubleSide});
  const block=(size,pos,mat=stone,radius=.04)=>mesh(new RoundedBoxGeometry(...size,1,radius),mat,g,...pos);
  courtyardProp(w,'castle-arch',0,0,-14.15,1,0,false);courtyardProp(w,'castle-arch',0,0,-19.85,1,Math.PI,false);
  for(const side of [-1,1])for(const z of [-14.35,-19.65]){w.physics.addBox(side*4.10,2.35,z,.56,4.7,.6,'carved-gate-pier');w.nav.push({x:side*4.10,z,hx:.40,hz:.42,top:4.7});}
- // Masonry courses project slightly from the load-bearing collision walls.
- for(const side of [-1,1])for(let row=0;row<12;row++)for(let col=0;col<4;col++){
-  const x=side*(5.02+col*.87+(row%2)*.14),y=.2+row*.39;
-  block([.82,.36,.23],[x,y,-14.43],row%5===0?darkStone:stone,.035);
- }
- for(const x of [-19,19])for(let row=0;row<7;row++)for(let col=0;col<15;col++)block([.88,.48,.19],[x-6.5+col*.92+(row%2)*.25,.35+row*.54,-15.34],r()>.8?darkStone:stone,.045);
  // A pointed, ribbed arcade lines the market-side wall; openings are recessed.
  for(const x of [-30.9,30.9])for(const z of [4,10,16,23]){
   const side=Math.sign(x);for(const dz of [-1.4,1.4]){cyl(g,.16,.21,3.1,[x,1.55,z+dz],stone,16);block([.52,.18,.52],[x,3.15,z+dz]);block([.48,.20,.48],[x,.10,z+dz]);}

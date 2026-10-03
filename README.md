@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Hearthwatch stonework — 2.14
+
+Reworked castle materials and construction: cut-stone relief, real vaulted passages, a recessed keep door, open window arches, staggered slate, aged timber and plaster, embedded flagstones, consolidated market stalls and a shaped forge. Independent concept comparison and repeated rendered reviews caught and corrected clipping, overlapping old geometry and missing furniture collision.
+
+[Art changes, review evidence and validation](docs/hearthwatch-stonework-2.14.md)
+
 ## Evolved Oaths — 2.13
 
 Ten ranks for all 23 active abilities, rising training costs and hero-level gates, and two rank-ten evolution paths per ability. Focused mobile training shows exact upgrades and previews. Existing progress is preserved. An independent visual review led to clearer fire effects, closer hero portraits, less intrusive combat notices, integrated distant scenery and corrected veteran troop colors.

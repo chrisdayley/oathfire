@@ -73,7 +73,7 @@ function buildLocalFortress(w,mission){
 export function enrichHearthwatch(w){
  const g=w.static,m=w.materials,copper=material('steel',0x637d78,{metalness:.55,roughness:.6}),warm=mat(0xf5ce8d,.35,.1,{emissive:0xc56c27,emissiveIntensity:.5}),ruby=mat(0x942f40,.36,.15,{emissive:0x802238,emissiveIntensity:.5}),blue=mat(0x236b9a,.4,.15,{emissive:0x165785,emissiveIntensity:.4});
  // A jewel-like rose window and carved gable give the great hall a focal point.
- const rose=new T.Group();rose.position.set(0,8.3,17.71);rose.rotation.y=Math.PI;g.add(rose);mesh(new T.CircleGeometry(1.79,48),m.dark,rose,0,0,-.02);arch(g,0,0,18.0,6.4,6.9,.5,m.cap);
+ const rose=new T.Group();rose.position.set(0,9.28,17.30);rose.scale.setScalar(.62);rose.rotation.y=Math.PI;g.add(rose);mesh(new T.CircleGeometry(1.79,48),m.dark,rose,0,0,-.02);
  for(const r of [1.65,1.9,2.07])mesh(new T.TorusGeometry(r,r>1.8?.09:.055,8,48),r>1.8?m.cap:m.gold,rose);
  for(let i=0;i<12;i++){const a=i*Math.PI/6,pane=mesh(new T.CircleGeometry(.43,16),i%3===0?ruby:i%2?warm:blue,rose,Math.sin(a)*1.15,Math.cos(a)*1.15,.025);mesh(new T.TorusGeometry(.45,.047,6,20),m.cap,rose,pane.position.x,pane.position.y,.05);beam(rose,[Math.sin(a)*.45,Math.cos(a)*.45,.08],[Math.sin(a)*1.77,Math.cos(a)*1.77,.08],.055,m.cap);}
  mesh(new T.CircleGeometry(.52,24),warm,rose);sunBadge(rose,.48,m.gold);
@@ -86,8 +86,5 @@ export function enrichHearthwatch(w){
  for(let i=0;i<12;i++){const a=i*Math.PI/6;beam(g,[Math.sin(a)*4.65,18.75,30+Math.cos(a)*4.65],[Math.sin(a)*.25,23.4,30+Math.cos(a)*.25],.045,copper);}
  // Gallery corbels, carved medallions and illuminated paired windows.
  for(const x of [-30.4,30.4])for(const z of [-8,0,8,16,24]){const face=x<0?Math.PI/2:-Math.PI/2;for(const dz of [-.55,.55])windowArch(g,x,2.0,z+dz,.65,1.8,{...m,dark:warm},face);const corbel=stone(g,[.8,.9,.55],[x,4.65,z],m.cap);corbel.rotation.z=x<0?-.22:.22;}
- // Color is concentrated around shops: indigo, oxblood and saffron cloth, garlands and fruit.
- const fabrics=[material('cloth',0x304c88,{side:T.DoubleSide}),material('cloth',0x8d3446,{side:T.DoubleSide}),material('cloth',0xc19a54,{side:T.DoubleSide})];
- for(const [index,x,z]of [[0,-21.5,3.3],[1,22,3.8],[2,-22,19],[0,23,20]]){const f=mesh(new T.PlaneGeometry(3.4,1.1,10,6),fabrics[index],w.dynamic,x,2.85,z-2.02),p=f.geometry.attributes.position;for(let i=0;i<p.count;i++)p.setZ(i,Math.sin(p.getX(i)*5)*.09);f.userData.base=new Float32Array(p.array);w.flags.push(f);for(let i=0;i<15;i++){const flower=sphere(g,.08,[x-1.5+i*.21,3.5+Math.sin(i*.25)*.3,z-2.06],i%3?m.leaf:ruby,6);}}
  w.root.userData.hearthwatchDetail=3;
 }

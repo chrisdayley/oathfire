@@ -1,3 +1,5 @@
+import {stoneArch} from './stone-arch.js';
+import {cutStone,masonry,slate as roofSlate} from './building-materials.js';
 import * as T from 'three';
 import {craftedRoof,craftedHouse} from './architecture.js';
 import {ART,material,worldMaterial} from './materials.js';
@@ -7,7 +9,7 @@ import {seeded} from './data.js';
 
 export function buildScenography(w){
  const m=w.materials,g=w.static,r=seeded(46292),snow=w.biome==='snow',arid=w.biome==='desert';
- const ivory=worldMaterial('stone',0xd4c09b,2.4),warm=worldMaterial('stone',0xb39a75,2),copper=material('steel',0x9b7950,{metalness:.65,roughness:.55}),slate=worldMaterial('stone',0x3b4b67,.85),cloth=material('cloth',0xd4b67a,{side:T.DoubleSide});
+ const ivory=cutStone(0xbfb5a1),warm=masonry(0xb5ac95),copper=material('steel',0x9b7950,{metalness:.65,roughness:.55}),slate=roofSlate(0x45536a),cloth=material('cloth',0xd4b67a,{side:T.DoubleSide});
  const motion={mills:[],birds:null,smoke:null};w.scenography=motion;
  // Architecture has thickness, recessed glazing and supports. This occupies the
  // original buildings or space beyond the walls; it never narrows the combat lane.
@@ -21,7 +23,7 @@ export function buildScenography(w){
  }
  // The great hall entry is a deep three-ring portal; its columns stay beside
  // the usable opening and its high arch remains above the hero's jump height.
- for(const side of [-1,1])for(let layer=0;layer<3;layer++){const x=side*(3.62+layer*.26),z=17.75-layer*.21;cyl(g,.13,.19,5.55,[x,2.775,z],ivory,14);cyl(g,.25,.24,.2,[x,.15,z],warm,12);cyl(g,.22,.27,.28,[x,5.4,z],ivory,12);if(side===1)for(let i=0;i<21;i++){const a=i*Math.PI/20;const block=box(g,[.43,.34,.25],[Math.cos(a)*(3.66+layer*.26),5.4+Math.sin(a)*2.4,z],ivory);block.rotation.z=a;}}
+ for(const side of [-1,1])for(let layer=0;layer<3;layer++){const x=side*(3.62+layer*.26),z=17.75-layer*.21;cyl(g,.13,.19,5.55,[x,2.775,z],ivory,14);cyl(g,.25,.24,.2,[x,.15,z],warm,12);cyl(g,.22,.27,.28,[x,5.4,z],ivory,12);if(side===1)stoneArch(g,ivory,{y:5.4,z:z-.08,rx:3.46+layer*.26,ry:2.23+layer*.13,band:.22,depth:.25,count:25});}
  // Intricate stone balustrades, golden medallions, gallery canopies and rain chains.
  for(const x of [-7,7]){for(let i=-4;i<=4;i++){const xx=x+i*.38;cyl(g,.045,.065,.70,[xx,4.58,16.75],ivory,8);cyl(g,.095,.065,.12,[xx,4.46,16.75],ivory,8);}craftedRoof(g,m,{x,y:7.9,z:18.0,width:3.8,depth:1.8,rise:.7,tiles:true,tint:0x426371});const badge=sunBadge(g,.3,copper);badge.position.set(x,7.15,17.36);}
  // Massed upper town rises behind the walls: houses are staggered on stone
