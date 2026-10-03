@@ -1,7 +1,7 @@
 // Permanent training. These values drive recruitment, combat and the inspection UI.
 const round=n=>Math.round(n*1000)/1000;
 export const TRAINING_COSTS=[320,480,700,980,1340,1800,2390,3120,4050];
-export function trainingCost(unit,rank){return Math.ceil(TRAINING_COSTS[rank-1]*Math.max(1,(unit.cost/35)**.3)/10)*10;}
+export function trainingCost(unit,rank){return Math.ceil(TRAINING_COSTS[rank-1]*Math.max(1,((unit.trainingBase??unit.cost)/35)**.3)/10)*10;}
 export function trainedUnit(id,u,rank,weapon){
  const i=Math.max(0,Math.min(9,rank-1));
  const s={count:1,hp:Math.round(u.hp*(1+i*.19+i*i*.009)),damage:Math.round(u.damage*(1+i*.14+i*i*.006)),speed:u.speed,reach:u.reach,cost:u.cost+Math.floor(i/3)*4,armor:id==='shield'?12+i*3:id==='dawn'?26+i*2:4,attackInterval:['bow','crossbow','staff'].includes(u.weapon)?({marksman:2.8,pyre:2.7,frost:2.2}[id]||1.5):weapon.speed};

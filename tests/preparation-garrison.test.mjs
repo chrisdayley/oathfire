@@ -35,7 +35,7 @@ test('Debut missions prominently feature each new enemy and every mission has re
  const s=newSave();s.completed=[0,1];const cards=scoutCards(s,MISSIONS[2]);assert.deepEqual(cards.filter(c=>c.new).map(c=>c.type),['runner']);s.enemyIntel=['runner'];assert.ok(scoutCards(s,MISSIONS[2]).every(c=>!c.new));
 });
 test('Stormriders unlock after eight victories and are costly, fast, armored charge cavalry',()=>{
- assert.equal(UNITS.rider.unlock,8);const a=unitStats('rider',1),b=unitStats('rider',10);assert.equal(a.cost,100);assert.equal(a.speed,7.2);assert.equal(a.damage,38);assert.equal(a.armorPierce,.25);assert.ok(b.chargeDamage>a.chargeDamage);assert.ok(b.speed>a.speed);assert.ok(b.armorPierce>a.armorPierce);
+ assert.equal(UNITS.rider.unlock,8);const a=unitStats('rider',1),b=unitStats('rider',10);assert.equal(a.cost,150);assert.equal(a.speed,7.2);assert.equal(a.damage,38);assert.equal(a.armorPierce,.25);assert.ok(b.chargeDamage>a.chargeDamage);assert.ok(b.speed>a.speed);assert.ok(b.armorPierce>a.armorPierce);
 });
 test('Victory awaits celebration acknowledgement without duplicating rewards; legacy reports remain valid',()=>{
  const s=newSave(),b={id:0,reportID:'celebration',time:100,wave:3,gate:500,maxGate:500,core:650,ledger:newBattleLedger(),research:[]};const r=settleBattle(s,b,true);assert.equal(r.celebrated,false);assert.equal(r.acknowledged,false);const rewards=[s.supplies,s.inventory.length];r.celebrated=true;settleBattle(s,b,true);assert.deepEqual([s.supplies,s.inventory.length],rewards);assert.equal(s.lastBattle.celebrated,true);delete r.celebrated;validateSave(s);

@@ -9,7 +9,7 @@ test('Every soldier and rank exposes finite per-soldier values and an ability de
 });
 test('Inspection distinguishes slow marksmen, ordinary archers, armor and deployment costs',()=>{
  const bow=unitInspection('bow',1),marks=unitInspection('marksman',1),shield=unitInspection('shield',5),dawn=unitInspection('dawn',10);
- assert.equal(bow.attackInterval,1.5);assert.equal(marks.attackInterval,2.8);assert.equal(shield.armor,24);assert.equal(dawn.armor,44);assert.equal(shield.cost,45);assert.equal(shield.count,2);assert.equal(shield.abilities[1].unlock,5);
+ assert.equal(bow.attackInterval,1.5);assert.equal(marks.attackInterval,2.8);assert.equal(shield.armor,24);assert.equal(dawn.armor,44);assert.equal(shield.cost,31);assert.equal(shield.count,2);assert.equal(shield.abilities[1].unlock,5);
 });
 test('Healing and control descriptions expose their exact rank-scaled amounts and timers',()=>{
  assert.match(unitInspection('lantern',1).abilities[0].text,/14 health/);assert.match(unitInspection('lantern',10).abilities[0].text,/50 health/);

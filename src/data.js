@@ -5,7 +5,7 @@ import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {trainedUnit,trainingCost} from './unit-progression.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-2.16.0-people-of-hearthwatch';
+export const BUILD='oathfire-2.17.0-reedwater';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',role:'Frontline tank',subtitle:'Protect the front line and strengthen nearby troops. Highest starting health and armor.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -36,14 +36,14 @@ export const SPELLS={
 };
 for(const [id,name,icon] of [['sunwall','Sunwall','sun'],['march','Living standard','banner'],['reversal','Dawn reversal','fire'],['forgefall','Forgefall','hammer'],['sanctuary','Sanctuary','sun'],['inferno','Inferno','fire'],['briarstorm','Briarstorm','leaf'],['grove','Living grove','leaf'],['verdant','Verdant reversal','leaf']])SPELLS[id]={name,icon,cost:32,cooldown:30,desc:'A signature capstone technique. Only one capstone can be active.'};
 export const UNITS={
- shield:{name:'Shieldward',role:'Hold the line',model:'Knight',weapon:'sword',cost:22,count:1,hp:120,damage:16,speed:3.0,reach:2.4,unlock:0,color:0x468e8a,spec:ARMY_SPEC.shield},
- bow:{name:'Longbows',role:'Elevated ranged support',model:'Rogue_Hooded',weapon:'bow',cost:28,count:1,hp:72,damage:16,speed:3.4,reach:25,unlock:0,color:0x81995e},
- pike:{name:'Pikeguard',role:'Stop charges and giants',model:'Knight',weapon:'spear',cost:26,count:1,hp:110,damage:19,speed:3.0,reach:3.6,unlock:1,color:0x7599ac},
- lantern:{name:'Lanternkeepers',role:'Heal nearby soldiers',model:'Mage',weapon:'staff',cost:55,count:1,hp:84,damage:10,speed:3.2,reach:18,unlock:3,color:0xe9bc66},
- breaker:{name:'Ashbreakers',role:'Crush armored enemies',model:'Barbarian',weapon:'hammer',cost:65,count:1,hp:180,damage:34,speed:2.7,reach:2.8,unlock:5,color:0xa96b42},
- crew:{name:'Siege crew',role:'Heavy bolts against siege',model:'Knight',weapon:'crossbow',cost:80,count:1,hp:115,damage:54,speed:2.7,reach:30,unlock:6,color:0xb8a475},
- rider:{name:'Stormriders',role:'Elite cavalry · fast, armored, devastating charges',model:'Knight',weapon:'spear',cost:100,count:1,hp:230,damage:38,speed:6.3,reach:3.4,unlock:8,color:0x658baf},
- giant:{name:'Oathbound giant',role:'Break a crowded front',model:'Barbarian',weapon:'hammer',cost:120,count:1,hp:460,damage:62,speed:2.6,reach:4.4,unlock:11,color:0x8caa9b,scale:1.75},
+ shield:{name:'Shieldward',role:'Hold the line',model:'Knight',weapon:'sword',cost:14,trainingBase:22,count:1,hp:120,damage:16,speed:3.0,reach:2.4,unlock:0,color:0x468e8a,spec:ARMY_SPEC.shield},
+ bow:{name:'Longbows',role:'Elevated ranged support',model:'Rogue_Hooded',weapon:'bow',cost:30,trainingBase:28,count:1,hp:72,damage:16,speed:3.4,reach:25,unlock:0,color:0x81995e},
+ pike:{name:'Pikeguard',role:'Stop charges and giants',model:'Knight',weapon:'spear',cost:45,trainingBase:26,count:1,hp:110,damage:19,speed:3.0,reach:3.6,unlock:1,color:0x7599ac},
+ lantern:{name:'Lanternkeepers',role:'Heal nearby soldiers',model:'Mage',weapon:'staff',cost:75,trainingBase:55,count:1,hp:84,damage:10,speed:3.2,reach:18,unlock:3,color:0xe9bc66},
+ breaker:{name:'Ashbreakers',role:'Crush armored enemies',model:'Barbarian',weapon:'hammer',cost:90,trainingBase:65,count:1,hp:180,damage:34,speed:2.7,reach:2.8,unlock:5,color:0xa96b42},
+ crew:{name:'Siege crew',role:'Heavy bolts against siege',model:'Knight',weapon:'crossbow',cost:120,trainingBase:80,count:1,hp:115,damage:54,speed:2.7,reach:30,unlock:6,color:0xb8a475},
+ rider:{name:'Stormriders',role:'Elite cavalry · fast, armored, devastating charges',model:'Knight',weapon:'spear',cost:150,trainingBase:100,count:1,hp:230,damage:38,speed:6.3,reach:3.4,unlock:8,color:0x658baf},
+ giant:{name:'Oathbound giant',role:'Break a crowded front',model:'Barbarian',weapon:'hammer',cost:195,trainingBase:120,count:1,hp:460,damage:62,speed:2.6,reach:4.4,unlock:11,color:0x8caa9b,scale:1.75},
  ...NEW_UNITS
 };
 export const DEFENSES={gate:{name:'Wall & gate',desc:'Protect the beacon. Each level rebuilds the gatehouse.',baseHp:1100,costs:[90,130,180,250,330,440,580,760,990]},tower:{...ARMY_SPEC.tower,desc:'Arrows control the approaches.',name:'Archer tower'},ballista:{...ARMY_SPEC.ballista,desc:'Heavy bolts answer armored siege units.',name:'Ballista'},...NEW_DEFENSES};

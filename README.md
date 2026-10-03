@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## Reedwater — 2.17
+
+Flowing water follows a continuous riverbed with wet banks, reeds, shore stones and walkable shallows. Valley obstacles now remain visible to enemy navigation below world height zero, resolving stranded reinforcements. Wave status distinguishes enemies left from intermission seconds. Recruitment prices now separate cheap infantry from costly specialists and elites.
+
+[River fixes, recruitment research and validation](docs/reedwater-2.17.md)
+
 ## People of Hearthwatch — 2.16
 
 All interface screens respect camera cutouts and the home indicator, with a landscape safety margin for touch browsers that report no inset. The pause menu now opens character progression. Town services require visiting Torren, Rowan, Nell, Iona or Sera. The Town guide, tutorial, reward choices and preparation links mark their locations rather than remotely opening upgrades or missions.

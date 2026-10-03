@@ -14,6 +14,14 @@ export function groundSurface(biome='plain'){
  diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.78,.72,.56),smoothstep(.3,1.,meadowPatch)*.35);
 
  diffuseColor.rgb=mix(diffuseColor.rgb,texture2D(pathMap,vSurfaceWorld.xz/3.5).rgb*.88,road);
- `);};m.customProgramCacheKey=()=> 'oathfire-grass-path-v4';}
+ ${biome==='river'?`
+ float rz=vSurfaceWorld.z,rx=12.+sin(rz*.045)*15.+140.*pow(max(0.,(rz+65.)/40.),2.);
+ float rw=6.8+sin(rz*.071)*.65+sin(rz*.019)*.45;
+ float bankDistance=abs(vSurfaceWorld.x-rx)-rw;
+ float bank=(1.-smoothstep(-.5,2.6,bankDistance+sin(rz*1.2)*.16))*step(rz,-24.);
+ vec3 bankSoil=texture2D(pathMap,vSurfaceWorld.xz/2.).rgb*vec3(.42,.40,.32);
+ diffuseColor.rgb=mix(diffuseColor.rgb,bankSoil,bank);
+ `:''}
+ `);};m.customProgramCacheKey=()=> 'oathfire-grass-path-v5-'+biome;}
  return m;
 }

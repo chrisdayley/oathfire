@@ -1,3 +1,4 @@
+import {RIVER_LEVEL,inRiver} from './river-profile.js';
 // Contacts measured from the retargeted Knight clips (heel plant, not toe-off).
 export const FOOT_CONTACTS={Walking_A:[{phase:.98,foot:'left'},{phase:.48,foot:'right'}],Running_A:[{phase:.15,foot:'left'},{phase:.65,foot:'right'}]};
 export class FootstepTracker{
@@ -26,8 +27,7 @@ export function groundSurfaceAt(biome,x,y,z,kind='ground',minZ=-230){
  if(kind==='bridge')return 'wood';
  if(['crate','barrel','wood','furniture'].includes(kind))return 'wood';
  if(kind!=='ground')return 'stone';
- const waterX=biome==='river'?12+Math.sin(z*.045)*15:-85+Math.sin(z*.032)*9,waterY=biome==='river'?-1.3:-1.4,halfWidth=biome==='river'?6.5:8.5;
- if(z>=minZ&&z<=-10&&Math.abs(x-waterX)<halfWidth&&y<waterY+.14)return 'water';
+ if(z>=minZ&&((biome==='river'&&inRiver(x,z)&&y<RIVER_LEVEL+.14)||(biome!=='river'&&z<=-15&&Math.abs(x-(-85+Math.sin(z*.032)*9))<11&&y<-1.26)))return 'water';
  if(Math.abs(x)<=33&&z>=-16.5&&z<=32.5&&y<.4)return 'stone';
  if(biome==='snow')return 'snow';
  if(biome==='quarry')return 'stone';
