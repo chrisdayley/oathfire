@@ -43,7 +43,7 @@ export function missionRoster(m,wave=1){
  if(m.introduced)roster[Math.min(1,roster.length-1)]=m.introduced;
  return roster;
 }
-export const waveReady=(mission,battle,alive)=>battle.wave<mission.waves&&battle.nextWave<=0&&alive<38&&(mission.id>=6||alive===0);
+export const waveReady=(mission,battle,alive)=>battle.wave<mission.waves&&battle.nextWave<=0&&alive===0&&(!battle.assault||battle.assault.cursor>=battle.assault.entries.length);
 export function rosterIntel(m){return [...new Set(missionRoster(m,1))].filter(t=>t!=='hollow').map(t=>ENEMY_INTEL[t]);}
 
 export const REGIONAL_LOOT={plain:['dawnfang','oathbell'],river:['tidecaller','stormlance'],forest:['briarthorn','pyrecrown'],quarry:['faultbreaker','emberbrand'],snow:['rimespire','starsong'],desert:['emberbrand','stormlance']};

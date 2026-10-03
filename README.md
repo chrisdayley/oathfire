@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## The marching host — 2.15
+
+Castle-focused enemies retaliate when attacked. Defensive waves now deliver reinforcements for 72–120 seconds, building into larger, stronger final packets and waiting for all survivors to fall. All three heroes receive fitted helmets, longer embroidered capes, more natural proportions and rarity-dependent armor coverage: Legendary sleeves, Mythic/Godly full plate.
+
+[Combat rules, armor changes and validation](docs/marching-host-2.15.md)
+
 ## Hearthwatch stonework — 2.14
 
 Reworked castle materials and construction: cut-stone relief, real vaulted passages, a recessed keep door, open window arches, staggered slate, aged timber and plaster, embedded flagstones, consolidated market stalls and a shaped forge. Independent concept comparison and repeated rendered reviews caught and corrected clipping, overlapping old geometry and missing furniture collision.

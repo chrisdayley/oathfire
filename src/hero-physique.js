@@ -1,10 +1,11 @@
+import {heroArmorProfile} from './hero-armor-profile.js';
 import {characterBounce} from './hero-surfaces.js';
 import * as T from 'three';
 
 export const HERO_PHYSIQUES={
- warden:{shoulder:.278,chest:1.18,depth:1.18,arm:1.28,forearm:1.22,thigh:1.30,calf:1.24,waist:1.12},
- ashwright:{shoulder:.285,chest:1.23,depth:1.24,arm:1.35,forearm:1.27,thigh:1.32,calf:1.27,waist:1.18},
- ranger:{shoulder:.264,chest:1.10,depth:1.10,arm:1.17,forearm:1.15,thigh:1.20,calf:1.17,waist:1.07}
+ warden:{shoulder:.265,chest:1.17,depth:1.10,arm:1.16,forearm:1.15,thigh:1.20,calf:1.18,waist:1.07},
+ ashwright:{shoulder:.268,chest:1.20,depth:1.14,arm:1.23,forearm:1.20,thigh:1.25,calf:1.21,waist:1.10},
+ ranger:{shoulder:.253,chest:1.10,depth:1.06,arm:1.12,forearm:1.10,thigh:1.16,calf:1.13,waist:1.04}
 };
 export const heroPhysique=c=>!c.enemy?HERO_PHYSIQUES[c.design]:null;
 export function fitHeroPart(c,id,group){
@@ -34,7 +35,7 @@ export function heroSkin(map,smith=false){
 // Continuous muscle surfaces and original elbow weights, bound to the current
 // animation skeleton. Armor remains separate so equipped designs still fit.
 export function attachHeroAnatomy(c,skeleton){
- if(c.design!=='ashwright'||c.enemy||!anatomy||!c.anatomyMaterial)return;
+ if(c.design!=='ashwright'||c.enemy||!anatomy||!c.anatomyMaterial||heroArmorProfile(c)?.sleeves)return;
  const skin=c.anatomyMaterial.clone();skin.vertexColors=true;skin.onBeforeCompile=c.anatomyMaterial.onBeforeCompile;skin.customProgramCacheKey=c.anatomyMaterial.customProgramCacheKey;c.materials.push(skin);
  const inverse=c.visual.matrixWorld.clone().invert(),a=new T.Vector3(),b=new T.Vector3();
  for(const side of ['l','r']){

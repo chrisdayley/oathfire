@@ -1,3 +1,4 @@
+import {heroArmorProfile} from './hero-armor-profile.js';
 import * as T from 'three';
 
 const add=(g,geo,m,name)=>{const o=new T.Mesh(geo,m);o.name=name;o.castShadow=o.receiveShadow=true;g.add(o);return o;};
@@ -25,8 +26,8 @@ function shoulder(g,mats,smith,rank){
 export function tailorHero(c,part,mats,rank){
  if(c.enemy||!['warden','ashwright','ranger'].includes(c.design))return;
  const smith=c.design==='ashwright';
- if(c.design!=='warden')for(const side of ['l','r'])shoulder(part('upperarm'+side),mats,smith,rank);
- if(!smith)return;
+ if(c.design!=='warden'&&!heroArmorProfile(c)?.sleeves)for(const side of ['l','r'])shoulder(part('upperarm'+side),mats,smith,rank);
+ if(!smith||heroArmorProfile(c)?.plate)return;
  const chest=part('chest'),hips=part('hips');
  // Follow the authored apron waves, including their weighting to each leg.
  const z=(x,y)=>{const t=(.13-y)/.89,u=x/(.355*(.85+t*.25))+.5;return .165+Math.cos(u*Math.PI*6)*(.008+t*.011)+t*.03+.009;};

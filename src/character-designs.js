@@ -1,3 +1,4 @@
+import {attachHeroCape} from './hero-cape.js';
 import {heroPhysique,fitHeroPart,attachHeroAnatomy} from './hero-physique.js';
 import {armorStyle} from './equipment-style.js';
 import {decorateArmor} from './equipment-visuals.js';
@@ -43,12 +44,12 @@ export function rigRole(model,options){return options.design|| (options.enemy?({
 export function recordRest(c){c.rest=new Map();for(const b of Object.values(c.sockets))if(b.isBone)c.rest.set(b,b.position.clone());}
 export function resetRigTranslations(c){for(const [b,p]of c.rest)b.position.copy(p);}
 export function adultPose(c){
- const wide=c.design==='brute'?1.48:['giant','breaker','castellan'].includes(c.design)?1.2:c.design==='ashwright'?1.12:c.design==='ranger'?.97:1;
+ const wide=c.design==='brute'?1.48:['giant','breaker','castellan'].includes(c.design)?1.2:c.design==='ashwright'?1.06:c.design==='ranger'?.97:1;
  const set=(id,x,y,z=0)=>{const b=bone(c,id);if(b){b.position.set(x,y,z);b.scale.set(1,1,1);}};
  const hips=bone(c,'hips');if(hips){const raw=hips.position.clone();hips.position.set(raw.x*.5,1.02+(raw.y-.4056634)*.45,raw.z*.5);hips.scale.set(wide,1,1);}
- set('spine',0,.16);set('chest',0,.27);set('head',0,.285);if(c.design==='brute')bone(c,'head').scale.x=.74;
+ set('spine',0,.16);set('chest',0,.27);set('head',0,heroPhysique(c)?.245:.285);if(c.design==='brute')bone(c,'head').scale.x=.74;
  for(const [suffix,side]of [['l',1],['r',-1]]){
-  set('upperleg.'+suffix,.14*side,.02);set('lowerleg.'+suffix,0,.44);set('foot.'+suffix,0,.425);set('toes.'+suffix,0,.17);
+  set('upperleg.'+suffix,(heroPhysique(c)?.128:.14)*side,.02);set('lowerleg.'+suffix,0,.44);set('foot.'+suffix,0,.425);set('toes.'+suffix,0,.17);
   set('upperarm.'+suffix,(heroPhysique(c)?.shoulder||.245)*side,.13);set('lowerarm.'+suffix,0,.305);set('wrist.'+suffix,0,.255);set('hand.'+suffix,0,.055);set('handslot.'+suffix,0,.063,-.026);
  }
 }
@@ -255,7 +256,7 @@ export function buildAppearance(c){
  c.body=[];for(const [mat,geos]of bins){const geometry=mergeGeometries(geos,false);if(!geometry)throw Error('Character mesh merge failed');geos.forEach(g=>g.dispose());const body=new T.SkinnedMesh(geometry,mat);body.name='Oathfire_'+role+'_'+mat.uuid.slice(0,6);body.castShadow=body.receiveShadow=true;body.frustumCulled=false;c.visual.add(body);body.bind(skeleton);c.body.push(body);}
  attachHeroAnatomy(c,skeleton);
  // Cloth silhouette is a tailored mantle, with a ragged hem for the Hollow Host.
- if(!bare&&!brute&&(undead||living.profile.cloak)){const height=c.armor?.rarity===0?.72:kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.28:living?.profile.ranger?.91:1.02,width=kind==='marshal'?.70:royal?.68:rank>=8?.72:.61,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*29)*(.013+drop*.026)+Math.sin(drop*8+x*17)*.014+drop*.09));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cm=(living?.cloth||cloth).clone();if(!undead&&(rank>=6||living.profile.hero&&(!c.armor||c.armor.rarity>=2))){cm.map=textile('heraldry','#'+new T.Color(c.atelier.clothHex).getHexString(),'#'+new T.Color(c.atelier.trimHex).getHexString());cm.color.setHex(0xffffff);}if(c.armor?.rarity>=5&&!undead){cm.emissive.setHex(armorStyle(c.armor).glow);cm.emissiveMap=textile('heraldry','#000000','#ffffff');cm.emissiveIntensity=.4;cm.userData.equipmentPulse=.4;}c.materials.push(cm);const cape=mesh(geo,cm,bone(c,'chest'),0,-height*.5+.19,heroPhysique(c)?-.21:-.15);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
+ if(!attachHeroCape(c)&&!bare&&!brute&&(undead||living.profile.cloak)){const height=c.armor?.rarity===0?.72:kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.28:living?.profile.ranger?.91:1.02,width=kind==='marshal'?.70:royal?.68:rank>=8?.72:.61,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*29)*(.013+drop*.026)+Math.sin(drop*8+x*17)*.014+drop*.09));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cm=(living?.cloth||cloth).clone();if(!undead&&(rank>=6||living.profile.hero&&(!c.armor||c.armor.rarity>=2))){cm.map=textile('heraldry','#'+new T.Color(c.atelier.clothHex).getHexString(),'#'+new T.Color(c.atelier.trimHex).getHexString());cm.color.setHex(0xffffff);}if(c.armor?.rarity>=5&&!undead){cm.emissive.setHex(armorStyle(c.armor).glow);cm.emissiveMap=textile('heraldry','#000000','#ffffff');cm.emissiveIntensity=.4;cm.userData.equipmentPulse=.4;}c.materials.push(cm);const cape=mesh(geo,cm,bone(c,'chest'),0,-height*.5+.19,heroPhysique(c)?-.21:-.15);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
  c.held=compactRigid(weapon(c.weaponType,rank,c.color,c.temper,c.design,c.weaponItem));c.held.rotation.y=Math.PI;c.heldRest=c.held.quaternion.clone();bone(c,'handslot.r').add(c.held);c.gear.push(c.held);
  if(['sword','spear'].includes(c.weaponType)&&!caster&&!brute&&role!=='bell'&&role!=='assassin'){
   c.heldShield=compactRigid(c.shieldItem&&!undead?equipmentShield(c.shieldItem):shield(c.design==='warden'?Math.max(4,rank):rank,undead?0x343c38:(c.armor?.rarity===6?0x73889b:c.atelier?.clothHex||0x234b4d),undead?role:null));if(heroPhysique(c)&&!c.shieldItem){c.heldShield.scale.x=.82;c.heldShield.scale.y=.94;}if(variant==='bulwark')c.heldShield.scale.set(1.35,1.45,1.15);c.heldShield.rotation.y=Math.PI;c.heldShield.rotation.z=-Math.PI/2;c.heldShield.position.set(0,-.02,.05);bone(c,'handslot.l').add(c.heldShield);c.gear.push(c.heldShield);
