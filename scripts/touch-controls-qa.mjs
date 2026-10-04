@@ -1,0 +1,55 @@
+import {createRequire} from 'node:module';
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {newSave} from '../src/state.js';
+const pw=createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE||'playwright');
+const engine=process.env.BROWSER||'chromium',url=process.env.GAME_URL||'http://127.0.0.1:4180',out=process.env.QA_OUT||'work/qa-touch-'+engine;
+fs.mkdirSync(out,{recursive:true});
+const browser=await pw[engine].launch({headless:true,...(engine==='chromium'?{args:['--use-angle=metal']}: {})});
+const report={engine,url,checks:[],errors:[]};
+const check=(name,value)=>{assert.ok(value,name);report.checks.push(name);console.log('PASS',name);};
+try{
+ const page=await browser.newPage({viewport:{width:844,height:390},isMobile:true,hasTouch:true});
+ page.on('pageerror',e=>report.errors.push(e.message));
+ await page.goto(url);await page.waitForFunction(()=>window.__oathfire?.ready,{},{timeout:90000});
+ const save=newSave();save.guide.active=false;save.guide.seen=['prologue'];
+ await page.evaluate(async save=>{const g=window.__oathfire;g.store.import(JSON.stringify(save));await g.start(null,true);g.ui.close();g.hero.invuln=999;g.audio.mute=true;},save);
+ await page.waitForTimeout(300);
+ check('All combat labels suppress selection',await page.locator('#combat-controls button, #combat-controls button *').evaluateAll(els=>els.every(e=>getComputedStyle(e).userSelect==='none'||getComputedStyle(e).webkitUserSelect==='none')));
+ if(engine==='webkit')check('WebKit touch callouts are disabled on nested labels',await page.locator('#attack-button small').evaluate(e=>getComputedStyle(e).getPropertyValue('-webkit-touch-callout')==='none'));
+ check('Native selection, context menu and touch defaults are canceled on held controls',await page.locator('#attack-button small').evaluate(e=>['selectstart','contextmenu','touchstart'].every(type=>!e.dispatchEvent(new Event(type,{bubbles:true,cancelable:true})))));
+ const point=async selector=>{const b=await page.locator(selector).boundingBox();assert.ok(b,selector);return {x:b.x+b.width/2,y:b.y+b.height*.7};};
+ const cdp=engine==='chromium'?await page.context().newCDPSession(page):null;
+ const touch=async(type,points=[])=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:points.map((p,i)=>({...p,id:p.id??i+1,radiusX:3,radiusY:3,force:1}))});
+ const down=async p=>cdp?touch('touchStart',[p]):(await page.mouse.move(p.x,p.y),await page.mouse.down());
+ const up=async()=>cdp?touch('touchEnd'):page.mouse.up();
+ const stats=()=>page.evaluate(()=>{const s=window.__oathfire.combat.stats;return {...s,casts:Object.values(s.casts).reduce((n,v)=>n+v,0)};});
+ const ready=()=>page.evaluate(()=>{const g=window.__oathfire;g.hero.cooldown=0;g.hero.stamina=g.heroStats().stamina;g.hero.focus=g.heroStats().focus;});
+ const attack=await point('#attack-button');await ready();let before=await stats();
+ await down(attack);await page.waitForTimeout(1100);
+ check('Long hold continues charging without selecting text',await page.evaluate(()=>window.__oathfire.input.attack&&window.__oathfire.hero.charge>.32&&getSelection().toString()===''));
+ await up();await page.waitForTimeout(250);let after=await stats();
+ check('Release fires exactly one charged attack',after.heavy===before.heavy+1&&after.light===before.light);
+ await ready();before=await stats();await page.touchscreen.tap(attack.x,attack.y);await page.waitForTimeout(250);after=await stats();
+ check('Quick tap still fires exactly one light attack',after.light===before.light+1&&after.heavy===before.heavy);
+ await ready();before=await stats();await down(attack);await page.waitForTimeout(800);
+ if(cdp)await touch('touchMove',[{x:attack.x-100,y:attack.y-100}]);else await page.mouse.move(attack.x-100,attack.y-100);
+ await up();await page.waitForTimeout(250);after=await stats();
+ check('Sliding outside the button still releases a single charged attack',after.heavy===before.heavy+1&&await page.evaluate(()=>!window.__oathfire.input.attack&&!document.querySelector('#attack-button').classList.contains('held')));
+ if(cdp){
+  await ready();before=await stats();await down(attack);await page.waitForTimeout(650);await touch('touchCancel');await page.waitForTimeout(150);after=await stats();
+  check('Canceled touch clears charge without firing',after.heavy===before.heavy&&after.light===before.light&&await page.evaluate(()=>!window.__oathfire.input.attack&&!window.__oathfire.hero.charging));
+  await ready();const joy=await point('#joystick'),start=await page.evaluate(()=>window.__oathfire.hero.pos.toArray());
+  await touch('touchStart',[{...joy,id:1}]);await touch('touchMove',[{x:joy.x+25,y:joy.y,id:1}]);await touch('touchStart',[{x:joy.x+25,y:joy.y,id:1},{...attack,id:2}]);await page.waitForTimeout(1000);
+  check('Two-finger movement and attack charging work together',await page.evaluate(start=>{const g=window.__oathfire;return g.input.attack&&g.hero.charge>.32&&Math.hypot(g.hero.pos.x-start[0],g.hero.pos.z-start[2])>.1;},start));
+  await touch('touchEnd');await page.waitForTimeout(250);
+ }
+ await ready();const guard=await point('#guard-button');await down(guard);await page.waitForTimeout(450);
+ check('Guard stays held',await page.evaluate(()=>window.__oathfire.input.guard&&window.__oathfire.hero.guarding));await up();await page.waitForTimeout(150);
+ check('Guard releases cleanly',await page.evaluate(()=>!window.__oathfire.input.guard&&!window.__oathfire.hero.guarding));
+ await ready();before=await stats();await page.locator('#spell-0').tap();await page.waitForTimeout(200);after=await stats();check('Ability buttons still cast',after.casts===before.casts+1);
+ await page.locator('#pause-btn').tap();check('Normal menu buttons still open and close menus',await page.locator('#menu').isVisible());await page.locator('#close-menu').tap();check('Menu close responds to touch',await page.locator('#menu').isHidden());
+ await page.evaluate(()=>{window.__oathfire.ui.open('settings');});
+ check('Settings inputs retain normal browser interaction',await page.locator('input[data-setting="music"]').evaluate(e=>getComputedStyle(e).userSelect!=='none'&&e.dispatchEvent(new Event('touchstart',{bubbles:true,cancelable:true}))));
+ check('No browser runtime errors',report.errors.length===0);
+}finally{fs.writeFileSync(out+'/report.json',JSON.stringify(report,null,2));await browser.close();}

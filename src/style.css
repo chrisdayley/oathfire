@@ -54,3 +54,7 @@
 #menu.hero-inspect{background:transparent!important}
 #menu.hero-inspect main{background:none}
 #menu.hero-inspect #close-menu{margin-left:auto}
+
+/* Keep native text selection and iOS callouts out of the real-time controls. */
+#hud,#hud *,canvas#game{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#hud [data-control],#joystick{touch-action:none}

@@ -1,5 +1,9 @@
 # Oathfire: The Hollow March
 
+## 2.20.1 — uninterrupted touch combat
+
+Combat controls suppress text selection and iOS long-press callouts, including their nested labels. Holding Attack still charges and releasing still strikes; menus and editable save/settings fields keep their normal interactions.
+
 ## The turning tide — 2.20
 
 Warned battlefield threats, interruptible attacks, perfect-guard counters and hero/army combinations give the player more ways to turn a battle. Siege flanks can silence artillery, establish a forward infirmary or delay enemy reinforcements. Every rescued region adds a permanent, themed improvement to Hearthwatch, returning residents and a short NPC homecoming.
