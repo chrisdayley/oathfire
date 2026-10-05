@@ -48,4 +48,6 @@ Prompt:
 
 Unit tests cover contract gates, costs, ownership, damage/bonuses, injuries, save validation and siege migration. Isolated mobile browser playtests cover the visible purchase flow, mounting, collisions, jumping, spells/arrows, charged attacks, injuries, restoration and objective dismissal. Independent playtesting includes melee against live targets and side aiming. Browser tests use touch emulation; they are not a claim of physical iPhone testing.
 
-Final release verification: 203 unit tests passed. Production Chromium reports: 26 checks in work/qa-mounts-production, 15 checks in work/qa-touch-v221, 27 checks in work/qa-frontline-v221. The independent reviewer completed three rounds and found no remaining functional blocker in the representative mounted playtests. Their final report preserves the remaining visual-fidelity limits.
+Final release verification: 205 unit tests passed. Production Chromium reports: 26 checks in work/qa-mounts-production, 15 checks in work/qa-touch-v221, 27 checks in work/qa-frontline-v221. The independent reviewer completed three rounds and found no remaining functional blocker in the representative mounted playtests. Their final report preserves the remaining visual-fidelity limits.
+
+Sound manifests use a release-specific online request so a waiting older service worker cannot hide the updated combat sounds. Offline startup falls back to the precached manifest; both update paths have regression coverage.
