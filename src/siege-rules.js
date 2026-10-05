@@ -5,15 +5,15 @@ export const isSiege=m=>m?.mode==='siege';
 export const SIEGE_PARTS=['gate','west','east','keep'];
 export const SIEGE_NAMES={gate:'Ironbound gate',west:'West bastion',east:'East bastion',keep:'Dread keep'};
 export const SIEGE_RALLY={x:0,y:0,z:-30};
-// Gate-to-gate distance: 945 m. The assault route is half the previous length.
-export const SIEGE_OFFSET=-819;
+// Gate-to-gate distance: 472.5 m. Camps and encounters retain their strength on a shorter road.
+export const SIEGE_OFFSET=-346.5;
 export const SIEGE_GATE_Z=-143+SIEGE_OFFSET;
 export const SIEGE_MIN_Z=-205+SIEGE_OFFSET-26;
 export const SIEGE_OUTPOSTS=[
- {name:'Old road watch',x:-16,z:-169},
- {name:'The broken crossing',x:18,z:-381},
- {name:'Highland redoubt',x:-18,z:-592},
- {name:'Crownward camp',x:16,z:-804}
+ {name:'Old road watch',x:-16,z:-96},
+ {name:'The broken crossing',x:18,z:-199},
+ {name:'Highland redoubt',x:-18,z:-301},
+ {name:'Crownward camp',x:16,z:-404}
 ];
 export function siegeRally(b){const n=b?.siege?.outposts?.lastIndexOf(true)??-1;const camp=n<0?SIEGE_RALLY:{x:SIEGE_OUTPOSTS[n].x,y:0,z:SIEGE_OUTPOSTS[n].z+8};return b?.siege?.routes?.infirmary&&camp.z>ROUTES[1].z?{x:ROUTES[1].x,y:0,z:ROUTES[1].z+8}:camp;}
 export function siegeMarchFactor(g,e){return g.battle?.siege&&!e.attacking&&!e.charging&&!e.guarding&&e.pos.z< -35&&e.pos.z>SIEGE_GATE_Z+90&&!g.enemies.some(n=>!n.dead&&Math.hypot(n.pos.x-e.pos.x,n.pos.z-e.pos.z)<60)?1.65*(e===g.hero?1:Math.max(1,(g.hero.stats.speed||5)/e.stats.speed)):1;}
@@ -24,13 +24,13 @@ export function siegeConfig(m){
   initial:final?14:5+Math.floor(stage/4),limit:final?58:42,damage:final?44:14+stage*.8,
   rewardSalvage:final?110:25+stage*3};
 }
-export function siegePressure(m,time,gateBroken=false,frontier=-Infinity){const c=siegeConfig(m),roadCap=frontier<SIEGE_GATE_Z+120?6:Math.min(5,2+Math.floor(Math.max(0,-frontier-175)/200));return Math.min(6,roadCap+(gateBroken?1:0),1+Math.floor(Math.max(0,time)/c.stepSeconds)+(gateBroken?1:0));}
+export function siegePressure(m,time,gateBroken=false,frontier=-Infinity){const c=siegeConfig(m),roadCap=frontier<SIEGE_GATE_Z+60?6:Math.min(5,2+Math.floor(Math.max(0,-frontier-95)/100));return Math.min(6,roadCap+(gateBroken?1:0),1+Math.floor(Math.max(0,time)/c.stepSeconds)+(gateBroken?1:0));}
 export function siegeInterval(m,pressure){const c=siegeConfig(m);return Math.max(c.minimum,c.interval-(pressure-1)*(c.final?2:3));}
 export function siegePacket(m,pressure){return (siegeConfig(m).final?4:3)+(pressure-1);}
-export function newSiegeState(m){const c=siegeConfig(m);return {version:3,routes:routeState(),bossSpawned:false,bossDefeated:false,frontier:-27,outposts:[false,false,false,false],activated:[false,false,false,false],capture:0,hp:{...c.hp},nextSpawn:5,pressure:1,spawned:0,packets:0,damage:0,heroDamage:0,armyDamage:0,destroyed:0};}
+export function newSiegeState(m){const c=siegeConfig(m);return {version:4,routes:routeState(),bossSpawned:false,bossDefeated:false,frontier:-27,outposts:[false,false,false,false],activated:[false,false,false,false],capture:0,hp:{...c.hp},nextSpawn:5,pressure:1,spawned:0,packets:0,damage:0,heroDamage:0,armyDamage:0,destroyed:0};}
 export function validateSiegeState(value,m){
  if(value===undefined)return;validateFrontline({siege:value}); // A suspended pre-siege settlement is migrated on resume.
- if(!isSiege(m)||![1,2,3].includes(value?.version))throw Error('Invalid siege checkpoint.');
+ if(!isSiege(m)||![1,2,3,4].includes(value?.version))throw Error('Invalid siege checkpoint.');
  if(value.version>=2){if(value.frontier!==undefined&&(!Number.isFinite(value.frontier)||value.frontier< -2400||value.frontier>55))throw Error('Invalid siege frontier.');for(const key of ['outposts','activated'])if(!Array.isArray(value[key])||value[key].length!==4||value[key].some(v=>typeof v!=='boolean'))throw Error('Invalid siege road progress.');if(!Number.isFinite(value.capture)||value.capture<0||value.capture>6)throw Error('Invalid camp capture.');}
  for(const k of ['bossSpawned','bossDefeated'])if(value[k]!==undefined&&typeof value[k]!=='boolean')throw Error('Invalid fortress commander.');if(value.bossDefeated&&!value.bossSpawned)throw Error('Invalid commander victory.');
  const c=siegeConfig(m);
@@ -45,14 +45,15 @@ export function castleReserved(world,x,z,margin=0){return !!world.siegeMode&&Mat
 // Preserve suspended assaults when shortening the road. Fortress-local distances
 // are translated intact; only the open road is compressed. Never mutate input.
 export function migrateSiegeCheckpoint(saved,m){
- if(!saved?.siege||!isSiege(m)||saved.siege.version>=3)return saved;
+ if(!saved?.siege||!isSiege(m)||saved.siege.version>=4)return saved;
  const next=structuredClone(saved),st=next.siege,legacy=st.version===1;
- const mapZ=z=>legacy?z+SIEGE_OFFSET:z>=-27?z:z<=-1889?z+945:-27+(z+27)*(917/1862);
+ const oldZ=z=>st.version>=3?z:legacy?z-819:z>=-27?z:z<=-1889?z+945:-27+(z+27)*(917/1862);
+ const mapZ=z=>{z=oldZ(z);return z>=-27?z:z<=-944?z+472.5:-27+(z+27)*(444.5/917);};
  const move=p=>{if(p&&Number.isFinite(p.z))p.z=mapZ(p.z);};
  move(next.hero?.pos);move(next.holdPoint);for(const a of [...(next.allies||[]),...(next.enemies||[])])move(a.pos);for(const chest of next.ledger?.chests||[])move(chest.pos);
  st.frontier=mapZ(st.frontier??saved.hero?.pos?.z??-27);
  if(legacy){st.outposts=[true,true,true,true];st.activated=[true,true,true,true];st.capture=0;}
- st.version=3;return next;
+ st.version=4;return next;
 }
 
 export const siegeWon=(m,st)=>st?.hp.keep===0&&(m.id!==FINAL_FORTRESS||st.bossSpawned&&st.bossDefeated);

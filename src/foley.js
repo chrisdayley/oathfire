@@ -41,8 +41,8 @@ export class Foley{
  }
  impact({weapon='sword',element=null,target=null,position,heavy=false,hero=false,kind='stone'}){
   const spatial=soundPosition(this.listener,position),material=target?impactMaterial(target):['bridge','wood','crate','barrel','gate'].includes(kind)?'wood':'stone';
-  const key=element&&['fire','frost','storm','water','nature','holy','grave','stone','shell'].includes(element)?'impact-'+element:'hit-'+(WEAPONS.has(weapon)?weapon:'sword')+'-'+material;
-  if(this.limited(key,hero?.035:.09))return;this.cue(key,{gain:spatial.gain*(hero?.83:.35)*(heavy?1.22:1),pan:spatial.pan,pitch:heavy?.88:.98+(this.serial++%3)*.018,priority:hero?4:1,tag:target?'confirmed-hit':'world-contact'});
+  let key=element&&['fire','frost','storm','water','nature','holy','grave','stone','shell'].includes(element)?'impact-'+element:'hit-'+(WEAPONS.has(weapon)?weapon:'sword')+'-'+material;
+  if(heavy&&this.manifest?.clips[key+'-heavy'])key+='-heavy';if(this.limited(key,hero?.035:.09))return;this.cue(key,{gain:spatial.gain*(hero?.83:.35)*(heavy?1.22:1),pan:spatial.pan,pitch:.97+(this.serial++%3)*.022,priority:hero?4:1,tag:target?'confirmed-hit':'world-contact'});
  }
  parry(position,perfect=false){const spatial=soundPosition(this.listener,position);if(!this.limited('parry',.07))this.cue('parry',{gain:spatial.gain*(perfect?1:.66),pan:spatial.pan,pitch:perfect?1.13:.97,priority:4,tag:perfect?'perfect-block':'block'});}
  stop(){const now=this.ctx.currentTime;for(const v of this.voices){v.volume.gain.cancelScheduledValues(now);v.volume.gain.setTargetAtTime(0,now,.012);try{v.source.stop(now+.06);}catch{}}}

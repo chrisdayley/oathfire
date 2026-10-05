@@ -20,3 +20,5 @@ import './safe-area.css';
 import "./war-map.css";
 
 import './frontline.css';
+
+import './stable.css';

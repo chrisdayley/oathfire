@@ -49,7 +49,7 @@ export function tickSiege(g,dt){
  // Dormant roadside garrisons activate before the leading soldier reaches them.
  const lead=Math.min(g.hero.pos.z,...g.allies.filter(a=>!a.dead).map(a=>a.pos.z));
  SIEGE_OUTPOSTS.forEach((p,i)=>{
-  if(!st.activated[i]&&lead<p.z+90){const n=Math.min(c.limit-g.enemies.filter(e=>!e.dead).length,c.initial+i+3);if(n>0)st.activated[i]=true;for(let j=0;j<n;j++)spawnReinforcement(g,j,Math.max(1,st.pressure),p.z-7);st.spawned+=Math.max(0,n);}
+  if(!st.activated[i]&&lead<p.z+50){const n=Math.min(c.limit-g.enemies.filter(e=>!e.dead).length,c.initial+i+3);if(n>0)st.activated[i]=true;for(let j=0;j<n;j++)spawnReinforcement(g,j,Math.max(1,st.pressure),p.z-7);st.spawned+=Math.max(0,n);}
   const flag=g.world.siegeCampFlags?.[i];if(flag&&!flag.userData.friendly&&st.outposts[i]){flag.userData.friendly=true;flag.traverse(o=>{if(o.isMesh&&o.material?.color&&o.geometry.type==='PlaneGeometry')o.material.color.setHex(0x247d91);});}
  });
  const campIndex=SIEGE_OUTPOSTS.findIndex((p,i)=>!st.outposts[i]&&distance(p,g.hero.pos)<13);

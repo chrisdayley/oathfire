@@ -14,9 +14,9 @@ export function turningPointFor(m,wave){
 export function newTurningPoint(m,wave){const kind=turningPointFor(m,wave);return kind?{kind,wave,phase:'waiting',remaining:12,ids:[],rallies:0}:null;}
 export const turningPointPending=b=>!!b?.turningPoint&&['waiting','warning'].includes(b.turningPoint.phase);
 export const ROUTES=[
- {id:'artillery',name:'Ash battery',x:-42,z:-283,kind:'destroy',description:'Destroy the mortar on the west flank.',benefit:'Road bombardment silenced'},
- {id:'infirmary',name:'Pilgrim camp',x:42,z:-498,kind:'capture',description:'Clear the east camp. Occupy it for 6 seconds.',benefit:'Forward recruitment · 50% nearby healing'},
- {id:'signal',name:'Hornwatch',x:-42,z:-715,kind:'capture',description:'Clear the west signal post. Occupy it for 6 seconds.',benefit:'30% longer between reinforcements'}
+ {id:'artillery',name:'Ash battery',x:-42,z:-151,kind:'destroy',description:'Destroy the mortar on the west flank.',benefit:'Road bombardment silenced'},
+ {id:'infirmary',name:'Pilgrim camp',x:42,z:-255,kind:'capture',description:'Clear the east camp. Occupy it for 6 seconds.',benefit:'Forward recruitment · 50% nearby healing'},
+ {id:'signal',name:'Hornwatch',x:-42,z:-360,kind:'capture',description:'Clear the west signal post. Occupy it for 6 seconds.',benefit:'30% longer between reinforcements'}
 ];
 export const routeState=()=>({artillery:false,infirmary:false,signal:false,activated:false,capture:0,capturing:null});
 export function validateFrontline(b){

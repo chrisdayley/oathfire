@@ -8,3 +8,14 @@
 #dialog .dialog-box:has(.frontline-tactics) .combat-tip{font-size:13px;line-height:1.35;margin:9px 0}
 body:has(#dialog:not([hidden])) #toasts{display:none}
 @media(max-height:500px){#dialog .dialog-box:has(.frontline-tactics){padding:12px 18px}#dialog .dialog-box:has(.frontline-tactics) h2{font-size:22px;margin:4px 0 8px}#dialog .dialog-box:has(.frontline-tactics) .frontline-tactics p,#dialog .dialog-box:has(.frontline-tactics) .frontline-tactics b{font-size:12px;line-height:1.3;margin:5px 0}#dialog .dialog-box:has(.frontline-tactics) .frontline-tactics h3{font-size:15px;line-height:1.25;margin:4px 0}#dialog .dialog-box:has(.frontline-tactics) .combat-tip{font-size:11px;line-height:1.3;margin:6px 0}#dialog .dialog-box:has(.frontline-tactics) .dialog-actions{padding-top:8px;margin-top:6px}}
+
+/* Keep the line of sight clear; the objective opens only when requested. */
+#objective-dock{position:absolute;right:12px;top:154px;pointer-events:auto;display:flex;align-items:start;gap:6px;max-width:calc(100% - 24px)}
+#objective-dock[hidden],#objective-panel[hidden]{display:none!important}
+#objective-toggle{width:44px;height:44px;min-width:44px;border:1px solid #b49c68a0;background:#172a30ba;color:#f5d9a0;font-size:24px;padding:0;border-radius:8px}
+#objective-toggle.urgent{box-shadow:0 0 12px #e08d32a0;color:#ffe3a1}
+#objective-panel{display:flex;max-width:230px;background:#15242aee;border:1px solid #b49c68;border-radius:5px;order:-1}
+#objective-dock #frontline-objective{position:static;transform:none;width:auto;max-width:190px;min-height:44px;padding:9px;border:0;background:transparent;display:flex;gap:5px;text-align:left;font:inherit}
+#objective-dock #frontline-objective b{font-size:13px}#objective-dock #frontline-objective small{font-size:11px;display:block}
+#objective-hide{align-self:start;min-width:32px;height:36px;background:transparent;border:0;color:#e5c88e;font-size:23px;padding:2px}
+@media(max-height:600px){#objective-dock{top:112px;right:10px}}

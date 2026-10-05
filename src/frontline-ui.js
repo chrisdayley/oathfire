@@ -9,16 +9,21 @@ export function showFrontlineTactics(ui,m,done=null){
  $('frontline-close').onclick=()=>{$('dialog').hidden=true;ui.g.input.clear();done?.();};
 }
 export function mountFrontlineHUD(ui){
- const button=document.createElement('button');button.id='frontline-objective';button.hidden=true;button.onclick=()=>{if(ui.g.battle)showFrontlineTactics(ui,MISSIONS[ui.g.battle.id]);};$('hud').append(button);
+ const wrap=document.createElement('div');wrap.id='objective-dock';wrap.hidden=true;
+ wrap.innerHTML='<button id="objective-toggle" aria-label="Show objective" aria-expanded="false">⚑</button><div id="objective-panel" hidden><button id="frontline-objective"></button><button id="objective-hide" aria-label="Hide objective">×</button></div>';
+ $('hud').append(wrap);
+ const toggle=()=>{const panel=$('objective-panel');panel.hidden=!panel.hidden;$('objective-toggle').setAttribute('aria-expanded',String(!panel.hidden));};
+ $('objective-toggle').onclick=toggle;$('objective-hide').onclick=toggle;
+ $('frontline-objective').onclick=()=>{if(ui.g.battle)showFrontlineTactics(ui,MISSIONS[ui.g.battle.id]);};
 }
 export function updateFrontlineHUD(ui){
- const g=ui.g,b=g.battle,el=$('frontline-objective');if(!el)return;el.hidden=!b||g.mode!=='play'||!!g.menu||ui.modal;if(el.hidden)return;
+ const g=ui.g,b=g.battle,el=$('frontline-objective');if(!el)return;$('objective-dock').hidden=!b||g.mode!=='play'||!!g.menu||ui.modal;if($('objective-dock').hidden)return;
  let title='Battlefield tactics',detail='Perfect guard · Flank · Interrupt',target=null,warning=false;
  if(b.siege){const r=b.siege.routes,p=ROUTES.filter(p=>!r?.[p.id]).sort((a,c)=>Math.hypot(a.x-g.hero.pos.x,a.z-g.hero.pos.z)-Math.hypot(c.x-g.hero.pos.x,c.z-g.hero.pos.z))[0];
   title='Siege routes';detail='Tap to plan your approach';if(p&&Math.hypot(p.x-g.hero.pos.x,p.z-g.hero.pos.z)<120){title=p.name;target=p;detail=r?.capturing===p.id?(r.capture?'Securing '+Math.ceil(r.capture)+'/6s':'Clear the defenders'):p.kind==='destroy'?'Destroy the mortar':'Clear & occupy for 6s';}
  }else{const t=b.turningPoint;if(t&&['warning','active'].includes(t.phase)){title=TURNING_POINTS[t.kind].name;warning=true;detail=t.phase==='warning'?'Incoming in '+Math.ceil(t.remaining)+'s · tap for counter':t.kind==='ram'?'Flank & use charged strikes':t.kind==='commander'?'Interrupt its raised banner':'Interrupt throws · avoid circles';target=g.enemies.find(e=>t.ids.includes(e.id)&&!e.dead)?.pos;}}
  if(g.combatFeedback?.until>b.time&&!warning){title=g.combatFeedback.text;detail='';}
  const meters=target?Math.round(Math.hypot(target.x-g.hero.pos.x,target.z-g.hero.pos.z)):null,angle=target?Math.atan2(target.x-g.hero.pos.x,-(target.z-g.hero.pos.z))+g.view.yaw:0;
- el.classList.toggle('urgent',warning);el.innerHTML=(target?'<i style="transform:rotate('+angle+'rad)">↑</i>':'')+'<span><b>'+title+(meters!==null?' · '+meters+'m':'')+'</b><small>'+detail+'</small></span>';el.setAttribute('aria-label',title+'. '+detail+'. Open battlefield tactics.');
+ $('objective-toggle').classList.toggle('urgent',warning);$('objective-toggle').setAttribute('aria-label','Show objective: '+title+'. '+detail);el.classList.toggle('urgent',warning);el.innerHTML=(target?'<i style="transform:rotate('+angle+'rad)">↑</i>':'')+'<span><b>'+title+(meters!==null?' · '+meters+'m':'')+'</b><small>'+detail+'</small></span>';el.setAttribute('aria-label',title+'. '+detail+'. Open battlefield tactics.');
 }
 export function pendingHomeProject(s){return TOWN_PROJECTS.find(p=>projectEarned(s,p)&&!projectAcknowledged(s,p));}

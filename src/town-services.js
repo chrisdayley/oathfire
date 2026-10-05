@@ -7,6 +7,7 @@ export function canUseService(g,tab){
  return !service||!!(!g.battle&&g.hero&&Math.hypot(g.hero.pos.x-service.x,g.hero.pos.z-service.z,(g.hero.pos.y||0)-(service.y||0))<SERVICE_REACH);
 }
 export const serviceActions={
+ 'mount-hire':'stable','mount-select':'stable',
  'regiment-confirm':'troops','upgrade-unit':'troops',
  'upgrade-defense':'defenses','upgrade-logistics':'defenses','refit':'defenses',
  forge:'equipment',rune:'equipment',temper:'equipment',salvage:'equipment',equip:'equipment',buy:'shop'

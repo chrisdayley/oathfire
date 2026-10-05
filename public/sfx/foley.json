@@ -32,6 +32,12 @@
       "bytes": 1479254,
       "seconds": 128.99,
       "sha256": "a92b7aea46c2a8457be6f74a65f60546cefea0f3631d6eef10367de88f6f7a16"
+    },
+    "combat-v221": {
+      "file": "combat-v221.m4a",
+      "bytes": 686583,
+      "seconds": 57.92,
+      "sha256": "f69dde81b62b22becc63b6e3c4d9bf8e956b706ca046abd7f5ec7a858899ac04"
     }
   },
   "clips": {
@@ -419,38 +425,48 @@
       ]
     },
     "hit-sword-armor": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
           "offset": 0.12,
-          "duration": 0.6
+          "duration": 0.78
         },
         {
-          "offset": 0.84,
-          "duration": 0.6
+          "offset": 1.02,
+          "duration": 0.78
         },
         {
-          "offset": 1.56,
-          "duration": 0.6
+          "offset": 1.92,
+          "duration": 0.78
+        },
+        {
+          "offset": 2.82,
+          "duration": 0.78
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-sword-body": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 2.28,
-          "duration": 0.6
+          "offset": 8.8,
+          "duration": 0.53
         },
         {
-          "offset": 3.0,
-          "duration": 0.6
+          "offset": 9.45,
+          "duration": 0.53
         },
         {
-          "offset": 3.72,
-          "duration": 0.6
+          "offset": 10.1,
+          "duration": 0.53
+        },
+        {
+          "offset": 10.75,
+          "duration": 0.53
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-sword-stone": {
       "bank": "impacts",
@@ -487,38 +503,48 @@
       ]
     },
     "hit-spear-armor": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 8.76,
-          "duration": 0.6
+          "offset": 15.0,
+          "duration": 0.78
         },
         {
-          "offset": 9.48,
-          "duration": 0.6
+          "offset": 15.9,
+          "duration": 0.78
         },
         {
-          "offset": 10.2,
-          "duration": 0.6
+          "offset": 16.8,
+          "duration": 0.78
+        },
+        {
+          "offset": 17.7,
+          "duration": 0.78
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-spear-body": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 10.92,
-          "duration": 0.6
+          "offset": 23.68,
+          "duration": 0.53
         },
         {
-          "offset": 11.64,
-          "duration": 0.6
+          "offset": 24.33,
+          "duration": 0.53
         },
         {
-          "offset": 12.36,
-          "duration": 0.6
+          "offset": 24.98,
+          "duration": 0.53
+        },
+        {
+          "offset": 25.63,
+          "duration": 0.53
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-spear-stone": {
       "bank": "impacts",
@@ -555,38 +581,48 @@
       ]
     },
     "hit-hammer-armor": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 17.4,
-          "duration": 0.6
+          "offset": 29.88,
+          "duration": 0.78
         },
         {
-          "offset": 18.12,
-          "duration": 0.6
+          "offset": 30.78,
+          "duration": 0.78
         },
         {
-          "offset": 18.84,
-          "duration": 0.6
+          "offset": 31.68,
+          "duration": 0.78
+        },
+        {
+          "offset": 32.58,
+          "duration": 0.78
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-hammer-body": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 19.56,
-          "duration": 0.6
+          "offset": 38.56,
+          "duration": 0.53
         },
         {
-          "offset": 20.28,
-          "duration": 0.6
+          "offset": 39.21,
+          "duration": 0.53
         },
         {
-          "offset": 21.0,
-          "duration": 0.6
+          "offset": 39.86,
+          "duration": 0.53
+        },
+        {
+          "offset": 40.51,
+          "duration": 0.53
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-hammer-stone": {
       "bank": "impacts",
@@ -623,21 +659,26 @@
       ]
     },
     "hit-bow-armor": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 26.04,
-          "duration": 0.6
+          "offset": 44.76,
+          "duration": 0.48
         },
         {
-          "offset": 26.76,
-          "duration": 0.6
+          "offset": 45.36,
+          "duration": 0.48
         },
         {
-          "offset": 27.48,
-          "duration": 0.6
+          "offset": 45.96,
+          "duration": 0.48
+        },
+        {
+          "offset": 46.56,
+          "duration": 0.48
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-bow-body": {
       "bank": "impacts",
@@ -691,21 +732,26 @@
       ]
     },
     "hit-crossbow-armor": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 34.68,
-          "duration": 0.6
+          "offset": 47.16,
+          "duration": 0.48
         },
         {
-          "offset": 35.4,
-          "duration": 0.6
+          "offset": 47.76,
+          "duration": 0.48
         },
         {
-          "offset": 36.12,
-          "duration": 0.6
+          "offset": 48.36,
+          "duration": 0.48
+        },
+        {
+          "offset": 48.96,
+          "duration": 0.48
         }
-      ]
+      ],
+      "recorded": true
     },
     "hit-crossbow-body": {
       "bank": "impacts",
@@ -759,21 +805,26 @@
       ]
     },
     "parry": {
-      "bank": "impacts",
+      "bank": "combat-v221",
       "variants": [
         {
-          "offset": 43.32,
-          "duration": 0.75
+          "offset": 49.56,
+          "duration": 0.83
         },
         {
-          "offset": 44.19,
-          "duration": 0.75
+          "offset": 50.51,
+          "duration": 0.83
         },
         {
-          "offset": 45.06,
-          "duration": 0.75
+          "offset": 51.46,
+          "duration": 0.83
+        },
+        {
+          "offset": 52.41,
+          "duration": 0.83
         }
-      ]
+      ],
+      "recorded": true
     },
     "cast-fireball": {
       "bank": "magic",
@@ -1271,6 +1322,204 @@
           "duration": 1.5
         }
       ]
+    },
+    "hit-sword-armor-heavy": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 3.72,
+          "duration": 1.15
+        },
+        {
+          "offset": 4.99,
+          "duration": 1.15
+        },
+        {
+          "offset": 6.26,
+          "duration": 1.15
+        },
+        {
+          "offset": 7.53,
+          "duration": 1.15
+        }
+      ],
+      "recorded": true
+    },
+    "hit-sword-body-heavy": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 11.4,
+          "duration": 0.78
+        },
+        {
+          "offset": 12.3,
+          "duration": 0.78
+        },
+        {
+          "offset": 13.2,
+          "duration": 0.78
+        },
+        {
+          "offset": 14.1,
+          "duration": 0.78
+        }
+      ],
+      "recorded": true
+    },
+    "hit-spear-armor-heavy": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 18.6,
+          "duration": 1.15
+        },
+        {
+          "offset": 19.87,
+          "duration": 1.15
+        },
+        {
+          "offset": 21.14,
+          "duration": 1.15
+        },
+        {
+          "offset": 22.41,
+          "duration": 1.15
+        }
+      ],
+      "recorded": true
+    },
+    "hit-spear-body-heavy": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 26.28,
+          "duration": 0.78
+        },
+        {
+          "offset": 27.18,
+          "duration": 0.78
+        },
+        {
+          "offset": 28.08,
+          "duration": 0.78
+        },
+        {
+          "offset": 28.98,
+          "duration": 0.78
+        }
+      ],
+      "recorded": true
+    },
+    "hit-hammer-armor-heavy": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 33.48,
+          "duration": 1.15
+        },
+        {
+          "offset": 34.75,
+          "duration": 1.15
+        },
+        {
+          "offset": 36.02,
+          "duration": 1.15
+        },
+        {
+          "offset": 37.29,
+          "duration": 1.15
+        }
+      ],
+      "recorded": true
+    },
+    "hit-hammer-body-heavy": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 41.16,
+          "duration": 0.78
+        },
+        {
+          "offset": 42.06,
+          "duration": 0.78
+        },
+        {
+          "offset": 42.96,
+          "duration": 0.78
+        },
+        {
+          "offset": 43.86,
+          "duration": 0.78
+        }
+      ],
+      "recorded": true
+    },
+    "hoof-stone": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 53.36,
+          "duration": 0.26
+        },
+        {
+          "offset": 53.74,
+          "duration": 0.26
+        },
+        {
+          "offset": 54.12,
+          "duration": 0.26
+        },
+        {
+          "offset": 54.5,
+          "duration": 0.26
+        }
+      ],
+      "recorded": true
+    },
+    "hoof-dirt": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 54.88,
+          "duration": 0.26
+        },
+        {
+          "offset": 55.26,
+          "duration": 0.26
+        },
+        {
+          "offset": 55.64,
+          "duration": 0.26
+        },
+        {
+          "offset": 56.02,
+          "duration": 0.26
+        }
+      ],
+      "recorded": true
+    },
+    "hoof-water": {
+      "bank": "combat-v221",
+      "variants": [
+        {
+          "offset": 56.4,
+          "duration": 0.26
+        },
+        {
+          "offset": 56.78,
+          "duration": 0.26
+        },
+        {
+          "offset": 57.16,
+          "duration": 0.26
+        },
+        {
+          "offset": 57.54,
+          "duration": 0.26
+        }
+      ],
+      "recorded": true
     }
   },
   "sources": {
@@ -1337,7 +1586,36 @@
     "impact/Audio/impactPlate_heavy_001.ogg": "142fd6c77f13d25f318265901163f70f8dfe12f87829169a570025be43de7011",
     "impact/Audio/impactPlate_heavy_002.ogg": "b0cab75d1befa32b4cf215d8ee7e1c400a39182e8b105963b8e310f825b198a1",
     "impact/Audio/impactGlass_light_002.ogg": "710db7451bb7857b9140dfe6afe4621ea2188ad65eda3919c569d1bb285b933d",
-    "steps/leaves01.ogg": "93b3bbcd06380eec54335d1869924db6ff2cc6c1cb103502133d78484c5ca836"
+    "steps/leaves01.ogg": "93b3bbcd06380eec54335d1869924db6ff2cc6c1cb103502133d78484c5ca836",
+    "work/mounts/audio/sword_clash.2.ogg": "e09f222b70d53f2967514d076e2ae50c21526ac640fe4919965f964af043da1a",
+    "work/mounts/audio/sword - StarNinjas/sword.1.ogg": "4a3e80705619cbd7500682ab51004011ddf67e14ccf1818ceb9e5b539fe42b75",
+    "work/foley/source/impact/Audio/impactMetal_heavy_000.ogg": "e07045693e4a2b3d165c424e3dab4c781d9ff8880a386880ac89a51315d7f831",
+    "work/foley/source/impact/Audio/impactSoft_heavy_000.ogg": "49e7ca88743fca974bb8676ea138b751cfd8f9033b5e7af8736c2a215d6edbc1",
+    "work/foley/source/impact/Audio/impactWood_light_000.ogg": "eb45e35b4bed784d3f120de4afec4b0d6ac09d9e143cce8cfcb7d739e1b1f3c3",
+    "work/foley/source/impact/Audio/footstep_concrete_000.ogg": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe",
+    "work/foley/source/impact/Audio/footstep_grass_000.ogg": "9d49497777405d78d7cf7f2888e28277f3a23192300cfd1d79d54876b20f479f",
+    "work/foley/source/splash1.wav": "e45d466f7e63e5d566f8a822a7a1a3f7d5131319d17ca0436dcc615b251e9277",
+    "work/mounts/audio/sword_clash.4.ogg": "4c2c962f8703882b8a6f863c1f5a35c6ae518d0281755fac9a13e63a73b86fa5",
+    "work/mounts/audio/sword - StarNinjas/sword.3.ogg": "ce09eb2987531d1323415065d7811a9cf0ea8639766d9fa77655d602e7e14989",
+    "work/foley/source/impact/Audio/impactMetal_heavy_001.ogg": "83554049f81f4db9209379e103c30bfa63f65c42189a03f300b045c2c82e23ae",
+    "work/foley/source/impact/Audio/impactSoft_heavy_001.ogg": "4d0096364ba9e46119d2ff6df493fdc101bd2e1efae061da5e5f77a53b3fdcb6",
+    "work/foley/source/impact/Audio/impactWood_light_001.ogg": "4b76bf3ccc8e60d19188f3165b778a7817786faa6887c55d9049bcbeef3b425f",
+    "work/foley/source/impact/Audio/footstep_concrete_001.ogg": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d",
+    "work/foley/source/impact/Audio/footstep_grass_001.ogg": "fb28781bd22b2eefdc14077f1adf5c94d7fe9c3a130194633b55f3e0d39d9f04",
+    "work/mounts/audio/sword_clash.6.ogg": "4c7643dbcd813eb614a56451652987d37ba587fac3309303aa0ab9a27d3a7e71",
+    "work/mounts/audio/sword - StarNinjas/sword.6.ogg": "5b6eaaac9c552ce364cfdea3c12cef846c89796fc9bb880181615f43ee4e4779",
+    "work/foley/source/impact/Audio/impactMetal_heavy_002.ogg": "b914c8f1eb7c0f34bb165d7c77f4be0351f6be0660c13c53e65424e262e2c093",
+    "work/foley/source/impact/Audio/impactSoft_heavy_002.ogg": "d130ae541951243d3f6ed963d0057450a445ffe117fbf9a084d34eb1635cb563",
+    "work/foley/source/impact/Audio/impactWood_light_002.ogg": "b183cf7a5bd783817e0e4b82af34ac6658fa1927049089dadc8b15c2ecc771dc",
+    "work/foley/source/impact/Audio/footstep_concrete_002.ogg": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13",
+    "work/foley/source/impact/Audio/footstep_grass_002.ogg": "73a520139f5be716a403bfe9c80e0e94d1e61d8e9de04a354b336392164b53dc",
+    "work/mounts/audio/sword_clash.8.ogg": "1466349e10779cfede4538657031bd87f3757d6cf5139cfad6552fa859007172",
+    "work/mounts/audio/sword - StarNinjas/sword.8.ogg": "97f55774d7f0602c5f87e4ef289fcdf7ff07eea987ddc52849909d74374458a6",
+    "work/foley/source/impact/Audio/impactMetal_heavy_003.ogg": "b0f2ba4dabde9a87eb9c188a19d31e0c2300fd321adeba08d3b9b8aa011d7037",
+    "work/foley/source/impact/Audio/impactSoft_heavy_003.ogg": "d00286a2dc62ee5cb4d42bf56120e7050a855f69e655fc1294410aadd337eba3",
+    "work/foley/source/impact/Audio/impactWood_light_003.ogg": "cdfbe8af2fe7ff9ee28f337a0a989deee0f327620da456c8413644880e9d0004",
+    "work/foley/source/impact/Audio/footstep_concrete_003.ogg": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b",
+    "work/foley/source/impact/Audio/footstep_grass_003.ogg": "0546e1d8ab2def714425701a18bd34c5ee2794b12e858e5b595aabcf38a34137"
   },
   "downloads": {
     "impact.zip": {

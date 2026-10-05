@@ -22,7 +22,7 @@ export function buildSiegeValley(w){
    for(let j=0;j<4;j++){const xx=x+(r()-.5)*10,zz=z+9+r()*7,hh=w.height(xx,zz);const barrel=cyl(g,.38,.38,.9,[xx,hh+.45,zz],m.wood,12);for(const dy of [.15,.72])cyl(g,.4,.4,.07,[xx,hh+dy,zz],m.iron,12);}
   }
  }
- // Physical trees and weathered milestones, spread over the full 945 m route.
+ // Physical trees and weathered milestones, spread over the full 472.5 m route.
  for(let z=-140;z>SIEGE_GATE_Z+75;z-=85){
   for(const side of [-1,1]){
    for(let k=0;k<3;k++){const x=side*(44+r()*59),zz=z+(r()-.5)*55;w.tree(x,w.height(x,zz),zz,6+r()*7,w.biome==='snow',r);}
@@ -42,5 +42,5 @@ export function buildSiegeValley(w){
    }im.castShadow=false;im.computeBoundingSphere();w.root.add(im);
   }
  }
- w.root.userData.siegeDistance=945;
+ w.root.userData.siegeDistance=472.5;
 }
