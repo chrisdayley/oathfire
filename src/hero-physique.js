@@ -28,8 +28,8 @@ let anatomy=null,micro=null;
 export async function loadHeroAnatomy(){const r=await fetch(import.meta.env.BASE_URL+'models/hero-anatomy.json');if(!r.ok)throw Error('Hero anatomy could not load');anatomy=await r.json();}
 export function heroSkin(map,smith=false){
  if(!micro){const size=128,data=new Uint8Array(size*size*4);let seed=47;for(let i=0;i<size*size;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const pore=122+(seed>>>27);data.set([pore,pore,pore,255],i*4);}micro=new T.DataTexture(data,size,size);micro.wrapS=micro.wrapT=T.RepeatWrapping;micro.repeat.set(22,22);micro.magFilter=T.LinearFilter;micro.minFilter=T.LinearMipmapLinearFilter;micro.generateMipmaps=true;micro.needsUpdate=true;micro.userData.shared=true;}
- const m=new T.MeshPhysicalMaterial({name:'Living skin',map,color:smith?0xaa9c91:0xbfb2a6,roughness:.64,metalness:0,bumpMap:micro,bumpScale:.0012,sheen:.10,sheenRoughness:.85,sheenColor:0xc28369});
- m.onBeforeCompile=shader=>characterBounce(shader,.13);m.customProgramCacheKey=()=> 'skin-sky-bounce';return m;
+ const m=new T.MeshPhysicalMaterial({name:'Living skin',map,color:smith?0xc3ac9d:0xcdb9a8,roughness:.72,metalness:0,bumpMap:micro,bumpScale:.0012,sheen:.10,sheenRoughness:.85,sheenColor:0xc28369});
+ m.onBeforeCompile=shader=>characterBounce(shader,.055);m.customProgramCacheKey=()=> 'skin-sky-bounce-v222';return m;
 }
 
 // Continuous muscle surfaces and original elbow weights, bound to the current
@@ -48,9 +48,11 @@ export function attachHeroAnatomy(c,skeleton){
    const gauss=(x,c,r)=>Math.exp(-(((x-c)/r)**2));
    // Creases follow the length of the actual muscles, not an artificial ring.
    const division=gauss(uz,0,.026)*gauss(uy,.145,.085),deltoidJoin=gauss(uy,.105,.021)*gauss(Math.abs(ux),.073,.025),wristTendon=gauss(lx,.025,.009)*gauss(ly,.18,.08);
-   const shade=(division*.16+deltoidJoin*.20)*(1-w)+wristTendon*.1*w;
-   const warm=.025*Math.sin(uy*19+ux*13)+.018*Math.sin(ly*24),mottle=.96+.027*Math.sin(ux*270+uy*128+uz*91);
-   colors.push(mottle*(1-shade)+warm,mottle*(1-shade*.95)-warm*.2,mottle*(1-shade*.85)-warm*.6);
+   const inner=gauss(uz,-.047,.040)*(1-w)+gauss(lz,-.032,.032)*w;
+   const shade=(division*.21+deltoidJoin*.24)*(1-w)+wristTendon*.1*w+inner*.075;
+   const elbow=gauss(uy,.265,.065)*(1-w)+gauss(ly,.005,.04)*w;
+   const warm=.035*Math.sin(uy*19+ux*13)+.018*Math.sin(ly*24)+elbow*.025,mottle=.95+.040*Math.sin(ux*270+uy*128+uz*91);
+   colors.push(mottle*(1-shade)+warm-inner*.022,mottle*(1-shade*.95)-warm*.2,mottle*(1-shade*.85)-warm*.6+inner*.02);
 
    a.applyMatrix4(upper.matrixWorld).multiplyScalar(1-w);b.applyMatrix4(lower.matrixWorld).multiplyScalar(w);a.add(b).applyMatrix4(inverse);
    positions.push(a.x,a.y,a.z);indices.push(ui,li,0,0);weights.push(1-w,w,0,0);

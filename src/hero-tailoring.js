@@ -33,14 +33,14 @@ export function tailorHero(c,part,mats,rank){
  const z=(x,y)=>{const t=(.13-y)/.89,u=x/(.355*(.85+t*.25))+.5;return .165+Math.cos(u*Math.PI*6)*(.008+t*.011)+t*.03+.009;};
  for(const side of [-1,1]){
   const pts=[];for(let i=0;i<=12;i++){const y=.12-i*.071,x=side*(.139+i*.0033);pts.push([x,y,z(x,y)]);}seam(chest,pts,mats.dark,.003,'Sculpted forge apron stitched hem');
-  for(let i=0;i<26;i++){const y=.1-i*.031,x=side*(.132+i*.00142);seam(chest,[[x-.003,y,z(x,y)+.002],[x+.003,y-.005,z(x,y)+.002]],mats.leather,.0013,'Sculpted forge apron stitching');}
+  for(let i=0;i<26;i++){const y=.1-i*.031,x=side*(.132+i*.00142);seam(chest,[[x-.003,y,z(x,y)+.004],[x+.003,y-.005,z(x,y)+.004]],mats.stitch,.0016,'Sculpted forge apron stitching');}
   // Structured tool pouches with folded flaps and metal snaps.
   const x=side*.088;
   panel(chest,[[x-.052,-.31],[x+.052,-.31],[x+.048,-.445],[x-.05,-.445]],.22,mats.dark,'Sculpted forge apron pocket shadow');
   panel(chest,[[x-.047,-.308],[x+.047,-.308],[x+.047,-.419],[x-.047,-.429]],.229,mats.leather,'Sculpted forge apron tool pocket');
   panel(chest,[[x-.049,-.306],[x+.049,-.306],[x+.048,-.339],[x,-.358],[x-.048,-.339]],.239,mats.leather,'Sculpted forge apron folded flap');
   const rivet=add(chest,new T.SphereGeometry(.005,8,6),mats.gold,'Sculpted forge apron pocket snap');rivet.position.set(x,-.346,.247);
-  seam(chest,[[x-.044,-.354,.237],[x-.044,-.421,.238],[x+.043,-.421,.238]],mats.dark,.0016,'Sculpted forge apron pocket seam');
+  seam(chest,[[x-.044,-.354,.237],[x-.044,-.421,.238],[x+.043,-.421,.238]],mats.stitch,.0016,'Sculpted forge apron pocket seam');
   seam(chest,[[side*.016,-.5,z(side*.016,-.5)],[side*.016,-.61,z(side*.016,-.61)],[side*.017,-.72,z(side*.017,-.72)]],mats.dark,.003,'Sculpted forge apron split seam');
  }
  // Narrow belts and a restrained forged buckle replace broad featureless straps.

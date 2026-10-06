@@ -7,9 +7,11 @@ export function registerGameUpdates(game){
    let pending=false;
    navigator.serviceWorker.addEventListener('controllerchange',()=>{if(pending)location.reload();});
    const offer=()=>{
-    if(!registration.waiting||document.getElementById('game-update'))return;
+    // The first worker briefly enters 'installed' before activating. That is
+    // not an update, and must not cover the initial hero selection buttons.
+    if(!navigator.serviceWorker.controller||!registration.waiting||document.getElementById('game-update'))return;
     const button=document.createElement('button');button.id='game-update';button.textContent='Update ready · Save & reload';document.body.append(button);
-    const visibility=()=>{button.hidden=!game.ready||(game.mode==='play'&&!game.menu);};visibility();const timer=setInterval(visibility,1000);
+    const visibility=()=>{button.hidden=!game.ready||(game.mode==='play'&&!game.menu)||!document.getElementById('hero-selection')?.hidden||!!game.ui?.modal;};visibility();const timer=setInterval(visibility,1000);
     button.onclick=()=>{
      if(game.mode!=='title'){game.checkpoint();if(!game.store.persist()){game.toast(game.store.error);return;}}
      pending=true;button.disabled=true;button.textContent='Opening updated game…';clearInterval(timer);registration.waiting?.postMessage({type:'SKIP_WAITING'});

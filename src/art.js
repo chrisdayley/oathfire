@@ -106,6 +106,7 @@ function equipmentWeapon(item,rank){
   if(variant)for(const side of [-1,1]){line([0,1.25,0],[side*.105,1.40,0],.012);line([side*.105,1.40,0],[side*.10,variant===1?1.59:1.72,0],.009,metal);}
  }else if(type==='hammer'){
   cyl(g,.032,.043,1.35,[0,.22,0],wood,12);cyl(g,.048,.046,.37,[0,-.26,0],leather,12);wrap(0,-.43,18,.048);cyl(g,.049,.042,.045,[0,-.47,0],metal,12);
+  const headStart=g.children.length;
   const width=variant===1?.64:.50;
   if(variant===2){cyl(g,.12,.20,.35,[0,.94,0],metal,16);cyl(g,.20,.20,.035,[0,.78,0],edge,16);cyl(g,.105,.13,.045,[0,1.14,0],trim,16);gem(0,.96,.184,.034);}
   else{
@@ -126,6 +127,9 @@ function equipmentWeapon(item,rank){
    for(const z of [-.155,.155]){line([0,.843,z],[0,1.04,z],.006,trim);if(style.tier>=2)gem(0,.94,z+.006,.028);}
   }
   for(const yy of [.69,.75,1.12])cyl(g,.056,.049,.027,[0,yy,0],trim,12);
+  // A working smith's maul has a believable head. Exalted weapons retain
+  // their earned oversized silhouette; hand position and reach are unchanged.
+  if(style.tier===0)for(const piece of g.children.slice(headStart)){piece.scale.multiplyScalar(.77);piece.position.sub(new T.Vector3(0,.94,0)).multiplyScalar(.77).add(new T.Vector3(0,.94,0));}
  }else if(type==='bow'){
   for(const side of [-1,1]){
    const points=[new T.Vector3(.23,0,0),new T.Vector3(variant===2?.32:.27,side*.31,0),new T.Vector3(.06,side*.68,0),new T.Vector3(variant===1?-.04:.08,side*.85,0)];

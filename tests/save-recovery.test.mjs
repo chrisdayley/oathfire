@@ -42,3 +42,10 @@ test('Unreadable-only saves remain exportable and are not silently replaced',asy
 test('Recovering a battle cannot lose originals when archiving is denied',async()=>{
  const values=storage(),s=fixture('v215-interrupted-battle');s.battle.hero.hp=-1;const raw=JSON.stringify(s);values.set(SAVE_KEY,raw);const store=new SaveStore();await store.open();globalThis.localStorage.setItem=()=>{throw Error('quota');};assert.throws(()=>store.recover(),/Export recovery/);assert.equal(values.get(SAVE_KEY),raw);assert.equal(store.data,null);
 });
+
+test('Training visibility is optional for older saves and persists without changing progression',()=>{
+ const s=fixture('v215-victory'),before=structuredClone(s);assert.doesNotThrow(()=>validateSave(s));
+ s.guide.hidden=true;assert.doesNotThrow(()=>validateSave(s));assert.equal(s.guide.hidden,true);
+ for(const key of ['inventory','heroes','completed','supplies','salvage'])assert.deepEqual(s[key],before[key]);
+ s.guide.hidden='true';assert.throws(()=>validateSave(s),/guide visibility/);
+});

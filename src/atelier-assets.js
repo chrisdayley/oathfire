@@ -34,6 +34,7 @@ export function attachAtelier(c,part,profile,palette,textile){
   ivory:heroSurface('steel',style?.metal??(signature?(royal?0xd4c9ad:0xb8b7aa):armor?.steel??0xb8b7aa),{roughness:.60,metalness:.78,side:T.DoubleSide}),
   gold:heroSurface('steel',trimHex,{roughness:.58,metalness:.8,side:T.DoubleSide}),
   leather:heroSurface('leather',smith?0x77604e:0x625142,{roughness:.83,side:T.DoubleSide}),
+  stitch:heroSurface('leather',0xab9475,{roughness:.96,side:T.DoubleSide}),
   dark:heroSurface('cloth',0x27272b,{roughness:.93,side:T.DoubleSide}),
   cloth:heroSurface('cloth',clothHex,{roughness:.89,side:T.DoubleSide}),
   mail:material('steel',0x899194,{map:textile('mail'),roughness:.70,metalness:.65,side:T.DoubleSide}),

@@ -19,7 +19,7 @@ test('Permanent transactions are associated with the NPC who performs them',()=>
  assert.equal(actionService('skill'),undefined);assert.equal(actionService('research-start'),undefined);
 });
 test('A destination closes overlays and saves guidance without moving the hero or opening a service',()=>{
- const s={guide:{},supplies:310},g={hero:{pos:{x:0,z:9}},store:{commit:fn=>fn(s)},journey:{lastCard:'old'},toast:t=>g.notice=t};let closed=false;
+ const s={guide:{hidden:true},supplies:310},g={hero:{pos:{x:0,z:9}},store:{commit:fn=>fn(s)},journey:{lastCard:'old'},toast:t=>g.notice=t};let closed=false;
  assert.equal(guideToService({g,close:()=>closed=true},'equipment'),true);
- assert.equal(closed,true);assert.equal(s.guide.homeTask,'equipment');assert.deepEqual(g.hero.pos,{x:0,z:9});assert.equal(s.supplies,310);assert.match(g.notice,/Torren/);
+ assert.equal(closed,true);assert.equal(s.guide.homeTask,'equipment');assert.equal(s.guide.hidden,false);assert.deepEqual(g.hero.pos,{x:0,z:9});assert.equal(s.supplies,310);assert.match(g.notice,/Torren/);
 });

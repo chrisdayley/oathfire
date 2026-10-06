@@ -22,7 +22,8 @@ export function fitHeroArmor(c,part,m){
  if(p.rarity>=2)line(chest,[[-.071,.24,0],[0,.245,.072],[.071,.24,0]],m.gold);
  // Cape clasps sit above the shoulder straps, with narrow leather ties.
  for(const s of [-1,1]){
-  line(chest,[[s*.16,.18,-.20],[s*.185,.188,-.06],[s*.147,.17,.12]],m.leather,.010,'Mantle shoulder fastening');
+  line(chest,[[s*.16,.09,-.212],[s*.185,.188,-.06],[s*.147,.17,.12]],m.leather,.010,'Mantle shoulder fastening');
+  rivet(chest,[s*.16,.092,-.223],m.gold,.009);
   rivet(chest,[s*.15,.165,.13],m.gold,.010);
  }
  // The ranger's quiver sits against the side of the harness. Two leather

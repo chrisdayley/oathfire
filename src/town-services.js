@@ -16,7 +16,7 @@ export function actionService(action,id){return action==='doctrine'?(id==='shiel
 
 export function guideToService(ui,tab){
  const service=serviceFor(tab);if(!service||ui.g.battle)return false;
- ui.close();ui.g.store.commit(s=>s.guide.homeTask=tab);ui.g.journey.lastCard='';
+ ui.close();ui.g.store.commit(s=>{s.guide.hidden=false;s.guide.homeTask=tab;});ui.g.journey.lastCard='';
  ui.g.toast('Follow the marker to '+service.name+'. Speak to them when you arrive.');
  return true;
 }

@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## 2.22.0 — flowing music and fitted heroes
+
+Wave music now blends across eight seconds, preserving the current orchestra while the next recording buffers or passes a quiet introduction. Training and homecoming reminders can be dismissed persistently. Hero mantles sit at the shoulders, drape closer to the back and clear the ground; skin, leather and metal have more surface variation, with tighter nearby shadows. Existing campaigns continue normally.
+
+[Changes and validation](docs/refinement-2.22.0.md)
+
 ## 2.21.1 — campaign save recovery
 
 Loads the newest valid campaign across browser storage and IndexedDB, including backups. Invalid autosaves cannot replace a valid checkpoint. If only an interrupted battle is damaged, an explicit recovery action returns to town while retaining earned campaign progress; original save copies are archived and exportable from the title screen. The title shows the actual build, and installed games offer a save-and-reload action for waiting updates. No new campaign is required.
