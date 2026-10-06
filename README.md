@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## 2.21.1 — campaign save recovery
+
+Loads the newest valid campaign across browser storage and IndexedDB, including backups. Invalid autosaves cannot replace a valid checkpoint. If only an interrupted battle is damaged, an explicit recovery action returns to town while retaining earned campaign progress; original save copies are archived and exportable from the title screen. The title shows the actual build, and installed games offer a save-and-reload action for waiting updates. No new campaign is required.
+
+[Save recovery behavior and validation](docs/save-recovery-2.21.1.md)
+
 ## 2.20.1 — uninterrupted touch combat
 
 Combat controls suppress text selection and iOS long-press callouts, including their nested labels. Holding Attack still charges and releasing still strikes; menus and editable save/settings fields keep their normal interactions.

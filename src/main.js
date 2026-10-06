@@ -1,3 +1,4 @@
+import {registerGameUpdates} from './game-updates.js';
 import './mission-preparation.css';
 import './hero-selection.css';
 import './unlock-sequence.css';
@@ -11,7 +12,7 @@ import {Game} from './game.js';
 const game=new Game();
 game.init().catch(error=>{console.error(error);document.getElementById('load-text').textContent='The beacon could not load. '+error.message;});
 
-if(import.meta.env.PROD&&'serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register(import.meta.env.BASE_URL+'sw.js').catch(e=>console.warn('Offline cache unavailable',e.message)));
+if(import.meta.env.PROD)registerGameUpdates(game);
 
 import './ability-ui.css';
 
@@ -22,3 +23,5 @@ import "./war-map.css";
 import './frontline.css';
 
 import './stable.css';
+
+import './save-recovery.css';

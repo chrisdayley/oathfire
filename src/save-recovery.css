@@ -1,0 +1,8 @@
+.title-actions{flex-wrap:wrap;max-width:760px;gap:8px}
+#title-screen .save-recovery-note{color:#f1d392;font-size:clamp(11px,1.4vw,15px);max-width:620px;margin:8px 0 12px}
+.save-recovery-actions{flex-wrap:wrap;gap:8px}
+.save-recovery-actions button{min-height:40px}
+#dialog details{margin-top:14px;font-size:12px;color:#c9bda4;overflow-wrap:anywhere}
+#dialog details p{font-size:12px}
+#game-update{position:fixed;bottom:max(8px,env(safe-area-inset-bottom));right:max(8px,env(safe-area-inset-right));z-index:120;max-width:calc(100vw - 120px);background:#252b29;color:#f4e4bb;border:1px solid #c09c55;padding:10px 16px;min-height:44px}
+@media(max-height:450px){#title-screen:has(.save-recovery-note){padding-top:4vh}#title-screen:has(.save-recovery-note)>p:not(.save-recovery-note){display:none}.save-recovery-actions button{padding:9px 12px}.title-actions{max-width:620px}}

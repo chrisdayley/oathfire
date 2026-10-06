@@ -15,7 +15,7 @@ import {validateBattleLedger,validateBattleReport} from './battle-record.js';
 import {validateBattleResearch} from './research.js';
 import {ARMORS,ARMOR_DROPS,armorBonuses} from './armor.js';
 import {NEW_UNITS,NEW_DEFENSES,DEFAULT_LAYOUT} from './roster.js';
-import {HEROES,SPELLS,UNITS,DEFENSES,WEAPONS,FORGE,RARITIES,AFFIXES,MISSIONS,ENEMIES,clamp,unitCost} from './data.js';
+import {BUILD,HEROES,SPELLS,UNITS,DEFENSES,WEAPONS,FORGE,RARITIES,AFFIXES,MISSIONS,ENEMIES,clamp,unitCost} from './data.js';
 export const SAVE_KEY='oathfire.campaign.v1';
 const copy=o=>JSON.parse(JSON.stringify(o));
 const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
@@ -106,19 +106,87 @@ export function validateSave(s){
  validateMounts(s);validateWar(s);validateBattleReport(s.lastBattle);return s;
 }
 export class SaveStore{
- constructor(){this.data=null;this.db=null;this.error=null;this.listeners=new Set();}
- async open(){try{this.db=await new Promise((resolve,reject)=>{const q=indexedDB.open('oathfire',1);q.onupgradeneeded=()=>q.result.createObjectStore('campaign');q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);});}catch(e){this.error='Browser storage is limited. Export a save backup from Settings.';}
-  let saved=null;try{saved=JSON.parse(localStorage.getItem(SAVE_KEY));}catch{}
-  if(!saved&&this.db)try{saved=await new Promise(resolve=>{const q=this.db.transaction('campaign').objectStore('campaign').get('current');q.onsuccess=()=>resolve(q.result);q.onerror=()=>resolve(null);});}catch{}
-  try{if(saved)this.data=validateSave(saved);}catch{try{this.data=validateSave(JSON.parse(localStorage.getItem(SAVE_KEY+'.backup')));this.error='Recovered your previous save checkpoint.';}catch{this.error='Saved data could not be read. Start a journey or import your backup.';}}
+ constructor(){this.data=null;this.db=null;this.error=null;this.listeners=new Set();this.sources=[];this.recovery=null;this.lastGood=null;this.hasStoredSave=false;this.needsPreservation=false;this.archived=false;}
+ async open(){
+  this.data=null;this.error=null;this.recovery=null;this.sources=[];this.archived=false;
+  try{this.db=await new Promise((resolve,reject)=>{
+   const q=indexedDB.open('oathfire',1);let settled=false;
+   const finish=(fn,value)=>{if(settled)return;settled=true;clearTimeout(timer);fn(value);};
+   const timer=setTimeout(()=>finish(reject,Error('Storage did not respond.')),2500);
+   q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains('campaign'))q.result.createObjectStore('campaign');};
+   q.onsuccess=()=>{if(settled)q.result.close();else finish(resolve,q.result);};
+   q.onerror=()=>finish(reject,q.error);q.onblocked=()=>finish(reject,Error('Storage is busy.'));
+  });}catch{this.error='Browser storage is limited. Export a backup from Settings.';}
+  for(const suffix of ['', '.backup', '.good']){try{const raw=localStorage.getItem(SAVE_KEY+suffix);if(raw)this.sources.push({source:'browser'+(suffix||'.current'),raw});}catch{}}
+  if(this.db)await new Promise(resolve=>{
+   let finished=false;const done=()=>{if(!finished){finished=true;clearTimeout(timer);resolve();}},timer=setTimeout(done,2500);
+   try{const tx=this.db.transaction('campaign');for(const key of ['current','backup']){const q=tx.objectStore('campaign').get(key);q.onsuccess=()=>{if(!finished&&q.result)this.sources.push({source:'database.'+key,raw:JSON.stringify(q.result)});};}tx.oncomplete=tx.onerror=tx.onabort=done;}catch{done();}
+  });
+  this.hasStoredSave=this.sources.length>0;
+  const candidates=this.sources.map(record=>{
+   try{const parsed=JSON.parse(record.raw),updated=Number.isFinite(parsed?.updated)?parsed.updated:0;try{return {...record,updated,data:validateSave(copy(parsed))};}catch(error){return {...record,updated,reason:error.message,repaired:recoverInterruptedBattle(parsed)};}}
+   catch(error){return {...record,updated:0,reason:error.message};}
+  }).sort((a,b)=>b.updated-a.updated);
+  this.needsPreservation=candidates.some(c=>c.reason);
+  this.sources=candidates.map(({source,raw,reason})=>({source,raw,...(reason?{reason}:{})}));
+  const good=candidates.find(c=>c.data),repair=candidates.find(c=>c.repaired&&(!good||c.updated>good.updated));
+  if(good){this.data=good.data;this.lastGood=JSON.stringify(this.data);if(good!==candidates[0]||good.source!=='browser.current')this.error='Recovered your campaign from a valid backup.';}
+  if(repair){this.recovery={data:repair.repaired,reason:repair.reason};this.error='Your campaign can be recovered. The interrupted battle could not be resumed.';}
+  else if(!good&&this.hasStoredSave)this.error='Your saved data is preserved. Use Save recovery to export it or import a backup.';
   return this.data;
  }
- start(hero){this.data=newSave(hero);this.persist();return this.data;}
+ // Preserve rejected data separately before any explicit recovery, import or replacement.
+ // It is never rotated by autosave, so the original remains available for diagnosis.
+ preserveOriginal(){
+  if(this.archived||!this.hasStoredSave||!this.sources.length)return true;
+  try{const raw=localStorage.getItem(SAVE_KEY+'.recovery');let prior=[];if(raw){const p=JSON.parse(raw);prior=p.copies||[];}const copies=[...prior,...this.sources].filter((c,i,list)=>list.findIndex(v=>v.raw===c.raw)===i);localStorage.setItem(SAVE_KEY+'.recovery',JSON.stringify({format:'Oathfire save recovery',build:BUILD,savedAt:new Date().toISOString(),copies}));this.archived=true;return true;}
+  catch{this.error='Export recovery data before replacing this save. Browser storage is full.';return false;}
+ }
+ recover(){
+  if(!this.recovery)throw Error('No recoverable interrupted battle was found.');
+  if(!this.preserveOriginal())throw Error(this.error);
+  this.data=validateSave(copy(this.recovery.data));this.data.updated=Date.now();this.recovery=null;
+  this.persist();this.listeners.forEach(f=>f(this.data));return this.data;
+ }
+ start(hero){if(!this.preserveOriginal())throw Error(this.error);this.data=newSave(hero);this.recovery=null;this.persist();return this.data;}
  commit(fn){if(!this.data)throw Error('Start a journey first.');const next=copy(this.data),result=fn(next);validateSave(next);next.updated=Date.now();this.data=next;this.persist();this.listeners.forEach(f=>f(next));return result;}
- persist(){if(!this.data)return;try{const old=localStorage.getItem(SAVE_KEY);if(old)localStorage.setItem(SAVE_KEY+'.backup',old);localStorage.setItem(SAVE_KEY,JSON.stringify(this.data));}catch{this.error='Save storage is full. Export your progress in Settings.';}if(this.db){try{const tx=this.db.transaction('campaign','readwrite');tx.objectStore('campaign').put(copy(this.data),'current');tx.onerror=()=>this.error='Save storage failed. Export a backup.';}catch{}}
+ persist(){
+  if(!this.data)return false;
+  let snapshot,raw;try{snapshot=validateSave(copy(this.data));raw=JSON.stringify(snapshot);}catch(error){this.error='Autosave paused: '+error.message+' Your last valid checkpoint is protected.';return false;}
+  // Never replace the recoverable source with an older fallback checkpoint silently.
+  if(this.needsPreservation&&!this.preserveOriginal())return false;
+  const prior=this.lastGood;
+  let saved=false;
+  try{
+   const old=localStorage.getItem(SAVE_KEY);let backup=prior;
+   if(old&&old!==raw)try{validateSave(JSON.parse(old));backup=old;}catch{}
+   if(backup&&backup!==raw)localStorage.setItem(SAVE_KEY+'.backup',backup);
+   localStorage.setItem(SAVE_KEY,raw);saved=true;
+   // This key is only ever written after validation, unlike the legacy rotating backup.
+   localStorage.setItem(SAVE_KEY+'.good',raw);
+  }catch{this.error='Save storage is full. Export your progress in Settings.';}
+  if(this.db)try{
+   const tx=this.db.transaction('campaign','readwrite'),bucket=tx.objectStore('campaign');
+   if(prior&&prior!==raw)bucket.put(JSON.parse(prior),'backup');bucket.put(snapshot,'current');
+   tx.onerror=tx.onabort=()=>{this.error='Save storage failed. Export a backup.';};
+   saved=true;
+  }catch{this.error='Save storage failed. Export a backup.';}
+  if(saved)this.lastGood=raw;
+  return saved;
  }
  export(){return JSON.stringify({format:'Oathfire campaign',savedAt:new Date().toISOString(),campaign:this.data},null,2);}
- import(raw){const p=JSON.parse(raw);const next=validateSave(p.campaign||p);this.data=copy(next);this.persist();this.listeners.forEach(f=>f(this.data));return this.data;}
+ exportRecovery(){let prior=[];try{prior=JSON.parse(localStorage.getItem(SAVE_KEY+'.recovery'))?.copies||[];}catch{}const copies=[...prior,...this.sources].filter((c,i,list)=>list.findIndex(v=>v.raw===c.raw)===i);return JSON.stringify({format:'Oathfire save recovery',build:BUILD,savedAt:new Date().toISOString(),copies},null,2);}
+ import(raw){const p=JSON.parse(raw),next=validateSave(p.campaign||p);if(!this.preserveOriginal())throw Error(this.error);this.data=copy(next);this.recovery=null;this.persist();this.listeners.forEach(f=>f(this.data));return this.data;}
+}
+
+// Only the temporary battle may be dropped, and only after the entire remaining
+// campaign validates. Recovery is offered explicitly; corrupt ranks/items are
+// never invented, refunded, deleted or replaced by starter equipment.
+export function recoverInterruptedBattle(input){
+ if(!input?.battle)return null;
+ const s=copy(input);s.battle=null;s.position={x:0,y:0,z:9};
+ if(s.mounts)s.mounts.riding=false;
+ try{return validateSave(s);}catch{return null;}
 }
 
 export function evolveSkill(s,id,path){if(s.battle)throw Error('Choose evolutions at Hearthwatch.');if(skillRank(s,id)!==10||!HEROES[s.hero].skills.some(n=>n.active&&n.id===id)||!evolutionFor(id,path))throw Error('Train this ability to rank 10 first.');heroData(s).evolutions??={};heroData(s).evolutions[id]=path;}

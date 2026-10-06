@@ -1,0 +1,406 @@
+{
+  "version": 1,
+  "rosterVersion": 2,
+  "guide": {
+    "active": false,
+    "done": [],
+    "seen": [
+      "prologue"
+    ],
+    "distance": 0
+  },
+  "defenseLayout": [
+    "tower",
+    "tower",
+    "ballista",
+    "ballista"
+  ],
+  "created": 1791246156842,
+  "updated": 1759000000000,
+  "hero": "ashwright",
+  "heroes": {
+    "warden": {
+      "level": 1,
+      "xp": 0,
+      "questPoints": 0,
+      "skills": {},
+      "capstone": null,
+      "slots": [
+        "step",
+        "rally"
+      ],
+      "evolutions": {},
+      "equipped": {
+        "weapon": "f18780e1-564d-4745-a5cd-27acc664b521",
+        "armor": "1c93a294-2175-4b32-9b9e-6fd4d009362f",
+        "shield": "a115faa2-0614-4630-b3a2-165f73ba4f38",
+        "relic": "8ab35218-51cc-4ba8-9459-d441b3300836"
+      },
+      "form": "mobile"
+    },
+    "ashwright": {
+      "level": 4,
+      "xp": 262,
+      "questPoints": 0,
+      "skills": {
+        "fireball": 2,
+        "body": 1
+      },
+      "capstone": null,
+      "slots": [
+        "fireball",
+        "quench"
+      ],
+      "evolutions": {},
+      "equipped": {
+        "weapon": "83e0fa5f-0064-4d13-8d4c-93af851496f1",
+        "armor": "1c93a294-2175-4b32-9b9e-6fd4d009362f",
+        "shield": "a115faa2-0614-4630-b3a2-165f73ba4f38",
+        "relic": "8ab35218-51cc-4ba8-9459-d441b3300836"
+      },
+      "form": "mobile"
+    },
+    "ranger": {
+      "level": 1,
+      "xp": 0,
+      "questPoints": 0,
+      "skills": {},
+      "capstone": null,
+      "slots": [
+        "windstep",
+        "thorns"
+      ],
+      "evolutions": {},
+      "equipped": {
+        "weapon": "45c0fc2a-9cb5-487b-986c-087c312ac028",
+        "armor": "1c93a294-2175-4b32-9b9e-6fd4d009362f",
+        "shield": "a115faa2-0614-4630-b3a2-165f73ba4f38",
+        "relic": "8ab35218-51cc-4ba8-9459-d441b3300836"
+      },
+      "form": "mobile"
+    }
+  },
+  "supplies": 775,
+  "salvage": 88,
+  "potions": 3,
+  "units": {
+    "shield": 1,
+    "bow": 1,
+    "pike": 1,
+    "lantern": 1,
+    "breaker": 1,
+    "crew": 1,
+    "rider": 1,
+    "giant": 1,
+    "banner": 1,
+    "engineer": 1,
+    "assassin": 1,
+    "pyre": 1,
+    "marksman": 1,
+    "frost": 1,
+    "dawn": 1
+  },
+  "defenses": {
+    "gate": 1,
+    "tower": 1,
+    "ballista": 1,
+    "cannon": 1,
+    "frost": 1,
+    "mortar": 1,
+    "sanctuary": 1,
+    "storm": 1
+  },
+  "doctrines": {
+    "shield": "sentinel",
+    "tower": "longwatch",
+    "ballista": "piercing"
+  },
+  "inventory": [
+    {
+      "id": "f18780e1-564d-4745-a5cd-27acc664b521",
+      "type": "sword",
+      "weaponPattern": "hearthblade",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 25,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Hearthwatch longsword"
+    },
+    {
+      "id": "1e6e651e-2e5f-4d79-a020-341aea628000",
+      "type": "spear",
+      "weaponPattern": "watchpike",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 23,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Bridgewatch partisan"
+    },
+    {
+      "id": "45c0fc2a-9cb5-487b-986c-087c312ac028",
+      "type": "bow",
+      "weaponPattern": "ashbow",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 23,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Greenwood longbow"
+    },
+    {
+      "id": "83e0fa5f-0064-4d13-8d4c-93af851496f1",
+      "type": "hammer",
+      "weaponPattern": "forgehammer",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 34,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Torren’s war maul"
+    },
+    {
+      "id": "74c3c447-5311-41d6-8996-c01cd20a4e21",
+      "type": "staff",
+      "weaponPattern": "pilgrimstaff",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 26,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Pilgrim’s rune staff"
+    },
+    {
+      "id": "1c93a294-2175-4b32-9b9e-6fd4d009362f",
+      "type": "armor",
+      "armorKind": "hearth",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 12,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Hearthwatch plate"
+    },
+    {
+      "id": "a115faa2-0614-4630-b3a2-165f73ba4f38",
+      "type": "shield",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 9,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Oath shield"
+    },
+    {
+      "id": "8ab35218-51cc-4ba8-9459-d441b3300836",
+      "type": "relic",
+      "rarity": 0,
+      "level": 1,
+      "plus": 0,
+      "base": 8,
+      "affix": null,
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Beacon relic"
+    },
+    {
+      "id": "5f5313ea-699f-4e10-aa5d-942495477d04",
+      "type": "armor",
+      "armorKind": "spellweave",
+      "rarity": 1,
+      "level": 1,
+      "plus": 0,
+      "base": 6,
+      "affix": "guard",
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Steadfast Starwoven vestments"
+    },
+    {
+      "id": "210b0ba0-4f59-46be-90ec-248036be82fe",
+      "type": "staff",
+      "weaponPattern": "tidecaller",
+      "rarity": 1,
+      "level": 4,
+      "plus": 0,
+      "base": 28,
+      "affix": "focus",
+      "rune": null,
+      "temper": null,
+      "awakened": false,
+      "name": "Runed Tidecaller"
+    }
+  ],
+  "completed": [
+    0,
+    1
+  ],
+  "settlements": [],
+  "fortresses": [],
+  "castleLogistics": 0,
+  "battlePerks": [],
+  "enemyIntel": [],
+  "treasures": [],
+  "deeds": [],
+  "visits": [],
+  "journal": [
+    "The ember survived. Hearthwatch is yours to defend.",
+    "Hearthwatch Fields reclaimed. Hold the open approaches while the first refugees reach the keep.",
+    "Reedwater Ford reclaimed. Use both crossings. Secure the crossing so Nell can bring her engineers and cannon plans home."
+  ],
+  "settings": {
+    "volume": 0.55,
+    "music": 0.5,
+    "footsteps": 0.65,
+    "quality": "auto",
+    "sensitivity": 1,
+    "shake": 0.4,
+    "firstPerson": false,
+    "showHints": true,
+    "leftHanded": false
+  },
+  "battle": null,
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 9
+  },
+  "timePlayed": 0,
+  "kills": 0,
+  "bestCombo": 0,
+  "ending": null,
+  "lastBattle": {
+    "version": 1,
+    "id": "f67856bf-c808-4677-b385-cc17426cd2b8",
+    "mission": 1,
+    "win": true,
+    "reason": "",
+    "first": true,
+    "income": 0,
+    "rescued": false,
+    "acknowledged": false,
+    "celebrated": false,
+    "time": 163,
+    "stats": {
+      "version": 1,
+      "startLevel": 4,
+      "kills": 0,
+      "heroKills": 0,
+      "troopKills": 0,
+      "defenseKills": 0,
+      "heroDamage": 0,
+      "troopDamage": 0,
+      "defenseDamage": 0,
+      "damageTaken": 0,
+      "recruited": 0,
+      "reinforcements": 0,
+      "lost": 0,
+      "commandSpent": 0,
+      "defenseRefits": 0,
+      "light": 0,
+      "heavy": 0,
+      "casts": 0,
+      "guards": 0,
+      "projectiles": 0,
+      "xp": 0,
+      "supplies": 0,
+      "salvage": 0,
+      "chests": [],
+      "foundItems": []
+    },
+    "gate": 700,
+    "maxGate": 1000,
+    "beacon": 650,
+    "waves": 3,
+    "survivors": 0,
+    "endLevel": 4,
+    "xp": 147,
+    "supplies": 235,
+    "salvage": 28,
+    "items": [
+      {
+        "id": "210b0ba0-4f59-46be-90ec-248036be82fe",
+        "type": "staff",
+        "weaponPattern": "tidecaller",
+        "rarity": 1,
+        "level": 4,
+        "plus": 0,
+        "base": 28,
+        "affix": "focus",
+        "rune": null,
+        "temper": null,
+        "awakened": false,
+        "name": "Runed Tidecaller"
+      }
+    ],
+    "chests": [],
+    "revealed": [],
+    "lostChests": 0,
+    "research": [],
+    "camp": false,
+    "tutorial": {
+      "version": 1,
+      "cards": [
+        {
+          "kind": "unit",
+          "id": "engineer"
+        },
+        {
+          "kind": "defense",
+          "id": "cannon"
+        },
+        {
+          "kind": "research",
+          "id": "impact"
+        },
+        {
+          "kind": "research",
+          "id": "regeneration"
+        },
+        {
+          "kind": "research",
+          "id": "infantry"
+        },
+        {
+          "kind": "research",
+          "id": "payload"
+        },
+        {
+          "kind": "territory",
+          "id": "2"
+        },
+        {
+          "kind": "item",
+          "id": "210b0ba0-4f59-46be-90ec-248036be82fe"
+        }
+      ],
+      "cursor": 0,
+      "complete": false,
+      "started": false
+    }
+  }
+}

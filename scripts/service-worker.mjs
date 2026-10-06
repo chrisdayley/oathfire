@@ -12,6 +12,7 @@ const FILES=${JSON.stringify(urls)};
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)));
 });
+self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
 self.addEventListener('activate',e=>{
   e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('oathfire-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
@@ -21,7 +22,7 @@ const cached=async request=>(await caches.open(CACHE)).match(request,{ignoreVary
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET'||new URL(e.request.url).origin!==location.origin)return;
   if(e.request.mode==='navigate'){
-    e.respondWith(fetch(e.request).catch(async()=>await cached(e.request)||await cached('./index.html')));
+    e.respondWith(fetch(e.request,{cache:'no-store'}).catch(async()=>await cached(e.request)||await cached('./index.html')));
     return;
   }
   e.respondWith(cached(e.request).then(async r=>{
