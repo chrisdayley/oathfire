@@ -75,29 +75,59 @@ export function mergeStatic(group,chunkSize=0){
 // Merge rigid pieces within a local attachment; bone-attached groups stay separate.
 export function compactRigid(group){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert(),bins=new Map();group.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||Array.isArray(o.material)||o.userData.keep)return;const key=o.material.uuid;if(!bins.has(key))bins.set(key,{material:o.material,meshes:[]});bins.get(key).meshes.push(o);});for(const {material,meshes}of bins.values()){if(meshes.length<2)continue;const geos=meshes.map(o=>{const g=o.geometry.clone();g.applyMatrix4(inverse.clone().multiply(o.matrixWorld));if(g.index){const flat=g.toNonIndexed();g.dispose();return flat;}return g;});const geo=mergeGeometries(geos,false);if(geo){const m=new T.Mesh(geo,material);m.castShadow=true;m.receiveShadow=true;const old=new Set();meshes.forEach(o=>{if(!o.geometry.userData.shared)old.add(o.geometry);o.removeFromParent();});old.forEach(g=>g.dispose());group.add(m);}geos.forEach(g=>g.dispose());}return group;}
 
+// Weapon-only sweeps retain a flattened, tapered section instead of a pipe.
+// Width is in the curve plane; depth is the forged edge or bow lamination.
+function weaponSweep(parent,points,widths,depths,m,name,segments=36){
+ const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),positions=[],uv=[],indices=[],section=[[-1,0],[-.72,.78],[0,1],[.72,.78],[1,0],[.72,-.78],[0,-1],[-.72,-.78]];
+ const at=(values,t)=>{const f=t*(values.length-1),i=Math.min(values.length-2,Math.floor(f));return T.MathUtils.lerp(values[i],values[i+1],f-i);};
+ for(let j=0;j<=segments;j++){const t=j/segments,p=curve.getPoint(t),v=curve.getTangent(t),normal=new T.Vector3(-v.y,v.x,0).normalize(),w=at(widths,t),d=at(depths,t);
+  for(let i=0;i<8;i++){const [a,b]=section[i],q=p.clone().addScaledVector(normal,a*w);positions.push(q.x,q.y,q.z+b*d);uv.push(i/8,t*3);if(j<segments){const n=j*8+i,k=j*8+(i+1)%8;indices.push(n,k,n+8,k,k+8,n+8);}}
+ }
+ for(const j of [0,segments]){const p=curve.getPoint(j/segments),n=positions.length/3;positions.push(p.x,p.y,p.z);uv.push(.5,j/segments);for(let i=0;i<8;i++){const a=j*8+i,b=j*8+(i+1)%8;indices.push(...(j===0?[n,b,a]:[n,a,b]));}}
+ const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setIndex(indices);geo.computeVertexNormals();const o=mesh(geo,m,parent);o.name=name;return o;
+}
+function weaponCord(parent,points,r,m,name){const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));const o=mesh(new T.TubeGeometry(curve,Math.max(16,points.length*5),r,6,false),m,parent);o.name=name;return o;}
+function leatherLacing(parent,x,y,length,r,m,turns=11){
+ const points=[];for(let i=0;i<=turns*12;i++){const t=i/(turns*12),a=t*turns*Math.PI*2;points.push([x+Math.sin(a)*r,y+t*length,Math.cos(a)*r]);}return weaponCord(parent,points,.0019,m,'Spiral leather binding');
+}
+function groundBlade(parent,stations,metal,edge){
+ // Flat ground bevels meet at a thin cutting edge and a raised medial ridge.
+ const p=[],uv=[],index=[],groups=[],section=[[-1,0],[-.66,.68],[0,1],[.66,.68],[1,0],[.66,-.68],[0,-1],[-.66,-.68]];
+ for(let side=0;side<8;side++){const begin=index.length;for(let j=0;j<stations.length;j++){const [y,w,d]=stations[j];for(const s of [side,(side+1)%8]){p.push(section[s][0]*w,y,section[s][1]*d);uv.push(s/8,y*2.5);}if(j<stations.length-1){const k=side*stations.length*2+j*2;index.push(k,k+1,k+2,k+1,k+3,k+2);}}groups.push([begin,index.length-begin,[0,3,4,7].includes(side)?1:0]);}
+ const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(p,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setIndex(index);for(const group of groups)geo.addGroup(...group);geo.computeVertexNormals();const o=mesh(geo,[metal,edge],parent);o.name='Forged blade with ground cutting bevels';return o;
+}
+
 // Named hero equipment uses the same geometry in the hand and on the inspection plinth.
 function equipmentWeapon(item,rank){
  const d=weaponPattern(item),style=equipmentStyle(item),magic=equipmentMagic(item),aura=magic[0]?.color||style.glow,g=new T.Group(),type=d.type,variant=style.tier===0?0:d.shape;
- const metal=heroSurface('steel',style.metal,{roughness:Math.max(.46,style.roughness),metalness:.74}),edge=heroSurface('steel',0xc2c9ca,{roughness:.39,metalness:.82}),trim=heroSurface('steel',style.trim,{roughness:.58,metalness:.75}),dark=heroSurface('steel',0x33414c,{roughness:.67,metalness:.5}),wood=heroSurface('timber',variant===1?0x686556:0x806a50),leather=heroSurface('leather',0x403329),glow=mat(aura||style.trim,.35,.35,{emissive:aura||0,emissiveIntensity:aura?.8:0});
+ const metal=heroSurface('steel',style.metal,{roughness:Math.max(.42,style.roughness*.85),metalness:.80,normalScale:new T.Vector2(.055,.055)}),edge=heroSurface('steel',0xbcc7ca,{roughness:.31,metalness:.86,normalScale:new T.Vector2(.026,.026)}),trim=heroSurface('steel',style.trim,{roughness:.47,metalness:.77,normalScale:new T.Vector2(.045,.045)}),dark=heroSurface('steel',0x434d50,{roughness:.64,metalness:.63,normalScale:new T.Vector2(.07,.07)}),wood=heroSurface('timber',variant===1?0x686556:0x806a50),leather=heroSurface('leather',0x403329),glow=mat(aura||style.trim,.35,.35,{emissive:aura||0,emissiveIntensity:aura?.8:0});
  const line=(a,b,r=.007,m=trim)=>beam(g,a,b,r,m,8);
  const gem=(x,y,z,r=.025)=>{const o=mesh(new T.OctahedronGeometry(r,1),glow,g,x,y,z);o.scale.y=1.4;return o;};
  const wrap=(x,y,n,r=.036)=>{for(let i=0;i<n;i++){const ring=mesh(new T.TorusGeometry(r,.003,4,12),i%4===0?dark:leather,g,x,y+i*.021,0);ring.rotation.x=Math.PI/2+.13;}};
  const rivet=(x,y,z)=>{const o=sphere(g,.006,[x,y,z],trim,8);o.scale.z=.6;};
  const plate=(points,z,m)=>{const s=new T.Shape();points.forEach(([x,y],i)=>i?s.lineTo(x,y):s.moveTo(x,y));s.closePath();return mesh(new T.ExtrudeGeometry(s,{depth:.01,bevelEnabled:true,bevelSize:.002,bevelThickness:.002,bevelSegments:1}),m,g,0,0,z);};
  if(type==='sword'){
-  const width=variant===1?.065:variant===2?.056:.049,tip=variant===2?1.27:1.15;
-  // Separate forged blade planes, bright honed edges and a recessed dark fuller.
-  plate([[-width,.17],[-width,.87],[-width*.7,1.02],[0,tip],[width*.7,1.02],[width,.87],[width,.17]],-.008,edge);
-  for(const z of [-.018,.014]){plate([[-width*.77,.19],[-width*.70,.86],[0,tip-.045],[width*.70,.86],[width*.77,.19]],z,metal);line([0,.28,z+.012],[0,.95,z+.012],.005,dark);}
-  cyl(g,.027,.030,.28,[0,-.015,0],leather,12);wrap(0,-.13,12,.030);
-  const pommel=sphere(g,.039,[0,-.185,0],metal,12);pommel.scale.y=1.18;cyl(g,.024,.024,.023,[0,-.229,0],trim,10);
+  const width=variant===1?.043:variant===2?.037:.034,tip=variant===2?1.27:1.15;
+  groundBlade(g,[[.165,width,.012],[.25,width*.97,.014],[.77,width*.85,.011],[tip-.20,width*.65,.008],[tip,.0006,.0003]],metal,edge);
+  // A fine inset fuller leaves the bevels visible. It ends before the point.
+  for(const z of [-1,1])weaponCord(g,[[0,.26,z*.0144],[0,.60,z*.0125],[0,tip-.22,z*.0094]],.0018,dark,'Recessed blade fuller');
+  const handle=mesh(new T.LatheGeometry([new T.Vector2(.024,-.145),new T.Vector2(.029,-.12),new T.Vector2(.026,.01),new T.Vector2(.024,.10)],16),leather,g);handle.scale.z=.82;handle.name='Waisted leather sword grip';
+  leatherLacing(g,0,-.13,.223,.028,leather,13);
+  for(const y of [-.148,.10])cyl(g,.030,.030,.017,[0,y,0],dark,16);
+  cyl(g,.023,.025,.043,[0,.126,0],dark,16).name='Sword grip bolster';
+  const pommel=cyl(g,.041,.041,.031,[0,-.191,0],metal,24);pommel.rotation.x=Math.PI/2;pommel.scale.y=.80;pommel.name='Peened wheel pommel';
+  for(const z of [-.019,.019]){const rim=mesh(new T.TorusGeometry(.033,.0032,6,28),style.tier>=2?trim:edge,g,0,-.191,z);rivet(0,-.191,z*1.25);}
+  cyl(g,.015,.022,.018,[0,-.228,0],dark,12);
+  weaponSweep(g,[[-.193,.143,0],[-.15,.157,0],[-.069,.170,0],[0,.158,0],[.069,.170,0],[.15,.157,0],[.193,.143,0]],[.010,.014,.024,.014,.010],[.010,.015,.022,.015,.010],style.tier>=2?trim:metal,'Swept forged crossguard',32);
   for(const side of [-1,1]){
-   plate([[0,.142],[side*.1,.153],[side*.19,variant===1?.12:.195],[side*.195,.219],[side*.08,.193],[0,.191]],-.023,trim);
-   line([side*.026,.18,.001],[side*.162,.19,.001],.009,metal);
-   if(style.tier>=2)rivet(side*.13,.185,.016);
+   const end=sphere(g,.015,[side*.193,.143,0],metal,12);end.scale.set(.72,1.25,.9);
+   if(style.tier>=2){weaponCord(g,[[side*.02,.165,.023],[side*.075,.175,.019],[side*.143,.161,.015]],.0017,dark,'Crossguard engraved line');rivet(side*.115,.165,.018);}
   }
-  cyl(g,.035,.033,.033,[0,.123,0],trim,12);
-  for(let n=0;n<(item.plus||0)+1;n++)line([-.019,.31+n*.045,.030],[.012,.324+n*.045,.030],.0013,trim);
+  // The chappe protects the grip/blade join; a small solar seal identifies the order.
+  plate([[-.028,.14],[-.031,.197],[0,.219],[.031,.197],[.028,.14]],-.016,dark);
+  if(style.tier>=2){const seal=sunBadge(g,.028,trim);seal.position.set(0,.177,.014);seal.scale.z=.30;}
+  if(variant===2)for(const side of [-1,1])plate([[side*.088,.166],[side*.15,.208],[side*.17,.228],[side*.135,.204],[side*.060,.184]],-.010,trim);
+  for(let n=0;n<Math.min(5,item.plus||0);n++)line([-.012,.237+n*.023,.015],[.004,.242+n*.023,.015],.0008,trim);
  }else if(type==='spear'){
   cyl(g,.024,.030,2.18,[0,.22,0],wood,12);cyl(g,.036,.034,.34,[0,-.05,0],leather,12);wrap(0,-.21,16,.036);
   const tip=cyl(g,0,variant===1?.1:.075,.5,[0,1.54,0],edge,4);tip.rotation.y=Math.PI/4;cyl(g,.047,.036,.18,[0,1.28,0],metal,12);
@@ -105,40 +135,54 @@ function equipmentWeapon(item,rank){
   for(const yy of [1.2,1.25,1.3])cyl(g,.048,.048,.014,[0,yy,0],trim,12);
   if(variant)for(const side of [-1,1]){line([0,1.25,0],[side*.105,1.40,0],.012);line([side*.105,1.40,0],[side*.10,variant===1?1.59:1.72,0],.009,metal);}
  }else if(type==='hammer'){
-  cyl(g,.032,.043,1.35,[0,.22,0],wood,12);cyl(g,.048,.046,.37,[0,-.26,0],leather,12);wrap(0,-.43,18,.048);cyl(g,.049,.042,.045,[0,-.47,0],metal,12);
-  const headStart=g.children.length;
-  const width=variant===1?.64:.50;
-  if(variant===2){cyl(g,.12,.20,.35,[0,.94,0],metal,16);cyl(g,.20,.20,.035,[0,.78,0],edge,16);cyl(g,.105,.13,.045,[0,1.14,0],trim,16);gem(0,.96,.184,.034);}
-  else{
-   forgedBlock(g,[width,.28,.27],[0,.94,0],metal);
+  const haft=cyl(g,.024,.033,1.35,[0,.22,0],wood,16);haft.scale.z=.87;haft.name='Tapered ash haft';
+  cyl(g,.036,.035,.37,[0,-.26,0],leather,16);leatherLacing(g,0,-.432,.345,.0365,leather,18);
+  for(const y of [-.458,-.067])cyl(g,.039,.038,.023,[0,y,0],dark,16);
+  const pommel=mesh(new T.LatheGeometry([new T.Vector2(.020,-.493),new T.Vector2(.034,-.486),new T.Vector2(.041,-.470),new T.Vector2(.036,-.454)],16),metal,g);pommel.name='Forged haft heel';
+  const width=variant===1?.47:.38,half=width*.5,cheekDepth=y=>.094-Math.max(0,Math.abs(y-.94)-.0627)*.89;
+  if(variant===2){
+   const bell=mesh(new T.LatheGeometry([new T.Vector2(.125,.790),new T.Vector2(.150,.805),new T.Vector2(.150,.833),new T.Vector2(.102,.92),new T.Vector2(.080,1.047),new T.Vector2(.040,1.085)],24),metal,g);bell.name='Forged bell maul';
+   for(const y of [.811,1.033])cyl(g,y<.9?.153:.084,y<.9?.153:.084,.012,[0,y,0],edge,24);
+   for(let k=0;k<8;k++){const angle=k*Math.PI/4;weaponCord(g,[[Math.sin(angle)*.134,.817,Math.cos(angle)*.134],[Math.sin(angle)*.095,.934,Math.cos(angle)*.095],[Math.sin(angle)*.078,1.024,Math.cos(angle)*.078]],.0028,trim,'Bell forged flute');}
+  }else{
+   // An octagonal hammer core widens into hardened striking faces rather than a cuboid.
+   const profile=[[0,.085],[.65,.085],[1,.055],[1,-.055],[.65,-.085],[-.65,-.085],[-1,-.055],[-1,.055],[-.65,.085]],shape=new T.Shape();
+   profile.forEach(([u,v],i)=>i?shape.lineTo(u*.087,v*1.14):shape.moveTo(u*.087,v*1.14));shape.closePath();
+   const core=mesh(new T.ExtrudeGeometry(shape,{depth:width,bevelEnabled:true,bevelSize:.007,bevelThickness:.008,bevelSegments:2,steps:1}),metal,g,-half,.94,0);core.rotation.y=Math.PI/2;core.name='Octagonal forged hammer core';
    for(const side of [-1,1]){
-    forgedBlock(g,[.045,.31,.30],[side*(width*.5+.015),.94,0],edge);
-    forgedBlock(g,[.025,.285,.278],[side*width*.31,.94,0],trim);
-    for(const z of [-.15,.15])for(const yy of [.85,1.03])rivet(side*width*.3,yy,z);
-    // Engraved inset panels on each visible cheek of the head.
-    for(const z of [-.141,.141]){
-     plate([[side*.045,.857],[side*(width*.5-.025),.857],[side*(width*.5-.025),1.022],[side*.045,1.022]],z,dark);
-     line([side*.055,.866,z+.012],[side*(width*.5-.039),.866,z+.012],.003,trim);
-     line([side*.055,1.01,z+.012],[side*(width*.5-.039),1.01,z+.012],.003,trim);
+    const face=mesh(new RoundedBoxGeometry(.028,.235,.194,3,.015),edge,g,side*(half+.008),.94,0);face.name='Hardened striking face';
+    const collar=mesh(new RoundedBoxGeometry(.018,.232,.194,2,.012),dark,g,side*(half-.024),.94,0);collar.name='Shrunk iron striking collar';
+    for(const z of [-1,1]){
+     for(const yy of [.866,1.011])weaponCord(g,[[side*.049,yy,z*cheekDepth(yy)],[side*(half-.065),yy,z*cheekDepth(yy)],[side*(half-.045),yy+(.94-yy)*.18,z*cheekDepth(yy+(.94-yy)*.18)]],.0016,trim,'Inset cheek engraving');
+     for(const y of [.875,1.003])rivet(side*(half-.054),y,z*cheekDepth(y));
     }
-    if(variant===1)for(let j=0;j<3;j++){const tooth=cyl(g,0,.023,.075,[side*(width*.5+.06),.86+j*.08,0],edge,4);tooth.rotation.z=-side*Math.PI/2;}
+    if(variant===1)for(let k=0;k<2;k++){const tooth=cyl(g,0,.018,.037,[side*(half+.036),.898+k*.081,0],dark,4);tooth.rotation.z=-side*Math.PI/2;}
    }
-   forgedBlock(g,[.072,.305,.294],[0,.94,0],dark);
-   for(const z of [-.155,.155]){line([0,.843,z],[0,1.04,z],.006,trim);if(style.tier>=2)gem(0,.94,z+.006,.028);}
+   for(const z of [-1,1]){const seal=sunBadge(g,style.tier>=2?.051:.035,style.tier>=2?trim:dark);seal.position.set(0,.944,z*.094);seal.rotation.y=z<0?Math.PI:0;seal.scale.z=.38;}
   }
-  for(const yy of [.69,.75,1.12])cyl(g,.056,.049,.027,[0,yy,0],trim,12);
-  // A working smith's maul has a believable head. Exalted weapons retain
-  // their earned oversized silhouette; hand position and reach are unchanged.
-  if(style.tier===0)for(const piece of g.children.slice(headStart)){piece.scale.multiplyScalar(.77);piece.position.sub(new T.Vector3(0,.94,0)).multiplyScalar(.77).add(new T.Vector3(0,.94,0));}
+  // Langets brace the head to the wood; pin heads make the assembly legible.
+  for(const z of [-1,1]){
+   plate([[-.021,.59],[-.026,1.065],[.026,1.065],[.021,.59],[0,.565]],z*.030,dark);
+   for(const y of [.64,.744,1.065])rivet(0,y,z*.047);
+  }
+  for(const yy of [.68,.765,1.074])cyl(g,.038,.036,.018,[0,yy,0],trim,16);
  }else if(type==='bow'){
   for(const side of [-1,1]){
-   const points=[new T.Vector3(.23,0,0),new T.Vector3(variant===2?.32:.27,side*.31,0),new T.Vector3(.06,side*.68,0),new T.Vector3(variant===1?-.04:.08,side*.85,0)];
-   mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),28,.026,10,false),wood,g);
-   const backing=points.map(p=>p.clone().add(new T.Vector3(-.009,0,.015)));mesh(new T.TubeGeometry(new T.CatmullRomCurve3(backing),28,.011,6,false),variant===2?metal:dark,g);
-   for(let j=0;j<3;j++){const yy=side*(.26+j*.115),xx=.27-j*.047;line([xx-.023,yy,.011],[xx+.023,yy,.011],.006,trim);}
-   if(variant===2)gem(.245,side*.3,.035,.029);
+   const points=[[.23,0,0],[variant===2?.284:.264,side*.25,0],[.210,side*.47,0],[variant===1?.050:.090,side*.690,0],[variant===1?-.024:.027,side*.795,0],[variant===1?-.040:.080,side*.85,0]];
+   weaponSweep(g,points,[.023,.022,.018,.013,.008,.0045],[.013,.012,.010,.008,.005,.003],wood,'Tapered recurved bow limb',44);
+   const backing=points.map(([x,y,z])=>[x,y,z+.010]);
+   weaponSweep(g,backing,[.018,.018,.014,.010,.005,.003],[.0025,.0022,.002,.0015,.001,.0006],variant===2?metal:dark,'Bonded horn backing',44);
+   const tip=points.at(-1),nock=cyl(g,.007,.009,.035,[tip[0],tip[1]-side*.01,0],style.tier>=2?trim:dark,10);nock.rotation.z=-side*.70;nock.name='Horn string nock';
+   for(const f of [.27,.66]){const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),p=curve.getPoint(f),v=curve.getTangent(f),n=new T.Vector3(-v.y,v.x,0);weaponCord(g,[[p.x-n.x*.015,p.y-n.y*.015,.011],[p.x,p.y,.014],[p.x+n.x*.015,p.y+n.y*.015,.011]],.003,style.tier>=2?trim:leather,'Bow limb binding');}
+   if(style.tier>=2){const p=points[1];const fastening=cyl(g,.011,.011,.006,[p[0],p[1],.019],trim,12);fastening.rotation.x=Math.PI/2;rivet(p[0],p[1],.023);}
+   if(variant===1)for(let j=0;j<2;j++){const yy=side*(.26+j*.15),xx=.262-j*.025;plate([[xx-.012,yy],[xx-.041,yy+side*.035],[xx-.050,yy+side*.080],[xx-.01,yy+side*.053]],-.005,trim);}
   }
-  line([variant===1?-.04:.08,-.85,0],[variant===1?-.04:.08,.85,0],.002,mat(0xc9bf9d));cyl(g,.037,.037,.22,[.23,0,0],leather,12);wrap(.23,-.105,11,.037);g.rotation.set(0,Math.PI/2,Math.PI/2);
+  const tipX=variant===1?-.04:.08;line([tipX,-.85,0],[tipX,.85,0],.0012,mat(0xc9c2ac));
+  for(let k=0;k<8;k++)line([tipX-.0015,-.032+k*.008,0],[tipX+.0015,-.032+k*.008,0],.001,leather);
+  cyl(g,.028,.027,.208,[.23,0,0],leather,16);leatherLacing(g,.23,-.103,.208,.028,leather,12);
+  for(const y of [-.112,.112])cyl(g,.031,.031,.012,[.23,y,0],style.tier>=2?trim:dark,16);
+  // An arrow shelf is fitted just above the grip, never across the bowstring.
+  line([.229,.13,0],[.209,.13,.035],.005,dark);g.rotation.set(0,Math.PI/2,Math.PI/2);
  }else{
   cyl(g,.028,.034,1.82,[0,.38,0],wood,12);cyl(g,.039,.039,.3,[0,-.12,0],leather,12);wrap(0,-.25,14,.039);
   const radius=variant===2?.18:.14;mesh(new T.TorusGeometry(radius,.012,8,32),trim,g,0,1.50,0);gem(0,1.51,0,variant===2?.087:.09);
@@ -147,8 +191,8 @@ function equipmentWeapon(item,rank){
   if(variant===1)for(const side of [-1,1])gem(side*.13,1.66,0,.031);
   if(variant===2){mesh(new T.TorusGeometry(.215,.005,5,32,Math.PI*1.6),metal,g,0,1.5,0).rotation.z=.6;gem(0,1.77,0,.023);}
  }
- if(type!=='sword')for(let j=0;j<=(item.plus||0);j++)cyl(g,.043,.043,.008,[type==='bow'?.23:0,-.10+j*.027,0],trim,10);
- g.userData={type,itemId:item.id,pattern:item.weaponPattern||DEFAULT_PATTERNS[type],power:d.power||null,forge:item.plus};decorateWeapon(g,item);for(const child of g.children){if(type==='bow')child.position.x-=.23;else if(type==='hammer')child.position.y+=.24;else if(type==='staff')child.position.y+=.10;else if(type==='spear')child.position.y+=.05;}return g;
+ if(!['sword','hammer','bow'].includes(type))for(let j=0;j<=(item.plus||0);j++)cyl(g,.043,.043,.008,[0,-.10+j*.027,0],trim,10);
+ g.userData={type,itemId:item.id,pattern:item.weaponPattern||DEFAULT_PATTERNS[type],power:d.power||null,forge:item.plus,craftedWeapon:['sword','hammer','bow'].includes(type),weaponVariant:variant};decorateWeapon(g,item);for(const child of g.children){if(type==='bow')child.position.x-=.23;else if(type==='hammer')child.position.y+=.24;else if(type==='staff')child.position.y+=.10;else if(type==='spear')child.position.y+=.05;}return g;
 }
 
 export function equipmentShield(item){const s=equipmentStyle(item),colors=[0x695b46,0x5b6458,0x315e89,0x563c75,0x233950,0x283854,0x73889b],g=shield(s.rank,colors[s.tier]);g.scale.x=.84;g.scale.y=.94;g.userData={type:'shield',itemId:item.id,rarity:s.tier};decorateShield(g,item);return g;}

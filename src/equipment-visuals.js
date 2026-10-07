@@ -93,10 +93,44 @@ function stretchWeapon(g,s,type){
   geometry.userData.shared=false;geometry.computeVertexNormals();geometry.computeBoundingSphere();if(!o.geometry.userData.shared)o.geometry.dispose();o.geometry=geometry;
  });
 }
+// Finishes sit on the shaped weapon surfaces; broad floating rune wires
+// would obscure the honed planes and the laminated bow construction.
+function craftedWeaponFinish(g,item,gold,glow){
+ const r=equipmentStyle(item).tier,type=item.type,variant=g.userData.weaponVariant;
+ if(type==='sword'){
+  if(r>=2)for(const z of [-1,1]){
+   line(g,[[-.012,.245,z*.0125],[-.010,.30,z*.0138],[0,.326,z*.014]],.0009,gold);
+   line(g,[[.012,.245,z*.0125],[.010,.30,z*.0138],[0,.326,z*.014]],.0009,gold);
+  }
+  if(r>=5)for(const s of [-1,1])line(g,[[s*.015,.26,.015],[s*.014,.53,.013],[s*.011,.81,.010],[0,variant===2?1.21:1.10,.004]],.0019,glow);
+  if(r===6)for(const side of [-1,1]){const p=plate(g,[[side*.06,.162],[side*.13,.20],[side*.164,.236],[side*.11,.213],[side*.04,.186]],[0,0,-.006],gold,.010);}
+ }else if(type==='hammer'){
+  if(variant===2){
+   const bellRadius=y=>{const profile=[[.790,.125],[.805,.150],[.833,.150],[.920,.102],[1.047,.080],[1.085,.040]];for(let i=1;i<profile.length;i++)if(y<=profile[i][0]){const [a,ra]=profile[i-1],[b,rb]=profile[i];return ra+(rb-ra)*(y-a)/(b-a);}return .040;};
+   // The bell variant needs its own surface projection, not flat cheek runes.
+   if(r>=3)for(const y of [.867,1.013])line(g,Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2,rad=bellRadius(y)+.001;return[Math.sin(a)*rad,y,Math.cos(a)*rad];}),.001,gold);
+   if(r>=5)for(const angle of [-.50,.50,Math.PI-.50,Math.PI+.50])line(g,Array.from({length:18},(_,i)=>{const y=.849+i/17*.170,rad=bellRadius(y)+.0016;return[Math.sin(angle)*rad,y,Math.cos(angle)*rad];}),.0018,glow);
+   if(r===6)for(const side of [-1,1])line(g,Array.from({length:33},(_,i)=>{const a=i/32*Math.PI*2,x=Math.cos(a)*.023,y=.949+Math.sin(a)*.023,rad=bellRadius(y);return[x,y,side*(Math.sqrt(rad*rad-x*x)+.0018)];}),.0017,glow);
+  }else{
+  if(r>=3)for(const z of [-1,1])for(const side of [-1,1])line(g,[[side*.076,.89,z*.094],[side*.101,.904,z*.094],[side*.077,.925,z*.094]],.0012,gold);
+  if(r>=5)for(const z of [-1,1])for(const side of [-1,1])line(g,Array.from({length:19},(_,i)=>{const y=.869+i/18*.142,x=side*(.085+Math.abs(y-.94)*.4225),depth=.095-Math.max(0,Math.abs(y-.94)-.0627)*.89;return[x,y,z*depth];}),.0023,glow);
+  if(r===6)for(const z of [-1,1])arc(g,[0,.944,z*.100],.028,0,Math.PI*2,glow,.002);
+  }
+ }else if(type==='bow'){
+  for(const side of [-1,1]){
+   const points=[[.23,0,.014],[variant===2?.284:.264,side*.25,.014],[.210,side*.47,.012],[variant===1?.050:.090,side*.690,.009],[variant===1?-.024:.027,side*.795,.006],[variant===1?-.040:.080,side*.85,.004]];
+   const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),inlay=Array.from({length:22},(_,i)=>curve.getPoint(.15+i/21*.76).toArray());
+   if(r>=2)line(g,inlay,r>=5?.0019:.0012,r>=5?glow:gold);
+   if(r>=4){const q=curve.getPoint(.28);jewel(g,[q.x,q.y,q.z+.008],r>=5?.015:.011,glow);}
+  }
+ }
+}
 export function decorateWeapon(g,item){
  const s=equipmentStyle(item),r=s.tier,type=item.type,channels=equipmentMagic(item),color=channels[0]?.color||s.glow;
  const gold=material('steel',s.trim,{metalness:.85,roughness:s.roughness}),steel=material('steel',s.metal,{metalness:.86,roughness:s.roughness}),glow=lightMaterial(color||s.trim,color?(r>=5?2:.8):0);
  const tip=type==='sword'?1.04:type==='hammer'?.98:type==='spear'?1.57:1.5;
+ if(g.userData.craftedWeapon)craftedWeaponFinish(g,item,gold,glow);
+ else{
  if(r>=2){
   if(type==='bow')for(const side of [-1,1])line(g,[[.27,side*.19,.02],[.22,side*.49,.025],[.06,side*.72,.015]],.009,gold);
   else for(let j=0;j<Math.min(5,r+1);j++){const y=type==='sword'?.3+j*.085:tip-.20+j*.06;rune(g,0,y,type==='hammer'?.215:.042,type==='hammer'?.045:.023,gold);}
@@ -123,6 +157,7 @@ export function decorateWeapon(g,item){
   else if(type==='staff'){arc(g,[0,tip,.015],.23,.12,Math.PI*1.92,gold,.007);arc(g,[0,tip,.018],.24,.5,Math.PI*1.77,glow,.003);}
   else if(type==='hammer')for(const z of [-.17,.17]){arc(g,[0,.94,z],.045,0,Math.PI*2,gold,.004);rune(g,0,.94,z+.004,.036,glow);}
  }
+ }
  // Size changes are baked around the grip, keeping the hand socket and animation intact.
  stretchWeapon(g,s,type);
  if(color){
@@ -135,7 +170,7 @@ export function decorateWeapon(g,item){
    if(aura[1])halo(g,[0,.17,.04],aura[1].color,.24,.2);
   }
   // Low-rarity enchanted blades get a fine effect-colored channel, never a full neon silhouette.
-  if(r<5&&type==='sword')line(g,[[0,.25,.052],[0,.12+.83*s.length,.035]],.0035,glow);
+  if(r<5&&type==='sword')line(g,[[0,.25,g.userData.craftedWeapon?.017:.052],[0,.12+.83*s.length,g.userData.craftedWeapon?.012:.035]],g.userData.craftedWeapon?.0018:.0035,glow);
   if(r<5&&['spear','staff'].includes(type))line(g,[[0,.3,.045],[0,.12+(tip-.33)*s.length,.045]],.0035,glow);
  }
  Object.assign(g.userData,{rarity:r,lengthScale:s.length,widthScale:s.width,magic:channels,glowing:r>=5||channels.length>0});

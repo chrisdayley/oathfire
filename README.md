@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## 2.25.0 — concept hero refinement
+
+Distinct fitted heads and hair, a short Warden tabard over visible leg armor, an equipped forge apron for the Ashwright, and an asymmetric layered scout coat. High-tier protection retains each hero’s costume. Rebuilt sword, hammer and bow construction includes fitted grips, forged sections and surface-aligned inlays. Existing campaigns remain compatible.
+
+[Changes, review criteria and validation](docs/concept-heroes-2.25.0.md)
+
 ## 2.24.0 — tailored heroes
 
 Rebuilt all three heroes around a single fitted armor system, class-specific garments and faces, finer material textures, articulated shoulders, and connected cape fastenings. Higher rarity preserves hero identity. Hero selection gives the model more screen space. Existing campaigns remain compatible.

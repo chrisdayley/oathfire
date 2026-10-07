@@ -33,8 +33,8 @@ export function attachAtelier(c,part,profile,palette,textile){
  const coverage=heroArmorProfile(c),light=['trail','spellweave','dawn'].includes(kind)&&!coverage?.plate;
  const surface=hero?tailoredSurface:heroSurface;
  const mats={
-  steel:surface(light?'leather':'steel',hero&&signature?(smith?0x837668:0x9b9c94):steelHex,{roughness:Math.max(.48,style?.roughness??(light?.84:.57)),metalness:style?.tier===0?.35:light?.12:.82,envMapIntensity:.8,side:T.DoubleSide}),
-  ivory:surface('steel',(hero&&signature?0xb7b3a1:style?.metal)??(signature?(royal?0xd4c9ad:0xb8b7aa):armor?.steel??0xb8b7aa),{roughness:.60,metalness:.78,side:T.DoubleSide}),
+  steel:surface(light?'leather':'steel',hero&&signature?(smith?(coverage?.plate?0x685e4e:0x837668):c.design==='ranger'&&coverage?.plate?0x687579:0x9b9c94):steelHex,{roughness:Math.max(.48,style?.roughness??(light?.84:.57)),metalness:style?.tier===0?.35:light?.12:.82,envMapIntensity:.8,side:T.DoubleSide}),
+  ivory:surface('steel',(hero&&signature?(smith&&coverage?.plate?0x96846b:c.design==='ranger'&&coverage?.plate?0x88918a:0xb7b3a1):style?.metal)??(signature?(royal?0xd4c9ad:0xb8b7aa):armor?.steel??0xb8b7aa),{roughness:.60,metalness:.78,side:T.DoubleSide}),
   gold:surface('steel',trimHex,{roughness:.58,metalness:.8,side:T.DoubleSide}),
   leather:surface('leather',smith?0x5b4c3e:0x55483b,{roughness:.83,side:T.DoubleSide}),
   stitch:surface('leather',0xab9475,{roughness:.96,side:T.DoubleSide}),

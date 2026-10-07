@@ -55,7 +55,7 @@ export function attachHeroCape(c){
  // to the mantle. It follows the same chest bone, not a floating back panel.
  const yp=[],yu=[],yi=[],yrows=9;
  for(let j=0;j<=yrows;j++)for(let i=0;i<=columns;i++){
-  const t=j/yrows,u=i/columns,a=u*2-1,k=i*3,neckX=a*.21,neckY=.134-.018*Math.abs(a),neckZ=-.196-.014*Math.sqrt(1-a*a);
+  const t=j/yrows,u=i/columns,a=u*2-1,k=i*3,neckX=a*.145,neckY=.21-.045*Math.abs(a),neckZ=-.126-.012*Math.sqrt(1-a*a);
   const fold=Math.sin(u*26-t*2)*.009*Math.sin(t*Math.PI);
   yp.push(neckX+(p[k]-neckX)*t,neckY+(p[k+1]-neckY)*(1-Math.pow(1-t,1.6))+fold,neckZ+(p[k+2]-neckZ)*t-.008*Math.sin(t*Math.PI));yu.push(u,t);
   if(j<yrows&&i<columns){const q=j*(columns+1)+i;yi.push(q,q+1,q+columns+1,q+1,q+columns+2,q+columns+1);}
@@ -65,7 +65,7 @@ export function attachHeroCape(c){
  // Two sewn shoulder straps carry the cloak over the cuirass into visible
  // front clasps. Their full curved path avoids a floating horizontal flap.
  for(const side of [-1,1]){
-  const curve=new T.CatmullRomCurve3([new T.Vector3(side*.174,.153,.132),new T.Vector3(side*.205,.219,.054),new T.Vector3(side*.214,.223,-.055),new T.Vector3(side*.202,.16,-.191),new T.Vector3(side*.20,.092,-.247)]),sp=[],su=[],si=[];
+  const curve=new T.CatmullRomCurve3([new T.Vector3(side*.174,.153,.132),new T.Vector3(side*.205,.188,.054),new T.Vector3(side*.214,.186,-.055),new T.Vector3(side*.202,.16,-.191),new T.Vector3(side*.20,.092,-.247)]),sp=[],su=[],si=[];
   for(let j=0;j<=20;j++){const t=j/20,v=curve.getPoint(t);for(let k=0;k<2;k++){sp.push(v.x+(k-.5)*.024,v.y,v.z);su.push(k,t);}if(j<20){const n=j*2;si.push(n,n+1,n+2,n+1,n+3,n+2);}}
   const sg=new T.BufferGeometry();sg.setAttribute('position',new T.Float32BufferAttribute(sp,3));sg.setAttribute('uv',new T.Float32BufferAttribute(su,2));sg.setIndex(si);sg.computeVertexNormals();const strap=new T.Mesh(sg,ym);strap.name='Continuous sewn mantle shoulder strap';strap.castShadow=strap.receiveShadow=true;c.sockets.chest.add(strap);c.gear.push(strap);
   const claspMat=new T.MeshStandardMaterial({color:c.atelier.trimHex,metalness:.75,roughness:.5});c.materials.push(claspMat);const clasp=new T.Mesh(new T.CylinderGeometry(.013,.013,.006,16),claspMat);clasp.rotation.x=Math.PI/2;clasp.position.set(side*.174,.15,.14);clasp.name='Mantle front fastening';clasp.castShadow=true;c.sockets.chest.add(clasp);c.gear.push(clasp);
