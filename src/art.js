@@ -53,27 +53,56 @@ export function shield(level=1,color=0x497d79,enemy=null){
  if(enemy==='knight'||enemy==='veyr'){points=[[-w*.6,h], [w*.6,h],[w,h*.56],[w*.79,-h*.65],[0,-h*1.24],[-w*.79,-h*.65],[-w,h*.56]];}
  else if(level<4){for(let i=0;i<32;i++){const a=i/32*Math.PI*2;points.push([Math.cos(a)*w,Math.sin(a)*w]);}}
  else points=[[-w,h],[0,h*1.08],[w,h],[w*.94,h*.1],[w*.65,-h*.57],[0,-h*1.13],[-w*.65,-h*.57],[-w*.94,h*.1]];
- const curveZ=x=>.045+.065*(1-(x/w)**2),pos=[0,0,curveZ(0)],uv=[.5,.5],idx=[];for(const [x,y]of points){pos.push(x,y,curveZ(x));uv.push(x/(w*2)+.5,y/(h*2)+.5);}for(let i=0;i<points.length;i++)idx.push(0,1+i,1+(i+1)%points.length);const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setIndex(idx);geo.computeVertexNormals();wood.side=T.DoubleSide;mesh(geo,wood,g);
+ const curveZ=x=>.045+.065*(1-(x/w)**2);
+ // Concentric subdivided surfaces retain a cylindrical bow across the face.
+ // A single center fan makes a faceted cone; front/back skins and a joined
+ // perimeter now give the shield the thickness of a laminated board.
+ const segments=points.length,rows=12,pos=[],uv=[],idx=[];
+ for(let j=0;j<=rows;j++){const t=j/rows;for(const [x,y]of points){pos.push(x*t,y*t,curveZ(x*t));uv.push(x*t/(w*2)+.5,y*t/(h*2)+.5);}}
+ for(let j=0;j<rows;j++)for(let i=0;i<segments;i++){const a=j*segments+i,b=j*segments+(i+1)%segments,c=a+segments,d=b+segments;idx.push(a,c,b,b,c,d);}
+ const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setIndex(idx);geo.computeVertexNormals();wood.side=T.DoubleSide;mesh(geo,wood,g).name='Bowed shield facing';
+ const backing=heroSurface('timber',0x55412c,{roughness:.9,side:T.DoubleSide}),back=geo.clone();back.translate(0,0,-.026);mesh(back,backing,g).name='Laminated shield back';
+ const ep=[],ei=[];for(let i=0;i<=segments;i++){const [x,y]=points[i%segments];ep.push(x,y,curveZ(x),x,y,curveZ(x)-.026);if(i<segments){const n=i*2;ei.push(n,n+1,n+2,n+1,n+3,n+2);}}
+ const eg=new T.BufferGeometry();eg.setAttribute('position',new T.Float32BufferAttribute(ep,3));eg.setAttribute('uv',new T.Float32BufferAttribute(ep.flatMap((v,i)=>i%3===0?[i/ep.length,0]:[]),2));eg.setIndex(ei);eg.computeVertexNormals();mesh(eg,edge,g).name='Shield bound edge thickness';
  const rimPoints=points.map(([x,y])=>new T.Vector3(x,y,curveZ(x)));rimPoints.push(rimPoints[0]);mesh(new T.TubeGeometry(new T.CatmullRomCurve3(rimPoints,false,'catmullrom',.06),points.length*4,.018,7,false),edge,g);
  for(let i=0;i<points.length;i++){const [x,y]=points[i];sphere(g,.011,[x*.88,y*.9,curveZ(x*.88)+.013],edge,8);}
- for(const x of [-.10,.10])beam(g,[x,-.14,.01],[x,.15,.01],.024,material('leather',0x494035));
+ const strap=heroSurface('leather',0x494035);
+ for(const x of [0]){
+  weaponCord(g,[[x,-.15,curveZ(x)-.033],[x,-.09,-.024],[x,.09,-.024],[x,.15,curveZ(x)-.033]],.018,strap,'Leather wrapped center grip');
+  for(const y of [-.15,.15])sphere(g,.011,[x,y,curveZ(x)-.036],edge,10);
+ }
+ for(const y of [-h*.40,h*.43])weaponCord(g,[[-w*.7,y,curveZ(w*.7)-.035],[0,y,curveZ(0)-.035],[w*.7,y,curveZ(w*.7)-.035]],.011,backing,'Shield back cross brace');
  if(enemy){const dark=material('steel',0x242b27,{roughness:.93});for(const x of [-.05,.05])box(g,[.025,h*1.3,.014],[x,0,.125],dark);if(enemy==='knight'||enemy==='veyr'){const skull=sphere(g,.064,[0,.11,.15],edge,12);skull.scale.y=1.2;for(const x of [-.025,.025])sphere(g,.017,[x,.123,.204],dark,8);}}
  else if(level>=3){const badge=sunBadge(g,.155,edge);badge.position.set(0,.085,.128);}else{const boss=sphere(g,.072,[0,0,.09],edge,16);boss.scale.z=.55;}
  if(level>=9&&!enemy){for(const side of [-1,1]){beam(g,[side*w*.82,h*.75,.092],[side*w*.51,-h*.50,.095],.008,edge);for(let j=0;j<4;j++){const y=.3-j*.12;beam(g,[side*.19,y,.111],[side*.12,y-.09,.127],.009,edge);}}}if(level>=6&&!enemy)for(const x of [-w*.70,w*.70])box(g,[.014,h*1.25,.008],[x,.06,curveZ(x)+.014],edge);
  return g;
 }
-export function arrowMesh(heavy=false,fire=false){const g=new T.Group(),shaft=mat(0x755238),metal=mat(0xc0cbc5,.22,.8),feather=mat(0xdfd9c0,.85,0,{side:T.DoubleSide});const len=heavy?1.45:.90;const s=cyl(g,heavy?.028:.012,heavy?.028:.012,len,[0,0,0],shaft,6);s.rotation.x=Math.PI/2;const tip=cyl(g,0,heavy?.085:.045,heavy?.22:.13,[0,0,len*.5+.05],metal,4);tip.rotation.x=Math.PI/2;for(let i=0;i<3;i++){const f=mesh(new T.PlaneGeometry(heavy?.16:.10,heavy?.25:.18),feather,g,0,0,-len*.35);f.rotation.y=i*Math.PI*2/3;f.rotation.x=Math.PI/2;}return g;}
+export function arrowMesh(heavy=false,fire=false){
+ const g=new T.Group(),shaft=mat(0x755238),metal=mat(0xc0cbc5,.22,.8),feather=mat(0xaaa28c,.88,0,{side:T.DoubleSide});
+ const len=heavy?1.45:.90;
+ const s=cyl(g,heavy?.028:.012,heavy?.028:.012,len,[0,0,0],shaft,8);s.rotation.x=Math.PI/2;
+ const tip=cyl(g,0,heavy?.085:.045,heavy?.22:.13,[0,0,len*.5+.05],metal,4);tip.rotation.x=Math.PI/2;
+ // Three swept vanes lie along the shaft, with tapered ends instead of square cards.
+ const span=heavy?.062:.026,length=heavy?.25:.16;
+ for(let i=0;i<3;i++){
+  const geo=new T.BufferGeometry(),p=[.007,0,0,.007,0,length,span*.7,0,length*.70,span,0,length*.20];
+  geo.setAttribute('position',new T.Float32BufferAttribute(p,3));geo.setAttribute('uv',new T.Float32BufferAttribute([0,0,0,1,1,.7,1,.2],2));geo.setIndex([0,1,2,0,2,3]);geo.computeVertexNormals();
+  const f=mesh(geo,feather,g,0,0,-len*.47);f.rotation.z=i*Math.PI*2/3;
+ }
+ return g;
+}
+const attributeLayout=g=>Object.keys(g.attributes).sort().map(k=>{const a=g.attributes[k];return k+':'+a.itemSize+':'+a.normalized+':'+a.array.constructor.name;}).join('|');
 export function mergeStatic(group,chunkSize=0){
  group.updateMatrixWorld(true);const bins=new Map(),center=new T.Vector3();
  group.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||Array.isArray(o.material)||o.userData.keep)return;
   let tile='';if(chunkSize){o.geometry.computeBoundingBox();o.geometry.boundingBox.getCenter(center).applyMatrix4(o.matrixWorld);tile=':'+Math.floor((center.x+chunkSize/2)/chunkSize)+','+Math.floor((center.z+chunkSize/2)/chunkSize);}
-  const key=o.material.uuid+':'+o.castShadow+tile;if(!bins.has(key))bins.set(key,{material:o.material,shadow:o.castShadow,geometries:[],meshes:[]});
+  const key=o.material.uuid+':'+o.castShadow+tile+':'+attributeLayout(o.geometry);if(!bins.has(key))bins.set(key,{material:o.material,shadow:o.castShadow,geometries:[],meshes:[]});
   const transformed=o.geometry.clone().applyMatrix4(o.matrixWorld),g=transformed.index?transformed.toNonIndexed():transformed;if(g!==transformed)transformed.dispose();bins.get(key).geometries.push(g);bins.get(key).meshes.push(o);
  });
  const merged=new T.Group();for(const bin of bins.values()){const geometry=mergeGeometries(bin.geometries,false);if(!geometry)continue;geometry.computeBoundingSphere();const m=new T.Mesh(geometry,bin.material);m.castShadow=bin.shadow;m.receiveShadow=true;merged.add(m);for(const o of bin.meshes)o.removeFromParent();for(const g of bin.geometries)g.dispose();}return merged;
 }
 // Merge rigid pieces within a local attachment; bone-attached groups stay separate.
-export function compactRigid(group){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert(),bins=new Map();group.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||Array.isArray(o.material)||o.userData.keep)return;const key=o.material.uuid;if(!bins.has(key))bins.set(key,{material:o.material,meshes:[]});bins.get(key).meshes.push(o);});for(const {material,meshes}of bins.values()){if(meshes.length<2)continue;const geos=meshes.map(o=>{const g=o.geometry.clone();g.applyMatrix4(inverse.clone().multiply(o.matrixWorld));if(g.index){const flat=g.toNonIndexed();g.dispose();return flat;}return g;});const geo=mergeGeometries(geos,false);if(geo){const m=new T.Mesh(geo,material);m.castShadow=true;m.receiveShadow=true;const old=new Set();meshes.forEach(o=>{if(!o.geometry.userData.shared)old.add(o.geometry);o.removeFromParent();});old.forEach(g=>g.dispose());group.add(m);}geos.forEach(g=>g.dispose());}return group;}
+export function compactRigid(group){group.updateMatrixWorld(true);const inverse=group.matrixWorld.clone().invert(),bins=new Map();group.traverse(o=>{if(!o.isMesh||o.isSkinnedMesh||Array.isArray(o.material)||o.userData.keep)return;const key=o.material.uuid+attributeLayout(o.geometry);if(!bins.has(key))bins.set(key,{material:o.material,meshes:[]});bins.get(key).meshes.push(o);});for(const {material,meshes}of bins.values()){if(meshes.length<2)continue;const geos=meshes.map(o=>{const g=o.geometry.clone();g.applyMatrix4(inverse.clone().multiply(o.matrixWorld));if(g.index){const flat=g.toNonIndexed();g.dispose();return flat;}return g;});const geo=mergeGeometries(geos,false);if(geo){const m=new T.Mesh(geo,material);m.castShadow=true;m.receiveShadow=true;const old=new Set();meshes.forEach(o=>{if(!o.geometry.userData.shared)old.add(o.geometry);o.removeFromParent();});old.forEach(g=>g.dispose());group.add(m);}geos.forEach(g=>g.dispose());}return group;}
 
 // Weapon-only sweeps retain a flattened, tapered section instead of a pipe.
 // Width is in the curve plane; depth is the forged edge or bow lamination.
@@ -107,7 +136,7 @@ function equipmentWeapon(item,rank){
  const rivet=(x,y,z)=>{const o=sphere(g,.006,[x,y,z],trim,8);o.scale.z=.6;};
  const plate=(points,z,m)=>{const s=new T.Shape();points.forEach(([x,y],i)=>i?s.lineTo(x,y):s.moveTo(x,y));s.closePath();return mesh(new T.ExtrudeGeometry(s,{depth:.01,bevelEnabled:true,bevelSize:.002,bevelThickness:.002,bevelSegments:1}),m,g,0,0,z);};
  if(type==='sword'){
-  const width=variant===1?.043:variant===2?.037:.034,tip=variant===2?1.27:1.15;
+  const width=style.tier===0?.034:variant===1?.059:variant===2?.050:.044,tip=variant===2?1.27:1.15;
   groundBlade(g,[[.165,width,.012],[.25,width*.97,.014],[.77,width*.85,.011],[tip-.20,width*.65,.008],[tip,.0006,.0003]],metal,edge);
   // A fine inset fuller leaves the bevels visible. It ends before the point.
   for(const z of [-1,1])weaponCord(g,[[0,.26,z*.0144],[0,.60,z*.0125],[0,tip-.22,z*.0094]],.0018,dark,'Recessed blade fuller');
@@ -177,8 +206,10 @@ function equipmentWeapon(item,rank){
    if(style.tier>=2){const p=points[1];const fastening=cyl(g,.011,.011,.006,[p[0],p[1],.019],trim,12);fastening.rotation.x=Math.PI/2;rivet(p[0],p[1],.023);}
    if(variant===1)for(let j=0;j<2;j++){const yy=side*(.26+j*.15),xx=.262-j*.025;plate([[xx-.012,yy],[xx-.041,yy+side*.035],[xx-.050,yy+side*.080],[xx-.01,yy+side*.053]],-.005,trim);}
   }
-  const tipX=variant===1?-.04:.08;line([tipX,-.85,0],[tipX,.85,0],.0012,mat(0xc9c2ac));
-  for(let k=0;k<8;k++)line([tipX-.0015,-.032+k*.008,0],[tipX+.0015,-.032+k*.008,0],.001,leather);
+  const tipX=variant===1?-.04:.08,stringMat=mat(0xc9c2ac),stringSegments=[];
+  for(const sign of [-1,1]){const segment=beam(g,[tipX,0,0],[tipX,sign*.85,0],.0015,stringMat,6);segment.geometry.dispose();segment.geometry=new T.CylinderGeometry(.0015,.0015,1,6);segment.userData.keep=true;stringSegments.push(segment);}
+  const nocked=arrowMesh();nocked.children[0].scale.set(.5,1,.5);nocked.children[1].scale.set(.45,1,.45);nocked.traverse(o=>o.userData.keep=true);nocked.visible=false;g.add(nocked);
+  g.userData.bowString={tipX:tipX-.23,segments:stringSegments,nocked};
   cyl(g,.028,.027,.208,[.23,0,0],leather,16);leatherLacing(g,.23,-.103,.208,.028,leather,12);
   for(const y of [-.112,.112])cyl(g,.031,.031,.012,[.23,y,0],style.tier>=2?trim:dark,16);
   // An arrow shelf is fitted just above the grip, never across the bowstring.
@@ -192,7 +223,7 @@ function equipmentWeapon(item,rank){
   if(variant===2){mesh(new T.TorusGeometry(.215,.005,5,32,Math.PI*1.6),metal,g,0,1.5,0).rotation.z=.6;gem(0,1.77,0,.023);}
  }
  if(!['sword','hammer','bow'].includes(type))for(let j=0;j<=(item.plus||0);j++)cyl(g,.043,.043,.008,[0,-.10+j*.027,0],trim,10);
- g.userData={type,itemId:item.id,pattern:item.weaponPattern||DEFAULT_PATTERNS[type],power:d.power||null,forge:item.plus,craftedWeapon:['sword','hammer','bow'].includes(type),weaponVariant:variant};decorateWeapon(g,item);for(const child of g.children){if(type==='bow')child.position.x-=.23;else if(type==='hammer')child.position.y+=.24;else if(type==='staff')child.position.y+=.10;else if(type==='spear')child.position.y+=.05;}return g;
+ g.userData={...g.userData,type,itemId:item.id,pattern:item.weaponPattern||DEFAULT_PATTERNS[type],power:d.power||null,forge:item.plus,craftedWeapon:['sword','hammer','bow'].includes(type),weaponVariant:variant};decorateWeapon(g,item);for(const child of g.children){if(type==='bow')child.position.x-=.23;else if(type==='hammer')child.position.y+=.24;else if(type==='staff')child.position.y+=.10;else if(type==='spear')child.position.y+=.05;}return g;
 }
 
 export function equipmentShield(item){const s=equipmentStyle(item),colors=[0x695b46,0x5b6458,0x315e89,0x563c75,0x233950,0x283854,0x73889b],g=shield(s.rank,colors[s.tier]);g.scale.x=.84;g.scale.y=.94;g.userData={type:'shield',itemId:item.id,rarity:s.tier};decorateShield(g,item);return g;}

@@ -17,7 +17,7 @@ export function itemCommandBonuses(i){const b={start:0,income:0,kill:0,elite:0,c
  if(i.affix==='logistic'&&r>=4)b.income+=(.12+(r-4)*.08)*f;
  if(i.affix==='bounty'&&r>=3)b.kill+=(1+(r-3)*.5)*f;
  if(i.affix==='conquest'&&r>=5)b.elite+=Math.round((8+(r-5)*6)*f);
- if(i.affix==='reserves'&&r>=4)b.capacity+=Math.round((35+(r-4)*20)*f);
+ if(i.affix==='reserves'&&r>=4)b.start+=Math.round((35+(r-4)*20)*f);
  if(i.type==='armor'&&i.armorKind==='marshal'&&r>=3){b.start+=Math.round((15+(r-3)*5)*f);if(r>=4)b.income+=(.10+(r-4)*.05)*f;}
  if(i.weaponPattern==='dawnfang'&&r>=3)b.start+=Math.round((15+(r-3)*5)*f);
  if(i.weaponPattern==='oathbell'&&r>=4)b.income+=(.10+(r-4)*.05)*f;

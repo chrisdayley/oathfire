@@ -43,7 +43,8 @@ export function attachHeroCape(c){
   const y=.085-height*t-.024*across*across*Math.exp(-t*7)+Math.pow(t,6)*(.10*(across+1)*.5)+Math.pow(t,9)*(.047*Math.sin(u*7+.3)+.035*across+.015*Math.cos(u*21));
   const foldPhase=u*Math.PI*8+Math.sin(t*3.1+u*4)*1.7;
   const folds=Math.cos(foldPhase)*(.008+.024*t)+Math.sin(u*Math.PI*3-t*4)*.024*t+.018*Math.sin(t*14+Math.abs(across)*9)*Math.exp(-t*4);
-  const z=-.240+.035*Math.sin(t*Math.PI*1.65)-.030*t+folds+.020*across*across*Math.exp(-t*5);
+  const drop=Math.min(1,t/.30),drape=drop*drop*(3-2*drop);
+  const z=-.157-.075*drape+.020*Math.sin(t*Math.PI*1.65)-.030*t+folds*(.10+.90*t)+.008*across*across*Math.exp(-t*5);
   p.push(x,y,z);uv.push(u,1-t);const shade=.92+.07*Math.sin(u*23+t*5);colors.push(shade,shade,shade);
   if(j<rows&&i<columns){const k=j*(columns+1)+i;idx.push(k,k+1,k+columns+1,k+1,k+columns+2,k+columns+1);}
  }
@@ -55,8 +56,8 @@ export function attachHeroCape(c){
  // to the mantle. It follows the same chest bone, not a floating back panel.
  const yp=[],yu=[],yi=[],yrows=9;
  for(let j=0;j<=yrows;j++)for(let i=0;i<=columns;i++){
-  const t=j/yrows,u=i/columns,a=u*2-1,k=i*3,neckX=a*.145,neckY=.21-.045*Math.abs(a),neckZ=-.126-.012*Math.sqrt(1-a*a);
-  const fold=Math.sin(u*26-t*2)*.009*Math.sin(t*Math.PI);
+  const t=j/yrows,u=i/columns,a=u*2-1,k=i*3,neckX=a*.118,neckY=.178-.030*Math.abs(a),neckZ=-.122-.013*Math.sqrt(1-a*a);
+  const fold=(Math.sin(u*17-t*2)*.0025+Math.sin(u*9+t*3)*.0015)*Math.sin(t*Math.PI);
   yp.push(neckX+(p[k]-neckX)*t,neckY+(p[k+1]-neckY)*(1-Math.pow(1-t,1.6))+fold,neckZ+(p[k+2]-neckZ)*t-.008*Math.sin(t*Math.PI));yu.push(u,t);
   if(j<yrows&&i<columns){const q=j*(columns+1)+i;yi.push(q,q+1,q+columns+1,q+1,q+columns+2,q+columns+1);}
  }
@@ -65,10 +66,10 @@ export function attachHeroCape(c){
  // Two sewn shoulder straps carry the cloak over the cuirass into visible
  // front clasps. Their full curved path avoids a floating horizontal flap.
  for(const side of [-1,1]){
-  const curve=new T.CatmullRomCurve3([new T.Vector3(side*.174,.153,.132),new T.Vector3(side*.205,.188,.054),new T.Vector3(side*.214,.186,-.055),new T.Vector3(side*.202,.16,-.191),new T.Vector3(side*.20,.092,-.247)]),sp=[],su=[],si=[];
-  for(let j=0;j<=20;j++){const t=j/20,v=curve.getPoint(t);for(let k=0;k<2;k++){sp.push(v.x+(k-.5)*.024,v.y,v.z);su.push(k,t);}if(j<20){const n=j*2;si.push(n,n+1,n+2,n+1,n+3,n+2);}}
+  const curve=new T.CatmullRomCurve3([new T.Vector3(side*.125,.148,.135),new T.Vector3(side*.146,.174,.055),new T.Vector3(side*.139,.174,-.047),new T.Vector3(side*.132,.145,-.123),new T.Vector3(side*.150,.088,-.157)]),sp=[],su=[],si=[];
+  for(let j=0;j<=20;j++){const t=j/20,v=curve.getPoint(t);for(let k=0;k<2;k++){sp.push(v.x+(k-.5)*.019,v.y,v.z);su.push(k,t);}if(j<20){const n=j*2;si.push(n,n+1,n+2,n+1,n+3,n+2);}}
   const sg=new T.BufferGeometry();sg.setAttribute('position',new T.Float32BufferAttribute(sp,3));sg.setAttribute('uv',new T.Float32BufferAttribute(su,2));sg.setIndex(si);sg.computeVertexNormals();const strap=new T.Mesh(sg,ym);strap.name='Continuous sewn mantle shoulder strap';strap.castShadow=strap.receiveShadow=true;c.sockets.chest.add(strap);c.gear.push(strap);
-  const claspMat=new T.MeshStandardMaterial({color:c.atelier.trimHex,metalness:.75,roughness:.5});c.materials.push(claspMat);const clasp=new T.Mesh(new T.CylinderGeometry(.013,.013,.006,16),claspMat);clasp.rotation.x=Math.PI/2;clasp.position.set(side*.174,.15,.14);clasp.name='Mantle front fastening';clasp.castShadow=true;c.sockets.chest.add(clasp);c.gear.push(clasp);
+  const claspMat=new T.MeshStandardMaterial({color:c.atelier.trimHex,metalness:.75,roughness:.5});c.materials.push(claspMat);const clasp=new T.Mesh(new T.CylinderGeometry(.013,.013,.006,16),claspMat);clasp.rotation.x=Math.PI/2;clasp.position.set(side*.125,.148,.139);clasp.name='Mantle front fastening';clasp.castShadow=true;c.sockets.chest.add(clasp);c.gear.push(clasp);
  }
  return true;
 }

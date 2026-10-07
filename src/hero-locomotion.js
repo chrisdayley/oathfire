@@ -68,14 +68,60 @@ export function animateHeroLocomotion(c,dt,{speed,grounded,guarding,charging,dea
 
 // Solve the support hand against the actual carried handle after its orientation
 // has blended. A fixed wrist pose floats away as the chest and shoulders move.
-export function settleWeaponGrip(c){
- if(!c.motionSupport||c.weaponType!=='hammer'||!c.held||c.heldShield)return;
+function contactHand(c,side,grip,bendPoint,weight=1,orientation=null){
+ const target=new T.Vector3(),offset=new T.Vector3();
+ for(let i=0;i<8;i++){
+  c.root.updateMatrixWorld(true);if(orientation){const wrist=c.sockets['wrist'+side],pq=new T.Quaternion();wrist.parent.getWorldQuaternion(pq);wrist.quaternion.copy(pq.invert().multiply(orientation));c.sockets['hand'+side].quaternion.identity();wrist.updateMatrixWorld(true);}
+  c.sockets['handslot'+side].getWorldPosition(offset);c.sockets['wrist'+side].getWorldPosition(target);
+  target.add(grip).sub(offset);placeArm(c,side,target,bendPoint,weight);
+ }
+}
+export function settleWeaponGrip(c,{guarding=false,charging=false,dead=false}={}){
+ if(!heroPhysique(c)||!c.held)return;
+ const bow=c.held.userData.bowString;
+ if(bow)bow.nocked.visible=false;
+ if(dead||c.casting)return;
  c.root.updateMatrixWorld(true);
- const grip=c.supportGrip||(c.supportGrip=new T.Vector3()),target=c.supportTarget||(c.supportTarget=new T.Vector3()),offset=c.supportOffset||(c.supportOffset=new T.Vector3());
- c.held.localToWorld(grip.set(0,.33,0));
- const bendPoint=c.motionPole;bendPoint.set(.46,-.28,-.21).applyMatrix4(c.sockets.chest.matrixWorld);
- for(let i=0;i<4;i++){
-  c.sockets.handslotl.getWorldPosition(offset);c.sockets.wristl.getWorldPosition(target);
-  target.add(grip).sub(offset);placeArm(c,'l',target,bendPoint,c.poseWeight);
+ if(c.weaponType==='hammer'&&!c.heldShield){
+  const grip=c.supportGrip||(c.supportGrip=new T.Vector3());c.held.localToWorld(grip.set(0,.33,0));
+  const shoulder=new T.Vector3();c.sockets.upperarml.getWorldPosition(shoulder);
+  const delta=grip.clone().sub(shoulder),reach=.51*c.factor;
+  if(delta.length()>reach){
+   const correction=delta.clone().setLength(reach).sub(delta),right=new T.Vector3(),weaponQ=new T.Quaternion();c.sockets.handslotr.getWorldPosition(right);right.add(correction);c.held.getWorldQuaternion(weaponQ);
+   contactHand(c,'r',right,new T.Vector3(-.46,-.12,-.12).applyMatrix4(c.sockets.chest.matrixWorld));
+   c.root.updateMatrixWorld(true);const parent=new T.Quaternion();c.sockets.handslotr.getWorldQuaternion(parent);c.held.quaternion.copy(parent.invert().multiply(weaponQ));c.root.updateMatrixWorld(true);c.held.localToWorld(grip.set(0,.33,0));
+  }
+  const bendPoint=new T.Vector3(.46,-.18,-.21).applyMatrix4(c.sockets.chest.matrixWorld);
+  contactHand(c,'l',grip,bendPoint);
+ }
+ if(c.weaponType==='bow'&&bow){
+  const shooting=c.actionLock>0&&c.actionName==='2H_Ranged_Shoot',aiming=charging||guarding||shooting;
+  let midpoint=new T.Vector3(bow.tipX,0,0);
+  if(aiming){
+   const phase=shooting?Math.min(1,c.current.time/c.current.getClip().duration):.3;
+   const draw=shooting?(phase<.42?1:Math.max(0,1-(phase-.42)/.13)):1;
+   const gripBasis=new T.Matrix4().makeBasis(new T.Vector3(0,1,0),new T.Vector3(0,0,1),new T.Vector3(1,0,0)),gripQ=new T.Quaternion().setFromRotationMatrix(gripBasis),rq=new T.Quaternion();c.root.getWorldQuaternion(rq);gripQ.premultiply(rq);
+   for(const side of ['l','r']){const wrist=c.sockets['wrist'+side],parent=new T.Quaternion();wrist.parent.getWorldQuaternion(parent);wrist.quaternion.copy(parent.invert().multiply(gripQ));c.sockets['hand'+side].quaternion.identity();wrist.updateMatrixWorld(true);}
+   const chest=c.sockets.chest,origin=new T.Vector3();chest.getWorldPosition(origin);
+   const rootPoint=(x,y,z)=>new T.Vector3(x,y,z).multiplyScalar(c.factor).applyQuaternion(rq).add(origin);
+   const front=rootPoint(-.14,.22,.64),pole=rootPoint(-.48,-.04,.20);
+   contactHand(c,'r',front,pole,1,gripQ);
+   c.root.updateMatrixWorld(true);
+   const rootQ=new T.Quaternion(),handQ=new T.Quaternion();c.root.getWorldQuaternion(rootQ);c.sockets.handslotr.getWorldQuaternion(handQ);
+   c.held.quaternion.copy(handQ.invert().multiply(rootQ).multiply(new T.Quaternion().setFromAxisAngle(Y,-Math.PI/2)));
+   c.root.updateMatrixWorld(true);
+   const target=rootPoint(-.14,.22,.46-.22*draw),leftPole=rootPoint(.46,.25,-.12);
+   contactHand(c,'l',target,leftPole,1,gripQ);c.root.updateMatrixWorld(true);
+   c.sockets.handslotl.getWorldPosition(midpoint);c.held.worldToLocal(midpoint);
+   if(shooting&&phase>.55)midpoint.lerp(new T.Vector3(bow.tipX,0,0),Math.min(1,(phase-.55)/.10));
+   bow.nocked.visible=!shooting||phase<.46;
+   const aim=new T.Vector3(0,0,0).sub(midpoint).normalize();
+   const arrowScale=.65/c.held.scale.x;bow.nocked.scale.setScalar(arrowScale);bow.nocked.position.copy(midpoint).addScaledVector(aim,.40*arrowScale);bow.nocked.quaternion.setFromUnitVectors(Z,aim);
+   c.visual.userData.bowDrawContact=draw;
+  }
+  for(let i=0;i<2;i++){
+   const tip=new T.Vector3(bow.tipX,i===0?-.85:.85,0),segment=bow.segments[i],direction=tip.clone().sub(midpoint);
+   segment.position.copy(midpoint).add(tip).multiplyScalar(.5);segment.quaternion.setFromUnitVectors(Y,direction.clone().normalize());segment.scale.y=direction.length();
+  }
  }
 }

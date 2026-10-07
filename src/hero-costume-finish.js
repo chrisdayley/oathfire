@@ -37,31 +37,16 @@ export function finishHeroCostume(c,part,m,profile){
   for(const s of [-1,1])for(let j=0;j<3;j++){
    const y=.03-j*.022;cord(chest,[[s*.115,y,.178],[s*.136,y-.003,.173]],.0011,m.stitch,'Apron strap saddle stitch');
   }
- }else if(warden&&r>=2){
-  // Tassets are articulated plates hung from the belt, not a robe over bare
-  // trousers. Thin overlaps and side hinges leave the leg silhouette visible.
-  for(const s of [-1,1])for(let j=0;j<3;j++){
-   const plate=leaf(hips,[[-.046,.018],[.047,.019],[.052,-.040],[.030,-.065],[-.044,-.056]],j%2?m.steel:m.ivory,{depth:.004,bow:.008,name:'Articulated side tasset lame'});plate.position.set(s*(.166+j*.004),-.068-j*.058,.122);plate.rotation.y=s*.5;
-   for(const x of [-.027,.027])bead(hips,[s*(.166+j*.004)+x,-.065-j*.058,.151-Math.abs(x)*.35],.0027,m.gold,'Tasset pivot rivet');
-  }
  }
  for(const side of ['l','r']){
   const fore=part('lowerarm'+side),shin=part('lowerleg'+side),foot=part('foot'+side),arm=part('upperarm'+side);
   // Sewn cuff, plate edges and buckles remain restrained on low tiers.
   for(const y of [.16,.225])for(const a of [-1.1,-.55,0,.55,1.1]){const rad=y<.2?.052:.043;cord(fore,[[Math.sin(a)*rad,y,Math.cos(a)*rad+.001],[Math.sin(a+.12)*rad,y,Math.cos(a+.12)*rad+.001]],.001,m.stitch,'Bracer saddle seam');}
-  if(warden||profile.sleeves){
-   const wing=leaf(fore,[[-.029,-.008],[.029,-.006],[.040,.024],[.018,.052],[-.022,.042]],m.steel,{depth:.004,bow:.009,name:'Elbow articulated side wing'});wing.position.set(side==='l'?.049:-.049,.004,.008);wing.rotation.y=side==='l'?Math.PI/2:-Math.PI/2;
-   for(const s of [-1,1])cord(shin,[[s*.029,.046,-.076],[s*.036,.12,-.068],[s*.021,.31,-.049]],.0016,r>=3?m.gold:m.ivory,'Greave chased margin');
-  }
   // Thin heel and stitched welt give boots a firm sole rather than a rounded
   // slipper silhouette. These follow the authored foot's +Y toe direction.
   const sole=form(foot,[[.02,.051,.008,.041],[.10,.064,.009,.049],[.177,.055,.008,.043],[.225,.027,.007,.024]],m.dark,{sides:24,name:'Boot layered leather outsole'});
   for(const s of [-1,1])cord(foot,[[s*.046,.034,.045],[s*.061,.11,.054],[s*.051,.174,.047],[s*.025,.220,.029]],.002,m.stitch,'Boot stitched welt');
-  if(r>=3){
-   // Small warm rivets and a fluted center distinguish forged plate from
-   // generic smooth shoulder balls at the normal gameplay distance.
-   for(const s of [-1,1])for(let j=0;j<3;j++)bead(arm,[s*(.072-j*.006),.064+j*.039,.068-j*.004],.0028,m.gold,'Pauldron border fastening');
-  }
+
  }
- c.visual.userData.costumeConstruction=225;
+ c.visual.userData.costumeConstruction=226;
 }

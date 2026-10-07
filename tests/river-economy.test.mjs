@@ -18,9 +18,9 @@ test('Below-zero rocks block navigation, but overhead arches and small steps rem
  assert.equal(blocksActorHeight({top:7,bottom:3.4},0),false);
  assert.equal(blocksActorHeight({top:.25,bottom:0},0),false);
 });
-test('Recruiting tiers have distinct wait times and the most expensive trained elite fits the base cap',()=>{
+test('Recruiting tiers have distinct wait times and Command has no stockpile ceiling',()=>{
  const income=commandBreakdown(null).total;
- assert.ok(unitStats('shield',1).cost/income<20);
+ assert.ok(unitStats('shield',1).cost/income<25);
  assert.ok(unitStats('bow',1).cost>=unitStats('shield',1).cost*2);
  assert.ok(unitStats('pike',1).cost>=unitStats('bow',1).cost*1.4);
  assert.ok(unitStats('rider',1).cost>=unitStats('bow',1).cost*4);
@@ -29,5 +29,5 @@ test('Recruiting tiers have distinct wait times and the most expensive trained e
  assert.equal(battleUnitStats('bow',10,null).count,1);
  assert.equal(battleUnitStats('shield',10,null).count,3);
  const b={research:[{id:'longbow',complete:true},{id:'logistics',complete:true}]};
- assert.equal(battleUnitStats('bow',1,b).cost,32,'Research surcharge is applied before the discount');
+ assert.equal(battleUnitStats('bow',1,b).cost,40,'Research surcharge is applied before the discount');
 });

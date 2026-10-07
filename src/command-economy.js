@@ -26,6 +26,7 @@ export function commandBreakdown(b){
  return {base,castle,standards,camp,gear,plan,multiplier,total:(base+castle+standards+camp+gear+plan)*multiplier};
 }
 
-export const commandCap=b=>220+(b?.commandGear?.capacity||0);
+// No gameplay ceiling: this value is never serialized into a save.
+export const commandCap=()=>Infinity;
 export const startingCommand=(s,base=55)=>base+planBonuses(s.battlePerks?.filter(id=>perkUnlocked(s,id))).start+commandGear(s).start;
 export const heroKillCommand=(b,type)=>2+planBonuses(b?.perks).kill+(b?.commandGear?.kill||0)+(['knight','brute','bulwark','reaver','mortar','warpriest','boss'].includes(type)?b?.commandGear?.elite||0:0);

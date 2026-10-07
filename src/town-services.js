@@ -1,7 +1,7 @@
 import {SERVICES} from './data.js';
 
 export const SERVICE_REACH=4.5;
-export const serviceFor=tab=>SERVICES.find(s=>s.tab===tab&&s.tab!=='hero');
+export const serviceFor=tab=>SERVICES.find(s=>s.tab===(tab==='appearance'?'defenses':tab)&&s.tab!=='hero');
 export function canUseService(g,tab){
  const service=serviceFor(tab);
  return !service||!!(!g.battle&&g.hero&&Math.hypot(g.hero.pos.x-service.x,g.hero.pos.z-service.z,(g.hero.pos.y||0)-(service.y||0))<SERVICE_REACH);

@@ -1,6 +1,7 @@
 import {fitTroopPart} from './troop-identity.js';
 import {attachHeroCape} from './hero-cape.js';
 import {heroPhysique,fitHeroPart,attachHeroAnatomy} from './hero-physique.js';
+import {prepareHeroJointFoundation,attachHeroJointFoundation} from './hero-joint-foundation.js';
 import {armorStyle} from './equipment-style.js';
 import {decorateArmor} from './equipment-visuals.js';
 import {dressHost} from './host-atelier.js';
@@ -247,15 +248,23 @@ export function buildAppearance(c){
  if(undead)dressHost(c,part,role,{black,glow,bone:boneMat});else decorateArmor(c,part);
  // Bake rigid armor and anatomical pieces into a few genuinely skinned draw calls.
  c.visual.updateMatrixWorld(true);const skeleton=new T.Skeleton(Object.values(c.sockets).filter(b=>b.isBone));skeleton.calculateInverses();
+ const foundation=prepareHeroJointFoundation(c,pieces,heroPhysique(c));
  const bins=new Map(),inverse=c.visual.matrixWorld.clone().invert();
- for(const piece of pieces){const index=skeleton.bones.indexOf(piece.bone);piece.group.traverse(o=>{if(!o.isMesh)return;const geo=(o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone()).applyMatrix4(inverse.clone().multiply(o.matrixWorld));const count=geo.attributes.position.count,indices=new Uint16Array(count*4),weights=new Float32Array(count*4);for(let i=0;i<count;i++){indices[i*4]=index;weights[i*4]=1;
- if(c.atelier&&/Split leather coat|Ranked split mantle|Sculpted forge apron|Dawn stole|Marshal sash|Surcoat embroidered|Apron stitched|Hand-set garment rivet/.test(o.name)){
+ for(const piece of pieces){const index=skeleton.bones.indexOf(piece.bone);piece.group.traverse(o=>{if(!o.isMesh)return;if(foundation?.replaces(o.name)){if(!o.geometry.userData.shared)o.geometry.dispose();return;}const geo=(o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone()).applyMatrix4(inverse.clone().multiply(o.matrixWorld));const count=geo.attributes.position.count,indices=new Uint16Array(count*4),weights=new Float32Array(count*4);for(let i=0;i<count;i++){indices[i*4]=index;weights[i*4]=1;
+ if(c.atelier&&o.userData.heroLegFollow){
+  // Each rigid tasset lame follows the thigh as a hinged packet. Constant
+  // weights preserve the plate shape while the small hip contribution keeps
+  // the suspension beneath the fauld during a stride.
+  const follow=o.userData.heroLegFollow,leg=skeleton.bones.indexOf(bone(c,follow.bone));
+  if(leg>=0){const weight=Math.max(0,Math.min(1,follow.weight));indices[i*4+1]=leg;weights[i*4]=1-weight;weights[i*4+1]=weight;}
+ }else if(c.atelier&&/Split leather coat|Ranked split mantle|Sculpted forge apron|Dawn stole|Marshal sash|Surcoat embroidered|Apron stitched|Hand-set garment rivet/.test(o.name)){
   const local=o.geometry.attributes.position,vertex=o.geometry.index?o.geometry.index.getX(i):i,yy=local.getY(vertex)+o.position.y,xx=local.getX(vertex)+o.position.x,drop=Math.max(0,-yy-(piece.bone.name==='chest'?.32:.08));
   const leg=skeleton.bones.indexOf(bone(c,xx>=0?'upperleg.l':'upperleg.r'));if(leg>=0){const follow=Math.min(.68,drop*1.6);indices[i*4+1]=leg;weights[i*4]=1-follow;weights[i*4+1]=follow;}
  }
 }geo.setAttribute('skinIndex',new T.Uint16BufferAttribute(indices,4));geo.setAttribute('skinWeight',new T.Float32BufferAttribute(weights,4));if(!bins.has(o.material))bins.set(o.material,[]);bins.get(o.material).push(geo);if(!o.geometry.userData.shared)o.geometry.dispose();});piece.group.removeFromParent();}
  c.body=[];for(const [mat,geos]of bins){const geometry=mergeGeometries(geos,false);if(!geometry)throw Error('Character mesh merge failed');geos.forEach(g=>g.dispose());const body=new T.SkinnedMesh(geometry,mat);body.name='Oathfire_'+role+'_'+mat.uuid.slice(0,6);body.castShadow=body.receiveShadow=true;body.frustumCulled=false;c.visual.add(body);body.bind(skeleton);c.body.push(body);}
  attachHeroAnatomy(c,skeleton);
+ attachHeroJointFoundation(c,skeleton,foundation);
  // Cloth silhouette is a tailored mantle, with a ragged hem for the Hollow Host.
  if(!attachHeroCape(c)&&!bare&&!brute&&(undead||living.profile.cloak)){const height=c.armor?.rarity===0?.72:kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.28:living?.profile.ranger?.91:1.02,width=kind==='marshal'?.70:royal?.68:rank>=8?.72:.61,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*29)*(.006+drop*.018)+Math.sin(drop*8+x*17)*.009*drop-.065*Math.min(1,drop*5)-drop*.045));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cm=(living?.cloth||cloth).clone();if(!undead&&(rank>=6||living.profile.hero&&(!c.armor||c.armor.rarity>=2))){cm.map=textile('heraldry','#'+new T.Color(c.atelier.clothHex).getHexString(),'#'+new T.Color(c.atelier.trimHex).getHexString());cm.color.setHex(0xffffff);}if(c.armor?.rarity>=5&&!undead){cm.emissive.setHex(armorStyle(c.armor).glow);cm.emissiveMap=textile('heraldry','#000000','#ffffff');cm.emissiveIntensity=.4;cm.userData.equipmentPulse=.4;}c.materials.push(cm);const cape=mesh(geo,cm,bone(c,'chest'),0,-height*.5+.19,heroPhysique(c)?-.21:-.205);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
  c.held=compactRigid(weapon(c.weaponType,rank,c.color,c.temper,c.design,c.weaponItem));if(heroPhysique(c)&&['sword','hammer'].includes(c.weaponType))c.held.scale.multiplyScalar(.82);c.held.rotation.y=Math.PI;c.heldRest=c.held.quaternion.clone();bone(c,'handslot.r').add(c.held);c.gear.push(c.held);

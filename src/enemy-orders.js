@@ -1,12 +1,16 @@
+export const WALL_BREAKERS=new Set(['brute','mortar']);
+export const committedToWall=e=>WALL_BREAKERS.has(e.type)||e.encounterRole==='ram';
 // Assault infantry press the castle; only dedicated hunters acquire soldiers
 // merely for being nearby. A hit gives ordinary infantry a bounded reprisal.
 export const TROOP_HUNTERS = new Set(['longbow', 'reaver', 'wraith']);
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 export function rememberAttacker(enemy, source, now) {
+ if (committedToWall(enemy)) return;
  if (enemy.team !== 'enemy' || !source?.id || source.dead || !['hero','ally'].includes(source.team)) return;
  enemy.reprisal = {id: source.id, until: now + 9};
 }
 export function enemyTarget(enemy, candidates, {now=0, range=22, siege=false, reachable=()=>true}={}) {
+ if(!siege&&committedToWall(enemy)){delete enemy.reprisal;return null;}
  const valid = target => target && !target.dead && reachable(target);
  const reprisal = enemy.reprisal;
  if (reprisal) {

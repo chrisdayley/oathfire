@@ -57,13 +57,44 @@ export function attachHeroAnatomy(c,skeleton){
    a.applyMatrix4(upper.matrixWorld).multiplyScalar(1-w);b.applyMatrix4(lower.matrixWorld).multiplyScalar(w);a.add(b).applyMatrix4(inverse);
    positions.push(a.x,a.y,a.z);indices.push(ui,li,0,0);weights.push(1-w,w,0,0);
   }
-  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));geo.setAttribute('uv',new T.Float32BufferAttribute(src.uv,2));geo.setAttribute('skinIndex',new T.Uint16BufferAttribute(indices,4));geo.setAttribute('skinWeight',new T.Float32BufferAttribute(weights,4));geo.setIndex(src.indices);geo.computeVertexNormals();
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));geo.setAttribute('uv',new T.Float32BufferAttribute(src.uv,2));geo.setAttribute('skinIndex',new T.Uint16BufferAttribute(indices,4));geo.setAttribute('skinWeight',new T.Float32BufferAttribute(weights,4));geo.setIndex(src.indices);smoothSkinNormals(geo);
   const mesh=new T.SkinnedMesh(geo,skin);mesh.name='Anatomical muscular arm '+side;mesh.castShadow=mesh.receiveShadow=true;mesh.frustumCulled=false;c.visual.add(mesh);mesh.bind(skeleton);c.body.push(mesh);
  }
 }
 
 function sculptMuscle(p,forearm,scale){
  const g=(y,c,w)=>Math.exp(-(((y-c)/w)**2)),y=p.y;
- if(forearm){const belly=g(y,.065,.065),wrist=g(y,.235,.034);p.x*=scale*(1+.14*belly-.09*wrist);p.z*=scale*(1+.15*belly-.08*wrist);p.z-=.006*g(y,.15,.095)*g(p.x,.018,.013);}
- else{const deltoid=g(y,.045,.045),biceps=g(y,.158,.065),insertion=g(y,.257,.027);const division=g(p.z,0,.025)*g(y,.15,.08),join=g(y,.103,.022);p.x*=scale*(1+.10*deltoid+.09*biceps-.17*division-.07*join-.10*insertion);p.z*=scale*(1+.1*deltoid+.16*biceps-.05*join-.12*insertion);p.z+=(p.z<0?-.012:.007)*biceps*Math.abs(p.z)/.085;}
+ if(forearm){const belly=g(y,.085,.079),wrist=g(y,.235,.034),elbow=g(y,.012,.054);p.x*=scale*(1+.065*belly-.055*elbow-.09*wrist);p.z*=scale*(1+.075*belly-.045*elbow-.08*wrist);p.z-=.004*g(y,.15,.095)*g(p.x,.018,.016);
+  // Flesh narrows into the glove cuff instead of protruding through its rim.
+  const cuff=smoothRange(.207,.246,y),q=Math.sqrt((p.x/.0325)**2+(p.z/.0345)**2);
+  if(q>1){const fit=1-cuff*(1-1/q);p.x*=fit;p.z*=fit;}
+ }
+ else{const deltoid=g(y,.045,.045),biceps=g(y,.158,.071),insertion=g(y,.257,.044);const division=g(p.z,0,.029)*g(y,.15,.09),join=g(y,.103,.030);p.x*=scale*(1+.10*deltoid+.09*biceps-.10*division-.035*join-.085*insertion);p.z*=scale*(1+.1*deltoid+.13*biceps-.035*join-.085*insertion);p.z+=(p.z<0?-.009:.005)*biceps*Math.abs(p.z)/.085;
+  // Deltoid volume meets the fitted shoulder shell instead of poking through
+  // its top as a flesh triangle. The biceps belly below the shell is retained.
+  const cover=1-smoothRange(.075,.135,y),q=Math.sqrt((p.x/.106)**2+(p.z/.089)**2);
+  if(q>1){const fit=1-cover*(1-1/q);p.x*=fit;p.z*=fit;}
+ }
+}
+
+function smoothRange(a,b,x){const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);}
+
+// The authored UV islands duplicate vertices around the elbow and along the
+// arm. Average area-weighted face normals across those coincident positions,
+// preserving the separate UVs and original skin weights. Treating each island
+// separately made one continuous arm look sliced into flat sections.
+function smoothSkinNormals(geometry){
+ const p=geometry.attributes.position,index=geometry.index,buckets=new Map(),keys=[];
+ for(let i=0;i<p.count;i++){
+  const key=[p.getX(i),p.getY(i),p.getZ(i)].map(v=>Math.round(v*1e5)).join(',');keys.push(key);
+  if(!buckets.has(key))buckets.set(key,new T.Vector3());
+ }
+ const a=new T.Vector3(),b=new T.Vector3(),c=new T.Vector3(),face=new T.Vector3();
+ for(let i=0;i<index.count;i+=3){
+  const ia=index.getX(i),ib=index.getX(i+1),ic=index.getX(i+2);a.fromBufferAttribute(p,ia);b.fromBufferAttribute(p,ib);c.fromBufferAttribute(p,ic);
+  face.crossVectors(b.sub(a),c.sub(a));for(const id of [ia,ib,ic])buckets.get(keys[id]).add(face);
+ }
+ for(const normal of buckets.values())normal.normalize();
+ const normals=new Float32Array(p.count*3);for(let i=0;i<p.count;i++)buckets.get(keys[i]).toArray(normals,i*3);
+ geometry.setAttribute('normal',new T.BufferAttribute(normals,3));
 }

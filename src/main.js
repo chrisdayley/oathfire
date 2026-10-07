@@ -1,3 +1,4 @@
+import './castle-customization.css';
 import {registerGameUpdates} from './game-updates.js';
 import './mission-preparation.css';
 import './hero-selection.css';
@@ -17,6 +18,7 @@ if(import.meta.env.PROD)registerGameUpdates(game);
 import './ability-ui.css';
 
 import './safe-area.css';
+import './town-guide.css';
 
 import "./war-map.css";
 
@@ -25,3 +27,5 @@ import './frontline.css';
 import './stable.css';
 
 import './save-recovery.css';
+
+import './game-interface.css';

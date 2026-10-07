@@ -1,3 +1,4 @@
+import {tailoredHands} from './hero-hands.js';
 import {sculptHeroFace} from './hero-face-sculpt.js';
 import {tailoredHero} from './hero-tailored-body.js';
 import {tailoredSurface} from './hero-tailored-surfaces.js';
@@ -11,7 +12,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {ART,material} from './materials.js';
 import {armorDefinition,armorKind} from './armor.js';
 
-const MODELS=new Map();
+const MODELS=new Map(),fineMailMaps=new WeakMap();
 export async function loadAtelier(){
  await loadHeroAnatomy();const loader=new GLTFLoader();
  await Promise.all(['warden','ashwright','ranger','bow'].map(async id=>{
@@ -33,9 +34,9 @@ export function attachAtelier(c,part,profile,palette,textile){
  const coverage=heroArmorProfile(c),light=['trail','spellweave','dawn'].includes(kind)&&!coverage?.plate;
  const surface=hero?tailoredSurface:heroSurface;
  const mats={
-  steel:surface(light?'leather':'steel',hero&&signature?(smith?(coverage?.plate?0x685e4e:0x837668):c.design==='ranger'&&coverage?.plate?0x687579:0x9b9c94):steelHex,{roughness:Math.max(.48,style?.roughness??(light?.84:.57)),metalness:style?.tier===0?.35:light?.12:.82,envMapIntensity:.8,side:T.DoubleSide}),
-  ivory:surface('steel',(hero&&signature?(smith&&coverage?.plate?0x96846b:c.design==='ranger'&&coverage?.plate?0x88918a:0xb7b3a1):style?.metal)??(signature?(royal?0xd4c9ad:0xb8b7aa):armor?.steel??0xb8b7aa),{roughness:.60,metalness:.78,side:T.DoubleSide}),
-  gold:surface('steel',trimHex,{roughness:.58,metalness:.8,side:T.DoubleSide}),
+  steel:surface(light?'leather':'steel',hero&&signature?(smith?(coverage?.plate?0x685e4e:0x837668):c.design==='ranger'&&coverage?.plate?0x687579:0x788087):steelHex,{roughness:light?.84:Math.max(.36,Math.min(.55,style?.roughness??.43)),metalness:light?.12:.84,envMapIntensity:1.05,side:T.DoubleSide}),
+  ivory:surface('steel',(hero&&signature?(smith&&coverage?.plate?0x96846b:c.design==='ranger'&&coverage?.plate?0x88918a:0xa4aaa9):style?.metal)??(signature?(royal?0xd4c9ad:0xb8b7aa):armor?.steel??0xb8b7aa),{roughness:.40,metalness:.86,side:T.DoubleSide}),
+  gold:surface('steel',trimHex,{roughness:.36,metalness:.88,side:T.DoubleSide}),
   leather:surface('leather',smith?0x5b4c3e:0x55483b,{roughness:.83,side:T.DoubleSide}),
   stitch:surface('leather',0xab9475,{roughness:.96,side:T.DoubleSide}),
   dark:surface('cloth',0x27272b,{roughness:.93,side:T.DoubleSide}),
@@ -48,13 +49,14 @@ export function attachAtelier(c,part,profile,palette,textile){
   ember:new T.MeshStandardMaterial({color:0xffbc55,emissive:0xe46b21,emissiveIntensity:1.5,roughness:.4})
  };
  if(!hero&&rank>=7&&!smith&&signature&&ART.textures['royal-brocade']){mats.cloth.map=texture('royal-brocade');mats.cloth.color.setHex(style||!hero?clothHex:royal?0xd1a3ba:0xa6b1bc);}
+ if(hero){const source=mats.mail.map;if(!fineMailMaps.has(source)){const mailMap=source.clone();mailMap.repeat.set(2.8,2.8);mailMap.wrapS=mailMap.wrapT=T.RepeatWrapping;mailMap.userData.shared=true;mailMap.needsUpdate=true;fineMailMaps.set(source,mailMap);}mats.mail.map=fineMailMaps.get(source);}
  c.materials.push(...Object.values(mats));const groups=new Map();let pieces=0;c.anatomyMaterial=hero?mats.skin:null;
- for(const p of template){const u=p.props;if(hero&&!/^(Anatomical face|Eye|Iris|Pupil|Eyebrow|Glove|Gloved|Articulated finger|Quiver$|Visible arrow shaft|Arrow fletching)/.test(p.name))continue;if((hero||c.design==='bow')&&/^Articulated gorget/.test(p.name))continue;if(hero&&/^Forged BreastPlate/.test(p.name))continue;if(c.design==='bow'&&/^Tailored sleeve/.test(p.name))continue;if(hero&&/^(Sculpted boot|Boot instep)/.test(p.name))continue;if(hero&&/^(Forged shoulder cap|Overlapping shoulder lame|Rolled pauldron rim)/.test(p.name))continue;if(smith&&/^Forging tool pocket/.test(p.name))continue;if(smith&&!coverage?.sleeves&&/^(Tailored sleeve|Forearm sleeve|Elbow joint)/.test(p.name))continue;if(!hero&&coverage?.plate&&/^(Fitted coat|Waisted gambeson|Sculpted forge apron|Apron|Draped shoulder cowl|Overlapping brigandine breast|Asymmetric ranger cuirass|Braided grey beard|Anatomical face|Eye|Iris|Pupil|Eyebrow|Soft neck)/.test(p.name))continue;if(rank<(u.minRank||1)||rank>(u.maxRank||10)||(u.minForge&&forge<u.minForge)||(u.armorKind&&u.armorKind!==kind))continue;
+ for(const p of template){const u=p.props;if(hero&&/^(Glove|Gloved|Articulated finger)/.test(p.name))continue;if(hero&&!/^(Anatomical face|Eye|Iris|Pupil|Eyebrow|Glove|Gloved|Articulated finger|Quiver$|Visible arrow shaft|Arrow fletching)/.test(p.name))continue;if((hero||c.design==='bow')&&/^Articulated gorget/.test(p.name))continue;if(hero&&/^Forged BreastPlate/.test(p.name))continue;if(c.design==='bow'&&/^Tailored sleeve/.test(p.name))continue;if(hero&&/^(Sculpted boot|Boot instep)/.test(p.name))continue;if(hero&&/^(Forged shoulder cap|Overlapping shoulder lame|Rolled pauldron rim)/.test(p.name))continue;if(smith&&/^Forging tool pocket/.test(p.name))continue;if(smith&&!coverage?.sleeves&&/^(Tailored sleeve|Forearm sleeve|Elbow joint)/.test(p.name))continue;if(!hero&&coverage?.plate&&/^(Fitted coat|Waisted gambeson|Sculpted forge apron|Apron|Draped shoulder cowl|Overlapping brigandine breast|Asymmetric ranger cuirass|Braided grey beard|Anatomical face|Eye|Iris|Pupil|Eyebrow|Soft neck)/.test(p.name))continue;if(rank<(u.minRank||1)||rank>(u.maxRank||10)||(u.minForge&&forge<u.minForge)||(u.armorKind&&u.armorKind!==kind))continue;
   if(style?.tier===0&&/engraved|Sun cabochon|Sun ray|Embroidered|Rolled pauldron rim|Overlapping shoulder lame|Royal|Earned rank seal/i.test(p.name))continue;
   if(!groups.has(u.socket))groups.set(u.socket,part(u.socket));
   let geometry=p.geometry;if(hero&&/^Anatomical face/.test(p.name))geometry=sculptHeroFace(p.geometry.clone(),c.design);if(hero&&/^Eyebrow/.test(p.name)){geometry=p.geometry.clone();geometry.userData.shared=false;const a=geometry.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i),y=a.getY(i);a.setY(i,.129+(y-.129)*(smith?.58:.72));a.setZ(i,a.getZ(i)+.0015);}geometry.computeVertexNormals();}if(coverage&&/^(Quiver$|Visible arrow shaft|Arrow fletching)/.test(p.name)){geometry=p.geometry.clone();geometry.userData.shared=false;geometry.translate(.17,0,.025);}if(smith&&p.name==='Sculpted forge apron'){geometry=p.geometry.clone();geometry.userData.shared=false;const a=geometry.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i),y=a.getY(i);a.setX(i,x*(y>.0?.88:y<-.40?1.04:.91));if(y<-.48&&Math.abs(x)<.035)a.setY(i,y+Math.max(0,1-Math.abs(x)/.035)*Math.min(.13,(-y-.48)*.5));}geometry.computeVertexNormals();}if((hero||c.design==='bow')&&p.name==='Soft neck'){geometry=p.geometry.clone();geometry.userData.shared=false;const pos=geometry.attributes.position,uv=geometry.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,.11+pos.getX(i)*.15,.58+pos.getY(i)*.12);}const mesh=new T.Mesh(geometry,(hero||c.design==='bow')&&p.name==='Soft neck'?mats.skin:(coverage?.sleeves&&/^(Tailored sleeve|Forearm sleeve|Elbow joint)/.test(p.name)?mats.mail:coverage?.plate&&/^(Glove|Gloved|Articulated finger)/.test(p.name)?mats.steel:mats[u.surface]));mesh.name=p.name;mesh.castShadow=mesh.receiveShadow=true;groups.get(u.socket).add(mesh);pieces++;
  }
- if(hero)tailoredHero(c,part,mats);else troopIdentity(c,part,mats);
+ if(hero){tailoredHero(c,part,mats);tailoredHands(c,part,mats);}else troopIdentity(c,part,mats);
  // Match each equipped armor family's fabric and plate treatment, retaining hero identity.
  if(kind==='spellweave'&&!coverage?.plate){mats.ivory.color.setHex(style?.cloth??armor.cloth);mats.ivory.metalness=.2;}
  if(kind==='trail'&&!coverage?.plate){mats.ivory.color.setHex(style?.metal??armor.steel);mats.ivory.metalness=.05;}

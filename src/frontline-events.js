@@ -37,7 +37,7 @@ export function attachEncounterModel(g,e,stage=g.battle?.id??0){
   const ring=mesh(new T.TorusGeometry(.5,.08,6,20),gold,root,0,2.83,-.87);ring.rotation.x=-.7;
  }
  root.userData.kind=e.encounterRole;
- if(ram){e.stats={...e.stats,hp:Math.round(220*(1+stage*.11)),armor:22,speed:1.3,damage:38+stage*2,range:3.2,scale:1.4};e.hp=Math.min(e.hp,e.stats.hp);}
+ if(ram){const savedHP=e.hp;e.stats={...e.stats,hp:Math.round(380*(1+stage*.11)),armor:22,speed:1.7,damage:38+stage*2,range:3.2,scale:1.4};e.hp=e.restoredHealth?Math.min(savedHP,e.stats.hp):e.stats.hp;}
 }
 export function tickTurningPoint(g,dt){
  const b=g.battle,t=b?.turningPoint;if(!t||t.phase==='resolved')return;
