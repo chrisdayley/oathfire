@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## 2.23.0 — forged ranks and stronger defenses
+
+Redesigned hero helmets, fitted armor, smith beard and equipment, and ranger layers; rebuilt horse heads, coats, tack and tiered barding; distinct silhouettes and liveries for all 15 regiments. Every troop rank retains a complete head. Defensive assaults bring larger overlapping formations, with denser final waves. Existing progress and interrupted battles remain compatible.
+
+[Art changes, combat tuning and validation](docs/forged-ranks-2.23.0.md)
+
 ## 2.22.0 — flowing music and fitted heroes
 
 Wave music now blends across eight seconds, preserving the current orchestra while the next recording buffers or passes a quiet introduction. Training and homecoming reminders can be dismissed persistently. Hero mantles sit at the shoulders, drape closer to the back and clear the ground; skin, leather and metal have more surface variation, with tighter nearby shadows. Existing campaigns continue normally.

@@ -67,7 +67,7 @@ export function fitHeroArmor(c,part,m){
  if(p.plate){
   // A fitted cuirass, four abdominal lames and cuisses cover the whole body;
   // the cloth underneath remains visible only at bending joints.
-  shell(chest,[[-.16,.16,.12],[-.10,.18,.14],[.025,.215,.155],[.12,.216,.135],[.19,.158,.092]],m.steel,'Full plate cuirass');
+  // The couture cuirass supplies the single outer breast/back surface.
   for(let j=0;j<4;j++){
    const y=.025+j*.046,rx=.164+j*.009,rz=.121+j*.006;
    shell(spine,[[y,rx,rz],[y+.052,rx+.006,rz+.006]],m.steel,'Overlapping abdominal fauld');

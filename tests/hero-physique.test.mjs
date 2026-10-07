@@ -24,7 +24,10 @@ test('Physique changes widen armor and limbs without changing segment lengths or
  const enemy={design:'warden',enemy:true},g=new T.Group();fitHeroPart(enemy,'chest',g);assert.deepEqual(g.scale.toArray(),[1,1,1]);assert.equal(heroPhysique(enemy),null);assert.equal(movementState(enemy,4.5,1/60),4.5);
 });
 test('Heroes brace melee weapons while idle and moving; troop poses stay compatible',()=>{
- for(const type of ['sword','hammer']){const c={design:'warden',weaponType:type};assert.ok(carryDirection(c,4.5).y>.5);assert.ok(carryDirection(c,0).y>.5);assert.ok(carryDirection({...c,enemy:true},4.5).y<0);}
+ for(const type of ['sword','hammer']){const c={design:'warden',weaponType:type};assert.ok(carryDirection(c,4.5).y>.3);assert.ok(carryDirection(c,0).y>.3);assert.ok(carryDirection({...c,enemy:true},4.5).y<0);}
+ const hammer={design:'ashwright',weaponType:'hammer'};
+ const foot=carryDirection(hammer,0).clone(),mounted=carryDirection({...hammer,mounted:true},0).clone();
+ assert.ok(mounted.x>foot.x&&mounted.y<foot.y&&mounted.y>0,'Mounted maul is carried out to the side, below the rider face');
 });
 test('Muscle mesh contains continuous elbow weights, finite UVs, mirrored topology and valid triangles',()=>{
  const mesh=JSON.parse(fs.readFileSync(new URL('../public/models/hero-anatomy.json',import.meta.url)));

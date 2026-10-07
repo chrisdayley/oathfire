@@ -17,7 +17,7 @@ export function replaceHarnessPart(c,name){
 export function attachHeroHarness(c,part,mats,rank){
  const profile=heroArmorProfile(c);if(!harness||!profile)return;
  const kinds=[...(usesForgedHarness(c)?['upperarm','lowerarm',...((c.design==='warden'||profile.plate)?['upperleg','knee','lowerleg','foot']:[])]:[]),'helmet'];
- for(const id of kinds)for(const side of id==='helmet'?[1]:[-1,1]){
+ for(const id of kinds.filter(id=>!['helmet','foot'].includes(id)))for(const side of id==='helmet'?[1]:[-1,1]){
   const bone=id==='helmet'?'head':(id==='knee'?'lowerleg':id)+(side>0?'l':'r'),parent=part(bone);
   harness[id].slots.forEach(([name],i)=>{const geo=geometry(id,i,side);if(!geo)return;const material=name.startsWith('Black')?mats.dark:name==='Gold'?(rank>=4?mats.gold:mats.steel):mats.steel;const mesh=new T.Mesh(geo,material);mesh.name='Forged '+id+' '+name;mesh.castShadow=mesh.receiveShadow=true;parent.add(mesh);});
  }

@@ -3,8 +3,8 @@ import {characterBounce} from './hero-surfaces.js';
 import * as T from 'three';
 
 export const HERO_PHYSIQUES={
- warden:{shoulder:.265,chest:1.17,depth:1.10,arm:1.16,forearm:1.15,thigh:1.20,calf:1.18,waist:1.07},
- ashwright:{shoulder:.268,chest:1.20,depth:1.14,arm:1.23,forearm:1.20,thigh:1.25,calf:1.21,waist:1.10},
+ warden:{shoulder:.265,chest:1.17,depth:1.10,arm:1.16,forearm:1.15,thigh:1.20,calf:1.18,waist:1.01},
+ ashwright:{shoulder:.268,chest:1.16,depth:1.10,arm:1.23,forearm:1.20,thigh:1.25,calf:1.21,waist:1.02},
  ranger:{shoulder:.253,chest:1.10,depth:1.06,arm:1.12,forearm:1.10,thigh:1.16,calf:1.13,waist:1.04}
 };
 export const heroPhysique=c=>!c.enemy?HERO_PHYSIQUES[c.design]:null;

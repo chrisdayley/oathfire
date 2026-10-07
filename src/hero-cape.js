@@ -43,7 +43,7 @@ export function attachHeroCape(c){
   const y=.085-height*t-.024*across*across*Math.exp(-t*7)+Math.pow(t,6)*(.10*(across+1)*.5)+Math.pow(t,9)*(.047*Math.sin(u*7+.3)+.035*across+.015*Math.cos(u*21));
   const foldPhase=u*Math.PI*8+Math.sin(t*3.1+u*4)*1.7;
   const folds=Math.cos(foldPhase)*(.008+.024*t)+Math.sin(u*Math.PI*3-t*4)*.024*t+.018*Math.sin(t*14+Math.abs(across)*9)*Math.exp(-t*4);
-  const z=-.205+.035*Math.sin(t*Math.PI*1.65)-.030*t+folds+.045*across*across*Math.exp(-t*5);
+  const z=-.230+.035*Math.sin(t*Math.PI*1.65)-.030*t+folds+.020*across*across*Math.exp(-t*5);
   p.push(x,y,z);uv.push(u,1-t);const shade=.92+.07*Math.sin(u*23+t*5);colors.push(shade,shade,shade);
   if(j<rows&&i<columns){const k=j*(columns+1)+i;idx.push(k,k+1,k+columns+1,k+1,k+columns+2,k+columns+1);}
  }
@@ -55,9 +55,9 @@ export function attachHeroCape(c){
  // to the mantle. It follows the same chest bone, not a floating back panel.
  const yp=[],yu=[],yi=[],yrows=9;
  for(let j=0;j<=yrows;j++)for(let i=0;i<=columns;i++){
-  const t=j/yrows,u=i/columns,a=u*2-1,k=i*3,neckX=a*.09,neckY=.207-.025*Math.abs(a),neckZ=-.077*Math.sqrt(1-a*a)-.018;
+  const t=j/yrows,u=i/columns,a=u*2-1,k=i*3,neckX=a*.09,neckY=.207-.025*Math.abs(a),neckZ=-.093*Math.sqrt(1-a*a)-.020;
   const fold=Math.sin(u*26-t*2)*.009*Math.sin(t*Math.PI);
-  yp.push(neckX+(p[k]-neckX)*t,neckY+(p[k+1]-neckY)*(1-Math.pow(1-t,1.6))+fold,neckZ+(p[k+2]-neckZ)*t-.006*Math.sin(t*Math.PI));yu.push(u,t);
+  yp.push(neckX+(p[k]-neckX)*t,neckY+(p[k+1]-neckY)*(1-Math.pow(1-t,1.6))+fold,neckZ+(p[k+2]-neckZ)*t-.025*Math.sin(t*Math.PI));yu.push(u,t);
   if(j<yrows&&i<columns){const q=j*(columns+1)+i;yi.push(q,q+1,q+columns+1,q+1,q+columns+2,q+columns+1);}
  }
  const yg=new T.BufferGeometry();yg.setAttribute('position',new T.Float32BufferAttribute(yp,3));yg.setAttribute('uv',new T.Float32BufferAttribute(yu,2));yg.setIndex(yi);yg.computeVertexNormals();
