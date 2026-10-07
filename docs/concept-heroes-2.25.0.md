@@ -1,4 +1,4 @@
-# 2.25.0 — concept hero refinement
+# 2.25.1 — concept hero refinement
 
 This continues the 2.24 hero reconstruction against `output/assets/heroes-concept.png`. The independent reviewer set three essential acceptance criteria before implementation: distinct heads and class silhouettes, believable waist-to-knee costume construction, and a clear hierarchy of garment, protection and fastening materials. The standard is a recognizable real-time adaptation at normal game scale, not photographic equality to the painting.
 
@@ -23,4 +23,8 @@ No campaign schema, inventory, progression, combat balance, player collider, att
 
 ## Validation
 
-Validation passed 225 unit tests; all 84 hero/armor-family/rarity combinations; 105 weapon-pattern/rarity combinations; equipped quick and charged attacks; walking, running and mounted cloth clearance; actual phone-sized selection and movement; installed-game save/update/offline behavior; and verification of published assets against the tested build. These checks do not claim physical-phone frame rate or absence of every possible transient intersection.
+Validation passed 226 unit tests; all 84 hero/armor-family/rarity combinations; 105 weapon-pattern/rarity combinations; equipped quick and charged attacks; walking, running and mounted cloth clearance; actual phone-sized selection and movement; installed-game save/update/offline behavior; and verification of published assets against the tested build. These checks do not claim physical-phone frame rate or absence of every possible transient intersection.
+
+## Mission-transition regression
+
+The live 2.25.0 smoke check exposed a first-person weapon cleanup assumption: sculpted weapons may have a material array, while the old cleanup called `dispose` on the array itself. Version 2.25.1 disposes each unique material once, retains shared geometry, and has a regression test for repeated weapon replacement. This fix does not change the reviewed visuals.
