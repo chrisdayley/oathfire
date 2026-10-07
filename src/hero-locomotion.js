@@ -14,7 +14,7 @@ export function carryDirection(c,speed){
  if(hero&&c.weaponType==='hammer')return v.set(...(c.mounted?[.97,.23,.08]:[.90,.43,.045])).normalize();
  if(c.weaponType==='bow')return v.set(-.90,.43,.07).normalize();
  if(['spear','staff'].includes(c.weaponType))return v.set(-.05,.999,.02).normalize();
- if(hero&&c.weaponType==='sword')return v.set(...(moving?[-.36,.84,.40]:[-.69,.64,.18])).normalize();
+ if(hero&&c.weaponType==='sword')return v.set(...(moving?[-.36,.84,.40]:[-.70,-.65,.17])).normalize();
  return v.set(...((c.weaponItem?.rarity||0)>=5?[-.84,-.10,.35]:[-.54,-.72,.35])).normalize();
 }
 function aimBone(bone,target,blend){

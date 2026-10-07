@@ -1,5 +1,11 @@
 # Oathfire: The Hollow March
 
+## 2.24.0 — tailored heroes
+
+Rebuilt all three heroes around a single fitted armor system, class-specific garments and faces, finer material textures, articulated shoulders, and connected cape fastenings. Higher rarity preserves hero identity. Hero selection gives the model more screen space. Existing campaigns remain compatible.
+
+[Changes, independent review, and validation](docs/tailored-heroes-2.24.0.md)
+
 ## 2.23.0 — forged ranks and stronger defenses
 
 Redesigned hero helmets, fitted armor, smith beard and equipment, and ranger layers; rebuilt horse heads, coats, tack and tiered barding; distinct silhouettes and liveries for all 15 regiments. Every troop rank retains a complete head. Defensive assaults bring larger overlapping formations, with denser final waves. Existing progress and interrupted battles remain compatible.

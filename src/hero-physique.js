@@ -3,9 +3,9 @@ import {characterBounce} from './hero-surfaces.js';
 import * as T from 'three';
 
 export const HERO_PHYSIQUES={
- warden:{shoulder:.265,chest:1.17,depth:1.10,arm:1.16,forearm:1.15,thigh:1.20,calf:1.18,waist:1.01},
- ashwright:{shoulder:.268,chest:1.16,depth:1.10,arm:1.23,forearm:1.20,thigh:1.25,calf:1.21,waist:1.02},
- ranger:{shoulder:.253,chest:1.10,depth:1.06,arm:1.12,forearm:1.10,thigh:1.16,calf:1.13,waist:1.04}
+ warden:{shoulder:.243,chest:1.10,depth:1.10,arm:1.16,forearm:1.15,thigh:1.20,calf:1.18,waist:1.01},
+ ashwright:{shoulder:.252,chest:1.12,depth:1.10,arm:1.23,forearm:1.20,thigh:1.25,calf:1.21,waist:1.10},
+ ranger:{shoulder:.235,chest:1.04,depth:1.06,arm:1.12,forearm:1.10,thigh:1.16,calf:1.13,waist:1.04}
 };
 export const heroPhysique=c=>!c.enemy?HERO_PHYSIQUES[c.design]:null;
 export function fitHeroPart(c,id,group){
@@ -28,7 +28,7 @@ let anatomy=null,micro=null;
 export async function loadHeroAnatomy(){const r=await fetch(import.meta.env.BASE_URL+'models/hero-anatomy.json');if(!r.ok)throw Error('Hero anatomy could not load');anatomy=await r.json();}
 export function heroSkin(map,smith=false){
  if(!micro){const size=128,data=new Uint8Array(size*size*4);let seed=47;for(let i=0;i<size*size;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const pore=122+(seed>>>27);data.set([pore,pore,pore,255],i*4);}micro=new T.DataTexture(data,size,size);micro.wrapS=micro.wrapT=T.RepeatWrapping;micro.repeat.set(22,22);micro.magFilter=T.LinearFilter;micro.minFilter=T.LinearMipmapLinearFilter;micro.generateMipmaps=true;micro.needsUpdate=true;micro.userData.shared=true;}
- const m=new T.MeshPhysicalMaterial({name:'Living skin',map,color:smith?0xc3ac9d:0xcdb9a8,roughness:.72,metalness:0,bumpMap:micro,bumpScale:.0012,sheen:.10,sheenRoughness:.85,sheenColor:0xc28369});
+ const m=new T.MeshPhysicalMaterial({name:'Living skin',map,color:smith?0xc6c4bf:0xddd8ce,roughness:.72,metalness:0,bumpMap:micro,bumpScale:.0012,sheen:.10,sheenRoughness:.85,sheenColor:0xc28369});
  m.onBeforeCompile=shader=>characterBounce(shader,.055);m.customProgramCacheKey=()=> 'skin-sky-bounce-v222';return m;
 }
 

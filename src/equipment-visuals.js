@@ -24,7 +24,7 @@ export function animateEquipment(root,time){
 // Added before skinning, so every plate, inset and rune follows the existing body animation.
 export function decorateArmor(c,part){
  if(!c.armor||c.enemy)return;
- const s=armorStyle(c.armor),r=s.tier;c.equipmentAppearance={rarity:r,armor:s.kind,rank:s.rank,glowing:r>=5};if(r<2)return;
+ const s=armorStyle(c.armor),r=s.tier;c.equipmentAppearance={rarity:r,armor:s.kind,rank:s.rank,glowing:r>=5};if(r<2||c.visual.userData.tailoring)return;
  const steel=material('steel',s.metal,{metalness:.86,roughness:s.roughness}),gold=material('steel',s.trim,{metalness:.8,roughness:.32}),dark=material('steel',0x182631,{roughness:.5}),gem=lightMaterial(s.glow||({ember:0xdd7c39,trail:0x2e8962,spellweave:0x8564b1}[s.kind]||0x638fa8),s.glow?2.0:0);
  c.materials.push(steel,gold,dark,gem);
  const chest=part('chest'),hips=part('hips'),head=part('head');chest.scale.z*=c.design==='ashwright'?.95:.84;
