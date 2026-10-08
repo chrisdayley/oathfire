@@ -111,3 +111,24 @@
  #menu.regiment-menu #resources{font-size:13px;gap:10px}#menu.regiment-menu #resources small{display:none}
  #menu.equipment-menu .armory-item-header{top:-12px}.training-change{padding:7px 0;font-size:12px}
 }
+
+/* Dark dossier is an independent theme, never parchment ink. */
+#menu.regiment-menu #menu-content{--gold:#edd9a8;--muted:#c9c5b9;color:#eee8da}
+#menu.regiment-menu #menu-content :is(h2,h3,b,dt,dd,p,small,label,span){color:#e7e2d6!important}
+#menu.regiment-menu #menu-content :is(h2,h3,.training-price b){color:#f1dba6!important}
+#menu.regiment-menu #menu-content .training-change em{color:#bbeba5!important}
+#menu.regiment-menu #menu-content .training-change.tradeoff em{color:#ffbc9e!important}
+#menu.regiment-menu .regiment-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#menu.regiment-menu .regiment-actions>small{grid-column:1/-1;font:11px/1.35 'Trebuchet MS',sans-serif;margin:0 0 2px}
+#menu.regiment-menu .regiment-actions button{width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.25;min-width:0;box-sizing:border-box}
+#menu.regiment-menu .regiment-sheet{min-width:0}
+@media(max-width:850px) and (orientation:landscape){
+ #menu.regiment-menu>main{grid-template-columns:minmax(110px,23%) minmax(120px,1fr) minmax(270px,43%)}
+ .regiment-stats{column-gap:10px}.regiment-stats>div{flex-wrap:wrap;gap:2px}.regiment-stats dd{margin-left:auto}
+}
+#menu.regiment-menu .regiment-stats>div{flex-wrap:nowrap;align-items:flex-start}
+#menu.regiment-menu .regiment-stats dt{min-width:0;overflow-wrap:break-word}
+#menu.regiment-menu .regiment-stats dd{flex-shrink:0;white-space:nowrap}
+#menu.regiment-menu .regiment-body{flex:1;scrollbar-gutter:stable;padding-bottom:16px}
+#menu.regiment-menu .regiment-body::-webkit-scrollbar{width:5px}
+#menu.regiment-menu .regiment-body::-webkit-scrollbar-thumb{background:#ad976d;border-radius:3px}

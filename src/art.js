@@ -1,3 +1,4 @@
+import {specialistWeapon} from './troop-weapons.js';
 import {heroSurface} from './hero-surfaces.js';
 import {equipmentStyle,equipmentMagic} from './equipment-style.js';
 import {decorateWeapon,decorateShield} from './equipment-visuals.js';
@@ -22,6 +23,7 @@ export function sunBadge(parent,r=.23,material=mat(0xd8b66e,.3,.72)){const g=new
 function forgedBlade(parent,m,length=1.08){const p=[],uv=[],idx=[];const stations=[[.13,.039],[length*.75,.033],[length,.018],[length+.13,0]];for(let j=0;j<stations.length;j++){const [y,w]=stations[j];for(const [x,z]of [[-w,0],[0,w*.42],[w,0],[0,-w*.42]]){p.push(x,y,z);uv.push(x/.08+.5,y);}if(j<stations.length-1)for(let i=0;i<4;i++){const a=j*4+i,b=j*4+(i+1)%4;idx.push(a,b,a+4,b,b+4,a+4);}}const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(p,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setIndex(idx);geo.computeVertexNormals();return mesh(geo,m,parent);}
 export function weapon(type='sword',level=1,color=0x62988f,temper=null,design=null,item=null){
  if(item)return equipmentWeapon(item,level);
+ const specialist=specialistWeapon(design,level);if(specialist)return specialist;
  const g=new T.Group(),steel=material('steel',level>=8?0xc1c5b9:0x929c9e,{roughness:.72,metalness:.65}),gold=material('steel',0xb6995e,{roughness:.7,metalness:.6}),wood=material('timber',0x655943),wrap=material('leather',0x554c3d),ember=mat(0xffb442,.32,.35,{emissive:0xee6f17,emissiveIntensity:.9});
  if(type==='sword'){
   forgedBlade(g,steel,1.0+level*.012);const guard=new T.CatmullRomCurve3([new T.Vector3(-.185,.10,0),new T.Vector3(-.10,.14,0),new T.Vector3(0,.15,0),new T.Vector3(.10,.14,0),new T.Vector3(.185,.10,0)]);mesh(new T.TubeGeometry(guard,16,.022,8,false),level>=5?gold:steel,g);cyl(g,.027,.031,.25,[0,-.015,0],wrap,12);for(let i=0;i<12;i++){const band=mesh(new T.TorusGeometry(.030,.0025,4,10),wrap,g,0,-.125+i*.021,0);band.rotation.x=Math.PI/2;}const pommel=cyl(g,.043,.043,.030,[0,-.167,0],gold,16);pommel.rotation.x=Math.PI/2;if(level>=3){const fuller=box(g,[.009,.68,.002],[0,.53,.015],steel);fuller.material=material('steel',0x343e3f,{metalness:.8,roughness:.6});}if(level>=7){for(const side of [-1,1])sphere(g,.026,[side*.18,.10,0],gold,12);}if(level>=10||temper==='ember')box(g,[.007,.85,.002],[0,.60,.018],ember);

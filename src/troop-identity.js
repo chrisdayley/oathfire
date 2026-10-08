@@ -11,7 +11,7 @@ export const TROOP_IDENTITY={
  breaker:{cloth:0x623527,accent:0xb58b55,width:1.22,head:'forge',mark:'Heavy forge mask and furnace shoulders'},
  crew:{cloth:0x435761,accent:0xc19a62,width:1.09,head:'goggles',mark:'Goggles, bolts and reinforced work harness'},
  rider:{cloth:0x293f85,accent:0xd2bb7e,width:1.05,head:'cavalry',mark:'Closed lance helm, plume and barded charger'},
- giant:{cloth:0x455941,accent:0xa78658,width:1.34,head:'forge',mark:'Massive chain harness and slab pauldrons'},
+ giant:{cloth:0x455941,accent:0xa78658,width:1.34,head:'titan',mark:'Ancient oath titan with runic stone harness'},
  banner:{cloth:0xb68838,accent:0xeee0ac,width:1.02,head:'officer',mark:'Command sash, officer crest and tall standard'},
  engineer:{cloth:0x84633d,accent:0xbdae91,width:1.09,head:'goggles',mark:'Rivet goggles, tool harness and survey pack'},
  assassin:{cloth:0x392e4e,accent:0x9e9cab,width:.86,head:'hood',mark:'Narrow dark hood, face wrap and blade harness'},
@@ -24,7 +24,7 @@ export function fitTroopPart(c,id,g){const p=TROOP_IDENTITY[c.design];if(!p||c.e
 export function troopIdentity(c,part,m){
  const d=TROOP_IDENTITY[c.design];if(!d)return;const r=c.rank,hero=['warden','ranger','ashwright'].includes(c.design);if(hero)return;
  const head=part('head'),chest=part('chest'),hips=part('hips'),gold=m.edge||m.gold,leather=m.leather,dark=m.dark,metal=m.steel;
- const cloth=m.cloth.clone();cloth.map=null;cloth.color.setHex(d.cloth);cloth.roughness=.88;c.materials.push(cloth);
+ const cloth=m.cloth.clone();cloth.color.setHex(d.cloth);cloth.roughness=.88;c.materials.push(cloth);
  const accent=gold.clone();accent.color.setHex(d.accent);c.materials.push(accent);
  const gem=new T.MeshStandardMaterial({color:c.design==='frost'?0xa5edff:c.design==='pyre'?0xffb641:0xf5dfa0,emissive:c.design==='frost'?0x278ba6:c.design==='pyre'?0xc53b0e:0xa47723,emissiveIntensity:r>=7?.8:.25,roughness:.3});c.materials.push(gem);
  if(c.design==='bow'){
@@ -53,7 +53,7 @@ export function troopIdentity(c,part,m){
   const mask=leaf(head,[[-.105,.14],[.105,.14],[.111,.045],[.057,-.03],[-.065,-.03],[-.11,.045]],metal,{name:'Forgemaster face mask',bow:.060});mask.position.z=.154;
   for(let i=-2;i<=2;i++)cord(head,[[i*.027,.027,.219],[i*.027,.088,.220]],.0035,dark,'Forge mask vent');
   for(const s of [-1,1]){
-   const arm=part('upperarm'+(s>0?'l':'r'));form(arm,[[-.06,.10,.09],[-.01,.174,.152],[.09,.16,.15],[.18,.135,.125]],metal,{name:'Heavy forge shoulder'});
+   const arm=part('upperarm'+(s>0?'l':'r'));form(arm,[[-.06,.10,.09],[-.01,.133,.119],[.09,.128,.117],[.18,.107,.101]],metal,{name:'Heavy forge shoulder'});
    for(let j=0;j<4;j++)bead(arm,[s*.143,.022+j*.033,-.073],.010,accent);
   }
  }
