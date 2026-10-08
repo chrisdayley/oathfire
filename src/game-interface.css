@@ -106,3 +106,21 @@
  #hero-selection .hero-start-abilities p{font-size:11px;line-height:1.25;margin:2px 0 0}
  #hero-selection .hero-selection-details nav button{font-size:12px;padding:6px 9px;flex-shrink:0}
 }
+
+/* Readable fieldbook text: old dark-theme gold is not ink on parchment. */
+#menu:not(.atlas-menu):not(.field-menu) #menu-content{--gold:#70502b;--muted:#514c3d}
+#menu #menu-content .ability-stats :is(th,td){color:#3b4035;border-bottom-color:#80694355}
+#menu #menu-content .ability-stats thead th{color:#514c3d;font-weight:600}
+#menu #menu-content .ability-stats .improved{color:#28502f;background:#65844720;font-weight:700}
+#menu #menu-content .ability-top>span{color:#514c3d}
+#menu #menu-content .mastery-track i{color:#e5dfd0}
+#menu #menu-content .mastery-track i.earned{color:#fff1cc}
+#menu #menu-content .evolution-detail{background:#f6ead080;border-color:#8c704255}
+#menu #menu-content .evolution-detail :is(h4,p,small){color:#394337!important}
+#menu:not(.atlas-menu):not(.field-menu) #menu-content :is(.skill-ranks,.card .meta,.forge-cost,.forge-step,.forge-choice summary,.compare-heading,.armor-benefits ul,.combat-stat span,.recruit-stats,.field-status,.stable-stats b,.stable-bonus,.training-price,.training-price b,.training-columns,.training-change,.training-change b,.regiment-stats dt,.regiment-stats dd,.regiment-rank label,.regiment-matchups b,.equipment-name span){color:#3e483b!important}
+#menu:not(.atlas-menu):not(.field-menu) #menu-content :is(.stat-gain,.training-change em){color:#28502f!important}
+#menu:not(.atlas-menu):not(.field-menu) #menu-content :is(.stat-loss,.training-change.tradeoff em){color:#843c2d!important}
+#battle-result main :is(.victory-heading small,.chest-title h2,.chest-title small,.reward-item b,.reward-item em,.daily-income,.daily-income summary b,.income-towns b,.research-requirement){color:#3b4837!important}
+#battle-result main .daily-income{background:#fff2d43d;border-color:#96764b55}
+#mission-preparation .scout-details :is(b,.scout-scaling){color:#3f4937}
+
