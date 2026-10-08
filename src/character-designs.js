@@ -1,3 +1,4 @@
+import {CREATURES,buildCreature,creatureWidth} from './enemy-creatures.js';
 import {fitTroopPart} from './troop-identity.js';
 import {attachHeroCape} from './hero-cape.js';
 import {heroPhysique,fitHeroPart,attachHeroAnatomy} from './hero-physique.js';
@@ -13,27 +14,28 @@ import {material} from './materials.js';
 import {mesh,box,cyl,beam,sunBadge,compactRigid,weapon,shield,equipmentShield} from './art.js';
 
 export const HOST_DESIGNS={
- runner:{name:'Raven Runner',subtitle:'Fast assault scout',description:'A hunched scavenger in a hooked raven mask, with ragged feather fins and curved claws. Slows and pikes interrupt its rush.',color:0x364348,base:'archer'},
- bomber:{name:'Cinder Bomber',subtitle:'Timed explosives',description:'A soot-stained iron mask, bright copper bomb satchel and glowing fuse clusters. Leave its orange warning circle before detonation.',color:0x745135,base:'hollow'},
- herald:{name:'War Herald',subtitle:'Damage and speed aura',description:'A tall torn crimson standard rises over its armored shoulders. Nearby enemies gain 15% damage and speed.',color:0x7b3432,base:'knight'},
- longbow:{name:'Blackfeather Hunter',subtitle:'Long range marksman',description:'Black feather crown, narrow hood and an oversized ash bow. Slow volleys hit hard from 35m.',color:0x30343c,base:'archer'},
- bulwark:{name:'Grave Bulwark',subtitle:'Frontal shield tank',description:'A broad coffin shield and squared iron helm protect its front. Flank or use charged attacks to defeat its 70% frontal protection.',color:0x43524f,base:'knight'},
- mender:{name:'Bone Mender',subtitle:'Enemy healer',description:'An ivory antler mask and green medicine lantern distinguish this fragile support. Heals two nearby enemies every six seconds.',color:0x607e67,base:'mage'},
- reaver:{name:'Blood Reaver',subtitle:'Wounded berserker',description:'A red split crest and hooked shoulder blades frame exposed furnace scars. Enrages below half health.',color:0x74352f,base:'knight'},
- mortar:{name:'Ash Mortar',subtitle:'Long range bombardment',description:'An iron bombard tube rests across a braced shoulder harness. Large red circles telegraph its explosive shells.',color:0x514d43,base:'brute'},
- wraith:{name:'Mirror Wraith',subtitle:'Phasing duelist',description:'A silver mirror mask, violet crystal fins and torn translucent-looking mantle. Its arrival ring warns before each blink.',color:0x6b5a80,base:'mage'},
- warpriest:{name:'Hollow Warpriest',subtitle:'Armored support commander',description:'A triple lantern crown and immense reliquary staff shield and heal an escort. Eliminate the priest first.',color:0x584970,base:'mage'},
+ runner:{name:'Raven goblin scout',subtitle:'Fast assault scout',description:'A lean blue-green goblin scout with a low hood and light harness. Runs ahead of the host. Slows and pikes interrupt its rush.',color:0x364348,base:'archer'},
+ bomber:{name:'Cinder goblin sapper',subtitle:'Timed explosives',description:'An ochre goblin sapper wearing soot goggles and iron bombs on its belt. Move out of its marked blast zones and eliminate it from range.',color:0x745135,base:'hollow'},
+ herald:{name:'Red-banner orc herald',subtitle:'Damage and speed aura',description:'An armored orc carrying the red clan standard high over its shoulders. Strengthens nearby allies; focus the banner carrier first.',color:0x7b3432,base:'knight'},
+ longbow:{name:'Blackfeather goblin hunter',subtitle:'Long range marksman',description:'A dark-green goblin hunter with black feathers and an oversized bow. Its long-range volleys threaten wall troops; use cavalry or assassins.',color:0x30343c,base:'archer'},
+ bulwark:{name:'Ironhide ogre bulwark',subtitle:'Frontal shield tank',description:'A thickset ogre wearing reinforced body bands and a skullcap. Its immense shield protects its front. Flank it or use charged attacks.',color:0x43524f,base:'knight'},
+ mender:{name:'Mossback troll mender',subtitle:'Enemy healer',description:'A blue-green troll shaman wearing a moss-colored hide mantle, bone crown and fetish necklace. Heals nearby enemies; prioritize this support.',color:0x607e67,base:'mage'},
+ reaver:{name:'Bloodscar orc reaver',subtitle:'Wounded berserker',description:'A red-crested orc berserker with exposed scarred muscles and leather shoulder guards. Enrages below half health; finish it decisively.',color:0x74352f,base:'knight'},
+ mortar:{name:'Bombard ogre',subtitle:'Long range bombardment',description:'A grey-skinned ogre carrying a heavy bombard and iron shot. Red circles warn of explosive shells. Fast troops can close its firing distance.',color:0x514d43,base:'brute'},
+ wraith:{name:'Mirror wraith',subtitle:'Phasing duelist',description:'A pale spirit concealed by a faceted mirror mask and torn violet vestments. Watch the arrival ring before its blink attack.',color:0x6b5a80,base:'mage'},
+ warpriest:{name:'Hex-crowned troll warpriest',subtitle:'Armored support commander',description:'A violet troll elder with a tall bone crown and purple ceremonial mantle. Shields and heals its escort. Eliminate it before the frontline.',color:0x584970,base:'mage'},
  regent:{name:'The Glass Regent',subtitle:'Captain of the winter cities',description:'A crown of tall frostglass shards rises from a silver mask. His mirrored armor catches the violet light of imprisoned beacons.',color:0x7592ad,base:'veyr'},
  hollowking:{name:'The Hollow King',subtitle:'The first broken promise',description:'A charred antler crown surrounds a caged ember. Black layered plate and an enormous golden reliquary mark the final keeper.',color:0x2b202d,base:'castellan'},
- hollow:{name:'The Unburied',subtitle:'Levy of the Hollow Host',description:'Exposed ribs, burial linen and a broken iron cap. These are the ordinary dead pressed back into service.',color:0x746450},
- archer:{name:'Duskbone Stalker',subtitle:'Hollow bowman',description:'A narrow ash-grey hood, leather rib harness and a tall quiver distinguish the ranged hunters.',color:0x424844},
- knight:{name:'Ossuary Knight',subtitle:'Armored line breaker',description:'Blackened fluted plate, an angular sallet and a serrated coffin shield. Cold light leaks through the visor.',color:0x313b3d},
- mage:{name:'Grave Caller',subtitle:'Keeper of stolen voices',description:'A funerary mask hangs beneath a tall iron crown. Split mourning robes and a lantern staff frame the exposed rib cage.',color:0x303c37},
- brute:{name:'Kiln Brute',subtitle:'Walking siege furnace',description:'A small iron muzzle sits between massive stone-and-steel shoulders. A caged ember burns inside its breastplate.',color:0x493a30},
+ hollow:{name:'Ash-clan raider',subtitle:'Levy of the Hollow Host',description:'A tusked ash-clan orc in scavenged leather and one iron shoulder guard. An inexpensive frontline attacker; cut it down before it reaches the walls.',color:0x746450},
+ archer:{name:'Briar goblin archer',subtitle:'Hollow bowman',description:'A green-skinned goblin with long ears, a patched hood and a packed arrow quiver. Fragile ranged support; close the distance or send fast troops.',color:0x424844},
+ knight:{name:'Ironjaw orc knight',subtitle:'Armored line breaker',description:'A broad-jawed orc with an open iron helm, jaw guard and hammered cuirass. Use armor-piercing attacks against its heavy protection.',color:0x313b3d},
+ mage:{name:'Grave caller',subtitle:'Keeper of stolen voices',description:'A pale spectral grave caller under a pointed mourning hood. Its lantern staff channels stolen magic. Fragile beneath its robes.',color:0x303c37},
+ brute:{name:'Kiln ogre wallbreaker',subtitle:'Walking siege furnace',description:'A massive, tusked kiln ogre with a scarred belly, crossed load harness and ribbed impact plate. Built to batter walls; concentrate heavy ranged fire.',color:0x493a30},
  bell:{name:'The Bell Knight',subtitle:'Captain of the first march',description:'An inverted bronze bell forms its helm. A ribbed cuirass, chained relics and a processional glaive announce its approach.',color:0x66533b},
  castellan:{name:'The Ash Castellan',subtitle:'Lord of the burnt strongholds',description:'Overlapping basalt plates, a furnace mask and a broken corona. Glowing seams cut through a charred ceremonial mantle.',color:0x4c302a},
  veyr:{name:'Marshal Veyr',subtitle:'The oath that broke the March',description:'An elongated crown and a ruined sun halo rise above tarnished royal armor. His torn black cloak carries the kingdom’s extinguished light.',color:0x293337}
 };
+for(const [id,creature] of Object.entries(CREATURES))HOST_DESIGNS[id].species=creature.family;
 const bone=(c,id)=>c.sockets[id]||c.sockets[id.replaceAll('.','')];
 const Y=new T.Vector3(0,1,0);
 const ellipsoid=(g,s,p,m)=>{const tiny=Math.max(...s)<.022;const o=mesh(new T.SphereGeometry(1,tiny?6:12,tiny?4:8),m,g,...p);o.scale.set(...s);return o;};
@@ -46,10 +48,10 @@ export function rigRole(model,options){return options.design|| (options.enemy?({
 export function recordRest(c){c.rest=new Map();for(const b of Object.values(c.sockets))if(b.isBone)c.rest.set(b,b.position.clone());}
 export function resetRigTranslations(c){for(const [b,p]of c.rest)b.position.copy(p);}
 export function adultPose(c){
- const wide=c.design==='brute'?1.48:['giant','breaker','castellan'].includes(c.design)?1.2:c.design==='ashwright'?1.06:c.design==='ranger'?.97:1;
+ const wide=creatureWidth(c.design)??(c.design==='brute'?1.48:['giant','breaker','castellan'].includes(c.design)?1.2:c.design==='ashwright'?1.06:c.design==='ranger'?.97:1);
  const set=(id,x,y,z=0)=>{const b=bone(c,id);if(b){b.position.set(x,y,z);b.scale.set(1,1,1);}};
  const hips=bone(c,'hips');if(hips){const raw=hips.position.clone();hips.position.set(raw.x*.5,1.02+(raw.y-.4056634)*.45,raw.z*.5);hips.scale.set(wide,1,1);}
- set('spine',0,.16);set('chest',0,.27);set('head',0,heroPhysique(c)?.245:.285);if(c.design==='brute')bone(c,'head').scale.x=.74;
+ set('spine',0,.16);set('chest',0,.27);set('head',0,heroPhysique(c)?.245:.285);if(c.design==='brute'&&!creatureWidth(c.design))bone(c,'head').scale.x=.74;
  for(const [suffix,side]of [['l',1],['r',-1]]){
   set('upperleg.'+suffix,(heroPhysique(c)?.128:.14)*side,.02);set('lowerleg.'+suffix,0,.44);set('foot.'+suffix,0,.425);set('toes.'+suffix,0,.17);
   set('upperarm.'+suffix,(heroPhysique(c)?.shoulder||.245)*side,.13);set('lowerarm.'+suffix,0,.305);set('wrist.'+suffix,0,.255);set('hand.'+suffix,0,.055);set('handslot.'+suffix,0,.063,-.026);
@@ -69,8 +71,8 @@ export function buildAppearance(c){
  const glow=new T.MeshStandardMaterial({color:kind==='ember'?0xffac48:kind==='spellweave'?0x9ac6ea:role==='brute'||role==='castellan'?0xff8535:0x85c9b1,emissive:kind==='ember'?0xce5520:kind==='spellweave'?0x568cb4:role==='brute'||role==='castellan'?0xed4a10:0x519f80,emissiveIntensity:1.6,roughness:.6});
  const mats=[charcoal,steel,brass,leather,cloth,boneMat,black,glow];c.materials.push(...mats);
  const pieces=[],part=id=>{const b=bone(c,id);if(!b)return new T.Group();const g=new T.Group();fitHeroPart(c,id,g);fitTroopPart(c,id,g);b.add(g);pieces.push({bone:b,group:g});return g;};
- let living=null;
- if(!undead){living=buildLiving(c,part);}else{
+ let living=null;const creature=undead?buildCreature(c,part):null;
+ if(!undead){living=buildLiving(c,part);}else if(!creature){
  const hips=part('hips'),spine=part('spine'),chest=part('chest'),head=part('head');
  if(!bare)ellipsoid(hips,[.165,.15,.115],[0,0,0],leather);if(!bare)ellipsoid(hips,[.158,.18,.103],[0,.16,0],cloth);
  if(bare||caster){for(let i=0;i<4;i++)ellipsoid(chest,[.030,.020,.031],[0,.175+i*.033,0],boneMat);}else cyl(chest,.062,.072,.14,[0,.225,0],charcoal,16);
@@ -245,7 +247,7 @@ export function buildAppearance(c){
  if(variant==='reaver')for(const side of [-1,1]){const fin=mesh(new T.ConeGeometry(.055,.4,4),brass,chest,side*.28,.25,-.01);fin.rotation.z=-side*.5;}
  if(variant==='mortar'){cyl(chest,.095,.13,.66,[.29,.22,-.13],charcoal,12).rotation.x=1.1;cyl(chest,.115,.115,.07,[.29,.40,.17],brass,12).rotation.x=1.1;}
  }
- if(undead)dressHost(c,part,role,{black,glow,bone:boneMat});else decorateArmor(c,part);
+ if(undead&&!creature)dressHost(c,part,role,{black,glow,bone:boneMat});else if(!undead)decorateArmor(c,part);
  // Bake rigid armor and anatomical pieces into a few genuinely skinned draw calls.
  c.visual.updateMatrixWorld(true);const skeleton=new T.Skeleton(Object.values(c.sockets).filter(b=>b.isBone));skeleton.calculateInverses();
  const foundation=prepareHeroJointFoundation(c,pieces,heroPhysique(c));
@@ -266,7 +268,7 @@ export function buildAppearance(c){
  attachHeroAnatomy(c,skeleton);
  attachHeroJointFoundation(c,skeleton,foundation);
  // Cloth silhouette is a tailored mantle, with a ragged hem for the Hollow Host.
- if(!attachHeroCape(c)&&!bare&&!brute&&(undead||living.profile.cloak)){const height=c.armor?.rarity===0?.72:kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.28:living?.profile.ranger?.91:1.02,width=kind==='marshal'?.70:royal?.68:rank>=8?.72:.61,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*29)*(.006+drop*.018)+Math.sin(drop*8+x*17)*.009*drop-.065*Math.min(1,drop*5)-drop*.045));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cm=(living?.cloth||cloth).clone();if(!undead&&(rank>=6||living.profile.hero&&(!c.armor||c.armor.rarity>=2))){cm.map=textile('heraldry','#'+new T.Color(c.atelier.clothHex).getHexString(),'#'+new T.Color(c.atelier.trimHex).getHexString());cm.color.setHex(0xffffff);}if(c.armor?.rarity>=5&&!undead){cm.emissive.setHex(armorStyle(c.armor).glow);cm.emissiveMap=textile('heraldry','#000000','#ffffff');cm.emissiveIntensity=.4;cm.userData.equipmentPulse=.4;}c.materials.push(cm);const cape=mesh(geo,cm,bone(c,'chest'),0,-height*.5+.19,heroPhysique(c)?-.21:-.205);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
+ if(!attachHeroCape(c)&&!bare&&!brute&&(undead?(!creature||creature.cloak):living.profile.cloak)){const height=c.armor?.rarity===0?.72:kind==='trail'?.72:kind==='spellweave'||kind==='dawn'?1.35:caster?1.26:royal?1.36:rank>=7?1.28:living?.profile.ranger?.91:1.02,width=kind==='marshal'?.70:royal?.68:rank>=8?.72:.61,geo=new T.PlaneGeometry(width,height,12,18),p=geo.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i),drop=(height*.5-y)/height,x=p.getX(i);p.setXYZ(i,x*(.65+drop*.55),y,(Math.cos(x*29)*(.006+drop*.018)+Math.sin(drop*8+x*17)*.009*drop-.065*Math.min(1,drop*5)-drop*.045));if(undead&&drop>.94)p.setY(i,y+(Math.sin(x*90)+1)*.05);}geo.computeVertexNormals();const cm=(living?.cloth||cloth).clone();if(!undead&&(rank>=6||living.profile.hero&&(!c.armor||c.armor.rarity>=2))){cm.map=textile('heraldry','#'+new T.Color(c.atelier.clothHex).getHexString(),'#'+new T.Color(c.atelier.trimHex).getHexString());cm.color.setHex(0xffffff);}if(c.armor?.rarity>=5&&!undead){cm.emissive.setHex(armorStyle(c.armor).glow);cm.emissiveMap=textile('heraldry','#000000','#ffffff');cm.emissiveIntensity=.4;cm.userData.equipmentPulse=.4;}c.materials.push(cm);const cape=mesh(geo,cm,bone(c,'chest'),0,-height*.5+.19,heroPhysique(c)?-.21:-.205);cape.rotation.x=.15;c.cape=cape;c.capeBase=new Float32Array(geo.attributes.position.array);c.capeHeight=height;c.gear.push(cape);}
  c.held=compactRigid(weapon(c.weaponType,rank,c.color,c.temper,c.design,c.weaponItem));if(heroPhysique(c)&&['sword','hammer'].includes(c.weaponType))c.held.scale.multiplyScalar(.82);c.held.rotation.y=Math.PI;c.heldRest=c.held.quaternion.clone();bone(c,'handslot.r').add(c.held);c.gear.push(c.held);
  if(['sword','spear'].includes(c.weaponType)&&!caster&&!brute&&role!=='bell'&&role!=='assassin'){
   c.heldShield=compactRigid(c.shieldItem&&!undead?equipmentShield(c.shieldItem):shield(c.design==='warden'?Math.max(4,rank):rank,undead?0x343c38:(c.armor?.rarity===6?0x73889b:c.atelier?.clothHex||0x234b4d),undead?role:null));if(heroPhysique(c)&&c.shieldItem)c.heldShield.scale.multiplyScalar(.88);if(heroPhysique(c)&&!c.shieldItem){c.heldShield.scale.x=.82;c.heldShield.scale.y=.94;}if(variant==='bulwark')c.heldShield.scale.set(1.35,1.45,1.15);c.heldShield.rotation.y=Math.PI;c.heldShield.rotation.z=-Math.PI/2;c.heldShield.position.set(0,-.02,.05);bone(c,'handslot.l').add(c.heldShield);c.gear.push(c.heldShield);

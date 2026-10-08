@@ -1,3 +1,4 @@
+import {creatureWeapon} from './enemy-armaments.js';
 import {specialistWeapon} from './troop-weapons.js';
 import {heroSurface} from './hero-surfaces.js';
 import {equipmentStyle,equipmentMagic} from './equipment-style.js';
@@ -23,6 +24,7 @@ export function sunBadge(parent,r=.23,material=mat(0xd8b66e,.3,.72)){const g=new
 function forgedBlade(parent,m,length=1.08){const p=[],uv=[],idx=[];const stations=[[.13,.039],[length*.75,.033],[length,.018],[length+.13,0]];for(let j=0;j<stations.length;j++){const [y,w]=stations[j];for(const [x,z]of [[-w,0],[0,w*.42],[w,0],[0,-w*.42]]){p.push(x,y,z);uv.push(x/.08+.5,y);}if(j<stations.length-1)for(let i=0;i<4;i++){const a=j*4+i,b=j*4+(i+1)%4;idx.push(a,b,a+4,b,b+4,a+4);}}const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(p,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setIndex(idx);geo.computeVertexNormals();return mesh(geo,m,parent);}
 export function weapon(type='sword',level=1,color=0x62988f,temper=null,design=null,item=null){
  if(item)return equipmentWeapon(item,level);
+ const creature=creatureWeapon(design,type);if(creature)return creature;
  const specialist=specialistWeapon(design,level);if(specialist)return specialist;
  const g=new T.Group(),steel=material('steel',level>=8?0xc1c5b9:0x929c9e,{roughness:.72,metalness:.65}),gold=material('steel',0xb6995e,{roughness:.7,metalness:.6}),wood=material('timber',0x655943),wrap=material('leather',0x554c3d),ember=mat(0xffb442,.32,.35,{emissive:0xee6f17,emissiveIntensity:.9});
  if(type==='sword'){

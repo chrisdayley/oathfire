@@ -138,3 +138,5 @@
 #menu.field-menu #menu-content .research-slot :is(span,small){color:#ece6d3!important}
 #menu.field-menu #menu-content .field-detail :is(h2,h3,p,small,b,span){color:#ede5d4!important;text-shadow:none}
 #menu.field-menu #menu-content .committed-research>small{color:#dfd8c5!important}
+
+#menu:not(.field-menu):not(.atlas-menu):not(.regiment-menu) #menu-content .card>small{color:#574a32!important}

@@ -5,7 +5,7 @@ import {NEW_UNITS,NEW_DEFENSES} from './roster.js';
 import {WARDEN_SKILLS} from './warden-skills.js';
 import {trainedUnit,trainingCost} from './unit-progression.js';
 import {ARMY_SPEC} from './army-spec.js';
-export const BUILD='oathfire-2.27.0-regiments';
+export const BUILD='oathfire-2.28.0-creature-host';
 export const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 export const HEROES={
  warden:{name:'The Warden',role:'Frontline tank',subtitle:'Protect the front line and strengthen nearby troops. Highest starting health and armor.',model:'Knight',weapon:'sword',color:0x4e9691,hp:260,focus:70,armor:14,skills:WARDEN_SKILLS,trees:{iron:'Iron Oath',banner:'War Banner',ember:'Ember Rite'},starter:['step','rally']},
@@ -48,21 +48,21 @@ export const UNITS={
 };
 export const DEFENSES={gate:{name:'Wall & gate',desc:'Protect the beacon. Each level rebuilds the gatehouse.',baseHp:1100,costs:[90,130,180,250,330,440,580,760,990]},tower:{...ARMY_SPEC.tower,desc:'Arrows control the approaches.',name:'Archer tower'},ballista:{...ARMY_SPEC.ballista,desc:'Heavy bolts answer armored siege units.',name:'Ballista'},...NEW_DEFENSES};
 export const ENEMIES={
- runner:{name:'Raven runner',model:'Skeleton_Rogue',weapon:'sword',hp:53,damage:10,speed:4.75,range:1.9,xp:16,scale:.83},
- bomber:{name:'Cinder bomber',model:'Skeleton_Minion',weapon:'staff',hp:94,damage:23,speed:2.0,range:20,xp:25,mechanic:'bomb'},
- herald:{name:'War herald',model:'Skeleton_Warrior',weapon:'spear',hp:167,damage:10,speed:1.94,range:3,xp:34,mechanic:'aura'},
- longbow:{name:'Blackfeather hunter',model:'Skeleton_Rogue',weapon:'bow',hp:101,damage:24,speed:1.94,range:48,xp:28},
- bulwark:{name:'Grave bulwark',model:'Skeleton_Warrior',weapon:'sword',hp:416,damage:21,speed:1.73,range:2.7,xp:42,armor:22,scale:1.2,mechanic:'shield'},
- mender:{name:'Bone mender',model:'Skeleton_Mage',weapon:'staff',hp:150,damage:10,speed:1.84,range:22,xp:40,mechanic:'heal'},
- reaver:{name:'Blood reaver',model:'Skeleton_Warrior',weapon:'hammer',hp:299,damage:28,speed:2.92,range:2.8,xp:44,armor:8,mechanic:'rage'},
- mortar:{name:'Ash mortar',model:'Skeleton_Warrior',weapon:'crossbow',hp:432,damage:36,speed:1.47,range:39,xp:55,armor:12,mechanic:'mortar'},
+ runner:{name:'Raven goblin scout',model:'Skeleton_Rogue',weapon:'sword',hp:53,damage:10,speed:4.75,range:1.9,xp:16,scale:.83},
+ bomber:{name:'Cinder goblin sapper',model:'Skeleton_Minion',weapon:'staff',hp:94,damage:23,speed:2.0,range:20,xp:25,mechanic:'bomb'},
+ herald:{name:'Red-banner orc herald',model:'Skeleton_Warrior',weapon:'spear',hp:167,damage:10,speed:1.94,range:3,xp:34,mechanic:'aura'},
+ longbow:{name:'Blackfeather goblin hunter',model:'Skeleton_Rogue',weapon:'bow',hp:101,damage:24,speed:1.94,range:48,xp:28},
+ bulwark:{name:'Ironhide ogre bulwark',model:'Skeleton_Warrior',weapon:'sword',hp:416,damage:21,speed:1.73,range:2.7,xp:42,armor:22,scale:1.2,mechanic:'shield'},
+ mender:{name:'Mossback troll mender',model:'Skeleton_Mage',weapon:'staff',hp:150,damage:10,speed:1.84,range:22,xp:40,mechanic:'heal'},
+ reaver:{name:'Bloodscar orc reaver',model:'Skeleton_Warrior',weapon:'hammer',hp:299,damage:28,speed:2.92,range:2.8,xp:44,armor:8,mechanic:'rage'},
+ mortar:{name:'Bombard ogre',model:'Skeleton_Warrior',weapon:'crossbow',hp:432,damage:36,speed:1.47,range:39,xp:55,armor:12,mechanic:'mortar'},
  wraith:{name:'Mirror wraith',model:'Skeleton_Rogue',weapon:'sword',hp:218,damage:25,speed:3.13,range:2.6,xp:45,mechanic:'blink'},
- warpriest:{name:'Hollow warpriest',model:'Skeleton_Mage',weapon:'staff',hp:402,damage:25,speed:1.73,range:26,xp:65,armor:14,mechanic:'priest'},
- hollow:{name:'Hollow soldier',model:'Skeleton_Minion',weapon:'sword',hp:71,damage:9,speed:2.27,range:2.3,xp:12},
- archer:{name:'Bone archer',model:'Skeleton_Rogue',weapon:'bow',hp:55,damage:9,speed:2.05,range:22,xp:15},
- knight:{name:'Hollow knight',model:'Skeleton_Warrior',weapon:'sword',hp:155,damage:15,speed:1.94,range:2.5,xp:23,armor:10},
+ warpriest:{name:'Hex-crowned troll warpriest',model:'Skeleton_Mage',weapon:'staff',hp:402,damage:25,speed:1.73,range:26,xp:65,armor:14,mechanic:'priest'},
+ hollow:{name:'Ash-clan raider',model:'Skeleton_Minion',weapon:'sword',hp:71,damage:9,speed:2.27,range:2.3,xp:12},
+ archer:{name:'Briar goblin archer',model:'Skeleton_Rogue',weapon:'bow',hp:55,damage:9,speed:2.05,range:22,xp:15},
+ knight:{name:'Ironjaw orc knight',model:'Skeleton_Warrior',weapon:'sword',hp:155,damage:15,speed:1.94,range:2.5,xp:23,armor:10},
  mage:{name:'Grave caller',model:'Skeleton_Mage',weapon:'staff',hp:98,damage:15,speed:1.84,range:25,xp:25},
- brute:{name:'Siege brute',model:'Skeleton_Warrior',weapon:'hammer',hp:464,damage:30,speed:1.66,range:3.7,xp:40,scale:1.5,armor:16},
+ brute:{name:'Kiln ogre wallbreaker',model:'Skeleton_Warrior',weapon:'hammer',hp:464,damage:30,speed:1.66,range:3.7,xp:40,scale:1.5,armor:16},
  boss:{name:'The Bell Knight',model:'Skeleton_Warrior',weapon:'spear',hp:1488,damage:28,speed:2.69,range:4,xp:140,scale:1.45,armor:20}
 };
 const locations=[['Hearthwatch Fields','plain','A line in the grass','Hold the open approaches while the first refugees reach the keep.'],['Reedwater Ford','river','Across the shallows','Use both crossings. Secure the crossing so Nell can bring her engineers and cannon plans home.'],['Sunken Quarry','quarry','Stone remembers','Take the high terraces and silence the grave callers.'],['Thorn Abbey','forest','A lantern in the dark','Protect the lantern order’s road and recover the cinder adepts’ lost writings.'],['The Bell Road','plain','The first broken oath','The Bell Knight leads the Hollow Host himself.'],['Ashen Foundry','desert','Fire under the stone','Recover Torren’s old forge and train the Ashbreakers.'],['The Split Crossing','river','Two fronts','The enemy arrives across both banks.'],['Frostmere','snow','The silent lake','Ice opens wide flanking routes around the shattered watch.'],['Westwind Downs','plain','Riders of the old dawn','Hold long enough for the riders to return.'],['The Buried Crown','desert','A name beneath the sand','Break Veyr’s second captain at the buried city.'],['Blackroot Reach','forest','The roots of the oath','Grave callers gather under the ancient canopy.'],['The Giant’s Stair','quarry','A promise in stone','An oathbound giant waits beyond the quarry walls.'],['Glasswater','river','The last crossing','Hold the river approaches to the Hollow March.'],['The Frozen Beacon','snow','A fire remembered','Relight the last uncorrupted beacon.'],['Crown of Ash','desert','No more borrowed souls','Face Marshal Veyr. Break the oath that binds the fallen.']];
