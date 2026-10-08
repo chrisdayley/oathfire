@@ -1,0 +1,15 @@
+#dialog:has(.feature-lesson) .dialog-box{width:min(940px,100%);max-height:100%;padding:18px;display:flex;flex-direction:column;background:#eee0bb;color:#30372c}
+#dialog:has(.feature-lesson) .dialog-content{min-height:0;overflow:auto}
+.feature-lesson{display:grid;grid-template-columns:.8fr 1.2fr;gap:26px}.feature-lesson h2{color:#263b36;font-size:25px;line-height:1.12;margin:8px 0}.feature-lesson small{color:#5a4c32;font-size:11px;letter-spacing:1px}.feature-lesson p,.feature-lesson li{color:#343c30;font-size:14px;line-height:1.4}.feature-location{background:#1d3b38;border-radius:8px;padding:20px;display:flex;flex-direction:column;justify-content:center}.feature-location svg{width:60px;height:60px;color:#e8c37f;margin-bottom:12px}.feature-location h2{color:#fff0d0}.feature-location small,.feature-location p{color:#e0d5b9}.feature-location p{font-size:12px}.feature-instructions ol{padding-left:24px;margin:12px 0 0}.feature-instructions li{padding:4px 0}.feature-actions{flex-shrink:0;display:flex;gap:10px;justify-content:flex-end;padding-top:12px}.feature-actions button{min-height:44px}.feature-actions #feature-later{margin-right:auto}
+@media(max-height:500px) and (min-width:600px){#dialog:has(.feature-lesson) .dialog-box{padding:12px}.feature-lesson{gap:18px}.feature-location{padding:14px}.feature-location svg{width:36px;height:36px;margin-bottom:4px}.feature-lesson h2{font-size:21px}.feature-lesson p,.feature-lesson li{font-size:12px;line-height:1.3}.feature-instructions li{padding:3px 0}.feature-location p{font-size:10px}.feature-actions{padding-top:8px}}
+@media(max-width:599px){.feature-lesson{grid-template-columns:1fr;gap:14px}.feature-location{padding:14px}.feature-location svg{display:none}.feature-location h2{font-size:20px}.feature-location p{margin:4px 0}.feature-instructions h2{font-size:24px}.feature-actions{gap:6px}.feature-actions button{padding:8px 12px}}
+#dialog:has(.feature-lesson) .dialog-box{max-width:940px}
+#dialog:has(.feature-lesson) .dialog-content{padding:0;text-align:left}
+#dialog .dialog-box .feature-lesson h2{font-size:25px;line-height:1.12;margin:8px 0}
+#dialog .dialog-box .feature-lesson p{font:14px/1.4 'Trebuchet MS',sans-serif;color:#343c30;margin:8px 0}
+#dialog .dialog-box .feature-lesson small{color:#5a4c32;font-size:11px}
+#dialog .dialog-box .feature-location h2{color:#fff0d0}
+#dialog .dialog-box .feature-location :is(small,p){color:#e0d5b9}
+#dialog .dialog-box .feature-location p{font-size:12px}
+#dialog .dialog-box .feature-actions{padding:10px 0 0;margin-top:12px;background:none}
+@media(max-height:500px) and (min-width:600px){#dialog .dialog-box .feature-lesson h2{font-size:21px}#dialog .dialog-box .feature-lesson p{font-size:12px;line-height:1.3}#dialog .dialog-box .feature-location p{font-size:10px}#dialog .dialog-box .feature-actions{padding-top:8px;margin-top:8px}}

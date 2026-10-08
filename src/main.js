@@ -29,3 +29,5 @@ import './stable.css';
 import './save-recovery.css';
 
 import './game-interface.css';
+
+import './feature-training.css';
