@@ -4,7 +4,9 @@ export const DEFENSE_FIELD_LIMIT=72;
 const heavies=new Set(['knight','brute','bulwark','reaver','mortar','warpriest']);
 export function createAssault(mission,wave,camp=false){
  const stage=mission.kind==='relief'?mission.unlockMain+1:mission.id;
- const original=missionRoster(mission,wave),total=Math.max(28,Math.ceil(original.length*(stage<2?2.45:stage<8?2.8:3.15)))-(camp?2:0);
+ const original=missionRoster(mission,wave),baseline=Math.max(28,Math.ceil(missionRoster(mission,1).length*(stage<2?2.45:stage<8?2.8:3.15)))-(camp?2:0);
+ const multiplier=wave===1?1:wave===2?1.5:2.5+(wave-3);
+ const total=Math.ceil(baseline*multiplier);
  const duration=Math.min(120,66+(wave-1)*7+stage*1.3),packets=Math.min(12,9+Math.floor((wave-1)/3)+Math.floor(stage/8));
  // Reuse the unlocked roster, shifting heavily armored enemies toward the tail.
  const roster=Array.from({length:total},(_,i)=>original[i%original.length]);
@@ -36,7 +38,7 @@ export function advanceAssault(plan,dt,slots){
 }
 export function validateAssault(b,enemies){
  const p=b.assault;if(p==null)return;
- if(b.siege||p.version!==1||p.wave!==b.wave||!Number.isFinite(p.duration)||p.duration<60||p.duration>120||!Number.isFinite(p.elapsed)||p.elapsed<0||p.elapsed>1e7||!Array.isArray(p.entries)||p.entries.length<1||p.entries.length>200||!Number.isInteger(p.cursor)||p.cursor<0||p.cursor>p.entries.length)throw Error('Invalid reinforcement schedule.');
+ if(b.siege||p.version!==1||p.wave!==b.wave||!Number.isFinite(p.duration)||p.duration<60||p.duration>120||!Number.isFinite(p.elapsed)||p.elapsed<0||p.elapsed>1e7||!Array.isArray(p.entries)||p.entries.length<1||p.entries.length>1024||!Number.isInteger(p.cursor)||p.cursor<0||p.cursor>p.entries.length)throw Error('Invalid reinforcement schedule.');
  let previous=-1;
  for(const e of p.entries){if(!Object.hasOwn(enemies,e.type)||!Number.isFinite(e.at)||e.at<0||e.at<previous||e.at>p.duration||!Number.isFinite(e.x)||Math.abs(e.x)>65||!Number.isFinite(e.z)||e.z> -70||e.z< -110||!Number.isFinite(e.assaultBoost)||e.assaultBoost<1||e.assaultBoost>1.2)throw Error('Invalid reinforcement.');previous=e.at;}
 }

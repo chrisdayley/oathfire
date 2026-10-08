@@ -25,3 +25,12 @@ export function enemyTarget(enemy, candidates, {now=0, range=22, siege=false, re
  else choices.sort((a,b)=>distance(enemy.pos,a.pos)-distance(enemy.pos,b.pos));
  return choices[0]||null;
 }
+
+// Exterior contact points on the actual curtain walls and central gatehouse.
+// All sections share castle integrity, but attackers no longer funnel to the gate.
+export function nearestCastleWall(pos){
+ const segments=[[-36.8,-18.5,-8.5,-18.5],[-8.5,-19.5,-4.3,-19.5],[-4.3,-17.35,4.3,-17.35],[4.3,-19.5,8.5,-19.5],[8.5,-18.5,36.5,-18.5],[-36.5,-17,-36.5,34],[36.5,-17,36.5,34],[-35,35.5,35,35.5]];
+ let best=null,d=Infinity;
+ for(const[x1,z1,x2,z2]of segments){const dx=x2-x1,dz=z2-z1,t=Math.max(0,Math.min(1,((pos.x-x1)*dx+(pos.z-z1)*dz)/(dx*dx+dz*dz))),p={x:x1+t*dx,y:0,z:z1+t*dz},n=distance(pos,p);if(n<d){best=p;d=n;}}
+ return best;
+}

@@ -62,12 +62,12 @@ export function tickTurningPoint(g,dt){
 export function encounterAI(g,e,dt){
  if(e.encounterRole==='ram'){
   if(e.stun>0){e.velocity.set(0,0,0);g.physics.move(e.phys,e.velocity,dt);return true;}
-  const goal=g.gatePos,d=distance(e.pos,goal);e.facing=Math.atan2(goal.x-e.pos.x,goal.z-e.pos.z);e.character.root.rotation.y=e.facing;
+  const goal=g.castleGoal(e),d=distance(e.pos,goal);e.facing=Math.atan2(goal.x-e.pos.x,goal.z-e.pos.z);e.character.root.rotation.y=e.facing;
   for(const wheel of e.encounterModel?.userData.wheels||[])wheel.rotation.x+=dt*e.speed/.47;if(d>3.1){if(!e.path?.length||e.think<=0){e.path=g.findPath(e.pos,goal);e.pathIndex=0;e.think=.7;}e.think-=dt;while(e.pathIndex<e.path.length-1&&distance(e.pos,e.path[e.pathIndex])<1)e.pathIndex++;
    const p=e.path[e.pathIndex]||goal;e.velocity.copy(p).sub(e.pos).setY(0).normalize().multiplyScalar(e.stats.speed);g.physics.move(e.phys,e.velocity,dt);e.speed=e.stats.speed;
   }else{e.velocity.set(0,0,0);g.physics.move(e.phys,e.velocity,dt);e.speed=0;if(e.cooldown<=0){e.cooldown=4;e.ramWindup=1.3;g.fx.ring(e.pos,2,0xe89a53,1.3);}}
   if(e.ramWindup>0){e.ramWindup-=dt;const log=e.encounterModel?.userData.log;if(log){log.position.z=.25-Math.sin((1-e.ramWindup/1.3)*Math.PI)*.55;e.encounterModel.userData.head.position.z=2.45+log.position.z;}
-   if(e.ramWindup<=0&&distance(e.pos,g.gatePos)<4){g.damageGate(e.stats.damage);g.audio.impact({element:'stone',position:e.pos,heavy:true,hero:true});g.fx.emit('dust',g.gatePos,25,{speed:3});}}
+   if(e.ramWindup<=0&&distance(e.pos,goal)<4){g.damageGate(e.stats.damage);g.audio.impact({element:'stone',position:e.pos,heavy:true,hero:true});g.fx.emit('dust',goal,25,{speed:3});}}
   return true;
  }
  if(e.encounterRole==='commander'){
