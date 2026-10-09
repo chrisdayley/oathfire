@@ -8,8 +8,19 @@ export function supportRegiment(g,e,dt){
  const s=e.stats;
  e.standardBonus=Math.max(0,...g.allies.filter(a=>!a.dead&&a.unit==='banner'&&dist(a.pos,e.pos)<a.stats.auraRadius).map(a=>a.stats.auraStrength));
  if(e.unit==='banner'){e.bannerFX=(e.bannerFX||0)-dt;if(e.bannerFX<=0){e.bannerFX=3;g.fx.ring(e.pos,s.auraRadius,0xe2c584,.6);}}
- if(e.unit==='engineer'&&g.battle){
-  e.repairTimer=(e.repairTimer||0)-dt;if(e.repairTimer<=0&&dist(e.pos,g.gatePos)<9&&g.battle.gate>0&&g.battle.gate<g.battle.maxGate){e.repairTimer=s.repairInterval;g.battle.gate=Math.min(g.battle.maxGate,g.battle.gate+s.repairAmount);e.character.attack('hammer',false,0,.8);g.fx.emit('spark',g.gatePos.clone().setY(1.2),12);g.audio.play('repair',.25);}
+ if(e.unit==='engineer'&&g.battle&&!g.battle.siege){
+  const b=g.battle,ready=!e.dead&&!(e.stun>0)&&b.gate>0&&b.gate<b.maxGate&&dist(e.pos,g.gatePos)<2.0&&!g.enemies.some(a=>!a.dead&&dist(a.pos,e.pos)<4);
+  if(!ready){e.repairSwing=null;e.repairTimer=0;}
+  else {
+   e.facing=Math.atan2(g.gatePos.x-e.pos.x,g.gatePos.z-e.pos.z);e.character.root.rotation.y=e.facing;
+   e.repairTimer=Math.max(0,(e.repairTimer||0)-dt);
+   if(!e.repairSwing&&e.repairTimer===0){e.repairSwing={time:0,hit:false};e.character.attack('hammer',true,0,1.1);e.repairTimer=s.repairInterval;}
+   if(e.repairSwing){const swing=e.repairSwing;swing.time+=dt;
+    if(!swing.hit&&swing.time>=.58){swing.hit=true;b.gate=Math.min(b.maxGate,b.gate+s.repairAmount);g.fx.emit('spark',g.gatePos.clone().setY(1.2),9);g.audio.play('repair',.35);}
+    if(swing.time>=1.1)e.repairSwing=null;
+   }
+   return true;
+  }
  }
  if(e.unit==='rider'){e.chargeDistance=(e.chargeDistance||0)+(e.speed>4?e.speed*dt:0);if(e.chargeDistance>=s.chargeDistance)e.cavalryCharge=true;}
 }

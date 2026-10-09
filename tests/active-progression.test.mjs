@@ -36,13 +36,13 @@ test('One first victory cannot fund five trainings, even including starting fund
  const s=newSave();completeMission(s,0);assert.equal(s.supplies,540);upgradeUnit(s,'bow');assert.equal(s.supplies,220);assert.throws(()=>upgradeUnit(s,'bow'));s.supplies=360+MISSIONS[0].reward+300;
  let bought=0;for(const id of ['shield','bow','pike','banner']){try{upgradeUnit(s,id);bought++;}catch{}}assert.ok(bought<=2);assert.ok(unitStats('bow',2).hp>=unitStats('bow',1).hp*1.19);
 });
-const actor=(unit,rank,x=0)=>({unit,team:'ally',stats:unitStats(unit,rank),pos:new T.Vector3(x,0,0),hp:1,character:{attack(){},cast(){}},speed:0});
+const actor=(unit,rank,x=0)=>({unit,team:'ally',stats:unitStats(unit,rank),pos:new T.Vector3(x,0,0),hp:1,character:{root:{rotation:{}},attack(){},cast(){}},speed:0});
 const game=()=>({allies:[],enemies:[],hero:actor('shield',1),battle:{command:0,gate:1,maxGate:1000},gatePos:new T.Vector3(),fx:{emit(){},ring(){},ward(){}},audio:{play(){}}});
 test('Standard aura uses the strongest nearby source; Command stacks from living standards globally',()=>{
  const g=game(),a=actor('banner',1),b=actor('banner',10),troop=actor('bow',1);g.allies=[a,b,troop];g.enemies=[{pos:new T.Vector3(0,0,-10)}];supportRegiment(g,troop,.5);assert.equal(regimentBonus(troop),1.285);assert.equal(standardIncome(g),.725);b.dead=true;supportRegiment(g,troop,.5);assert.equal(regimentBonus(troop),1.15);assert.equal(standardIncome(g),.25);g.enemies[0].pos.z=-30;assert.equal(standardIncome(g),.25);troop.pos.x=50;supportRegiment(g,troop,.5);assert.equal(regimentBonus(troop),1);
 });
 test('Engineers repair more often, Sunsworn heal every second hit, crew push, giants stagger and mounted charges reload earlier',()=>{
- const g=game(),engineer=actor('engineer',10);supportRegiment(g,engineer,.1);assert.equal(g.battle.gate,77);assert.equal(engineer.repairTimer,2.1);g.battle.gate=0;engineer.repairTimer=0;supportRegiment(g,engineer,3);assert.equal(g.battle.gate,0);
+ const g=game(),engineer=actor('engineer',10);supportRegiment(g,engineer,.1);assert.equal(g.battle.gate,1);assert.equal(engineer.repairTimer,2.1);supportRegiment(g,engineer,.5);assert.equal(g.battle.gate,77);g.battle.gate=0;engineer.repairTimer=0;supportRegiment(g,engineer,3);assert.equal(g.battle.gate,0);
  const dawn=actor('dawn',10),target={pos:new T.Vector3(0,0,2)},crew=actor('crew',10),giant=actor('giant',10),rider=actor('rider',10);g.hero.stats.hp=300;g.hero.hp=100;dawn.hp=dawn.stats.hp;g.allies=[dawn];regimentHit(g,target,dawn,{});assert.equal(g.hero.hp,100);regimentHit(g,target,dawn,{});assert.equal(g.hero.hp,150);
  regimentHit(g,target,crew,{});assert.equal(target.knock.length(),5.38);regimentHit(g,target,giant,{});assert.equal(target.stun,.84);rider.speed=5;supportRegiment(g,rider,.85);assert.equal(rider.cavalryCharge,true);regimentHit(g,target,rider,{});assert.equal(target.stun,1.24);assert.equal(rider.cavalryCharge,false);
  assert.equal(movementFactor({rimeTime:4,rimeStrength:.575,slow:3}),.42500000000000004);assert.equal(movementFactor({rimeTime:0,rimeStrength:.575,slow:3}),.65);

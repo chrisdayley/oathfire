@@ -38,10 +38,10 @@ export function renderRegiment(ui){
   if(battle){
    const wall=!!ui.deployWall,count=wall?wallCount(ui.g.allies):fieldCount(ui.g.allies),limit=wall?WALL_LIMIT:FIELD_LIMIT,field=ui.g.allies.filter(a=>!a.dead&&a.unit===id&&isWallUnit(a)===wall),blocked=!unitUnlocked(s,id)||battle.command<stats.cost||count+stats.count>limit;
    body+='<p class="regiment-field">'+field.length+' deployed · '+count+' / '+limit+(wall?' wall slots · ':' field slots · ')+Math.floor(battle.command)+' Command available</p>';
-   actions='<small>Repeat hires: +20% of initial cost each. Resets next battle.</small>'+ui.button('regiment-abilities',null,'Abilities')+ui.button('recruit',id,!unitUnlocked(s,id)?'Locked':count+stats.count>limit?(wall?'Wall full':'Field full'):battle.command<stats.cost?'Need ⚑ '+stats.cost:(wall?'Garrison':'Recruit')+' · ⚑ '+stats.cost,blocked,true);
+   actions='<small>First 3 living squads at base price. Each extra squad adds 20%; losses lower the price.</small>'+ui.button('regiment-abilities',null,'Abilities')+ui.button('recruit',id,!unitUnlocked(s,id)?'Locked':count+stats.count>limit?(wall?'Wall full':'Field full'):battle.command<stats.cost?'Need ⚑ '+stats.cost:(wall?'Garrison':'Recruit')+' · ⚑ '+stats.cost,blocked,true);
   }else{
    const blocked=upgradeBlock(ui,id,owned);
-   actions='<small>Repeat hires: +20% of initial cost each. Resets next battle.</small>'+ui.button('regiment-abilities',null,'Abilities')+ui.button('regiment-upgrade',id,blocked||'Upgrade ›',!!blocked,true);
+   actions='<small>First 3 living squads at base price. Each extra squad adds 20%; losses lower the price.</small>'+ui.button('regiment-abilities',null,'Abilities')+ui.button('regiment-upgrade',id,blocked||'Upgrade ›',!!blocked,true);
   }
  }
  return '<section class="regiment-sheet" data-unit="'+id+'" data-rank="'+rank+'">'+heading+'<div class="regiment-body">'+body+'</div><div class="regiment-actions">'+actions+'</div></section>';

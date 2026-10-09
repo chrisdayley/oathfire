@@ -140,3 +140,7 @@
 #menu.field-menu #menu-content .committed-research>small{color:#dfd8c5!important}
 
 #menu:not(.field-menu):not(.atlas-menu):not(.regiment-menu) #menu-content .card>small{color:#574a32!important}
+
+/* Parchment unlock cards must use ink for all data, not inherited gold. */
+#unlock-sequence .unlock-copy :is(strong,b,.unlock-note,svg){color:#3c3525!important}
+#unlock-sequence .unlock-stats>div{background:#7151230d;border-color:#75634566}
